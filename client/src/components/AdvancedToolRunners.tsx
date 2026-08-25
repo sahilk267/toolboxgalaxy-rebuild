@@ -38,14 +38,19 @@ export function DateDifferenceTool() {
   return <div className="runner-stack"><div className="math-row"><label>Start date<input type="date" value={start} onChange={(event) => setStart(event.target.value)} /></label><label>End date<input type="date" value={end} onChange={(event) => setEnd(event.target.value)} /></label></div><Output value={output} /></div>;
 }
 
-function EncodeTool({ mode }: { mode: "url" | "html" }) {
-  const [operation, setOperation] = useState<"encode" | "decode">("encode"); const [input, setInput] = useState(mode === "url" ? "https://toolboxgalaxy.com/tools?module=QR & mode=local" : "<section class=\"module\">Toolbox & Galaxy</section>");
-  const { value, error } = useMemo(() => { try { if (mode === "url") return { value: operation === "encode" ? encodeURIComponent(input) : decodeURIComponent(input), error: "" }; const textarea = document.createElement("textarea"); if (operation === "encode") { textarea.textContent = input; return { value: textarea.innerHTML, error: "" }; } textarea.innerHTML = input; return { value: textarea.value, error: "" }; } catch { return { value: "", error: "This input cannot be decoded in the selected mode." }; } }, [input, operation, mode]);
-  return <div className="runner-stack"><div className="toggle-row"><button onClick={() => setOperation("encode")} className={operation === "encode" ? "toggle-button toggle-button--active" : "toggle-button"}>Encode</button><button onClick={() => setOperation("decode")} className={operation === "decode" ? "toggle-button toggle-button--active" : "toggle-button"}>Decode</button></div><label className="wide-field">Input<textarea value={input} onChange={(event) => setInput(event.target.value)} rows={7} spellCheck="false" /></label><Output value={value} error={error} /></div>;
+type TransformMode = "urlEncode" | "urlDecode" | "htmlEncode" | "htmlDecode";
+function SinglePurposeTransform({ mode }: { mode: TransformMode }) {
+  const examples: Record<TransformMode, string> = { urlEncode: "https://toolboxgalaxy.com/tools?module=QR & mode=local", urlDecode: "https%3A%2F%2Ftoolboxgalaxy.com%2Ftools%3Fmodule%3DQR%20%26%20mode%3Dlocal", htmlEncode: "<section class=\"module\">Toolbox & Galaxy</section>", htmlDecode: "&lt;section class=&quot;module&quot;&gt;Toolbox &amp; Galaxy&lt;/section&gt;" };
+  const labels: Record<TransformMode, string> = { urlEncode: "Plain text or URL", urlDecode: "Encoded URL component", htmlEncode: "HTML or plain text", htmlDecode: "HTML entities" };
+  const [input, setInput] = useState(examples[mode]);
+  const { value, error } = useMemo(() => { try { if (mode === "urlEncode") return { value: encodeURIComponent(input), error: "" }; if (mode === "urlDecode") return { value: decodeURIComponent(input), error: "" }; const textarea = document.createElement("textarea"); if (mode === "htmlEncode") { textarea.textContent = input; return { value: textarea.innerHTML, error: "" }; } textarea.innerHTML = input; return { value: textarea.value, error: "" }; } catch { return { value: "", error: "This value is not valid for the selected decoder." }; } }, [input, mode]);
+  return <div className="runner-stack"><div className="single-purpose-status"><span>ONE-WAY TRANSFORM</span><span>{mode.includes("Encode") ? "ENCODE" : "DECODE"}</span></div><label className="wide-field">{labels[mode]}<textarea value={input} onChange={(event) => setInput(event.target.value)} rows={7} spellCheck="false" /></label><Output value={value} error={error} /></div>;
 }
 
-export function UrlTool() { return <EncodeTool mode="url" />; }
-export function HtmlTool() { return <EncodeTool mode="html" />; }
+export function UrlEncodeTool() { return <SinglePurposeTransform mode="urlEncode" />; }
+export function UrlDecodeTool() { return <SinglePurposeTransform mode="urlDecode" />; }
+export function HtmlEncodeTool() { return <SinglePurposeTransform mode="htmlEncode" />; }
+export function HtmlDecodeTool() { return <SinglePurposeTransform mode="htmlDecode" />; }
 
 const wordsFrom = (value: string) => value.trim().split(/[^A-Za-z0-9]+/).filter(Boolean);
 export function TextCaseTool() {

@@ -3,21 +3,18 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { Layer } from "@babylonjs/core/Layers/layer";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Scene } from "@babylonjs/core/scene";
-import { gameAssets } from "@/game/assets";
+import type { SoundEvent } from "@/game/audio";
 import { GameWorld } from "@/game/GameWorld";
 
 export type GameHandle = { scene: Scene; dispose: () => void };
-export type GameCallbacks = { onScore: (score: number, best: number) => void; onStatus: (status: "ready" | "playing" | "over") => void };
+export type GameCallbacks = { onScore: (score: number, best: number) => void; onStatus: (status: "ready" | "playing" | "over") => void; onSound: (event: SoundEvent) => void };
 
 export async function createGameScene(engine: Engine, canvas: HTMLCanvasElement, callbacks: GameCallbacks): Promise<GameHandle> {
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.02, 0.04, 0.09, 1);
-  const background = new Layer("orbit-dash-art", gameAssets.orbitDashBackground, scene, true);
-  background.color = new Color4(0.36, 0.42, 0.58, 0.23);
   const camera = new ArcRotateCamera("orbit-dash-camera", Math.PI / 2, Math.PI / 2, 18, new Vector3(0, 0, 0), scene);
   camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
   camera.orthoTop = 5.5; camera.orthoBottom = -5.5; camera.orthoLeft = -8.8; camera.orthoRight = 8.8;

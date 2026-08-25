@@ -15,7 +15,7 @@ export default function GameCanvas({ callbacks }: { callbacks: GameCallbacks }) 
     startedRef.current = true;
     const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, adaptToDeviceRatio: true });
     let handle: GameHandle | null = null;
-    createGameScene(engine, canvas, { onScore: (score, best) => callbacksRef.current.onScore(score, best), onStatus: (status) => callbacksRef.current.onStatus(status) }).then((game) => { handle = game; engine.runRenderLoop(() => game.scene.render()); });
+    createGameScene(engine, canvas, { onScore: (score, best) => callbacksRef.current.onScore(score, best), onStatus: (status) => callbacksRef.current.onStatus(status), onSound: (event) => callbacksRef.current.onSound(event) }).then((game) => { handle = game; engine.runRenderLoop(() => game.scene.render()); });
     const onResize = () => engine.resize();
     window.addEventListener("resize", onResize);
     return () => { window.removeEventListener("resize", onResize); handle?.dispose(); engine.dispose(); startedRef.current = false; };

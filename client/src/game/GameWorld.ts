@@ -5,8 +5,9 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
+import type { SoundEvent } from "@/game/audio";
 
-type GameCallbacks = { onScore: (score: number, best: number) => void; onStatus: (status: "ready" | "playing" | "over") => void };
+type GameCallbacks = { onScore: (score: number, best: number) => void; onStatus: (status: "ready" | "playing" | "over") => void; onSound: (event: SoundEvent) => void };
 type Gate = { root: TransformNode; x: number; gapY: number; scored: boolean; fragmentCollected: boolean; fragment: ReturnType<typeof MeshBuilder.CreatePolyhedron> };
 
 const LIME = new Color3(0.78, 0.95, 0.42);
@@ -78,12 +79,12 @@ export class GameWorld {
     }
   }
 
-  start() { this.status = "playing"; this.callbacks.onStatus(this.status); }
+  start() { this.status = "playing"; this.callbacks.onStatus(this.status); this.callbacks.onSound("start"); }
 
   reset() {
     this.gates.splice(0).forEach((gate) => gate.root.dispose());
     this.score = 0; this.spawnClock = 0; this.elapsed = 0; this.playerY = 0; this.player.position.y = 0; this.status = "playing";
-    this.callbacks.onScore(this.score, this.best); this.callbacks.onStatus(this.status);
+    this.callbacks.onScore(this.score, this.best); this.callbacks.onStatus(this.status); this.callbacks.onSound("start");
   }
 
   update(delta: number) {
@@ -101,8 +102,8 @@ export class GameWorld {
       const yDistance = Math.abs(this.player.position.y - gate.gapY);
       const nearGate = Math.abs(gate.x - this.player.position.x) < 0.32;
       if (nearGate && yDistance > 1.42) { this.endRun(); break; }
-      if (!gate.fragmentCollected && Math.abs(gate.x - this.player.position.x) < 0.38 && yDistance < 0.44) { gate.fragmentCollected = true; gate.fragment.setEnabled(false); this.addScore(2); }
-      if (!gate.scored && gate.x < this.player.position.x - 0.4) { gate.scored = true; this.addScore(1); }
+      if (!gate.fragmentCollected && Math.abs(gate.x - this.player.position.x) < 0.38 && yDistance < 0.44) { gate.fragmentCollected = true; gate.fragment.setEnabled(false); this.addScore(2); this.callbacks.onSound("fragment"); }
+      if (!gate.scored && gate.x < this.player.position.x - 0.4) { gate.scored = true; this.addScore(1); this.callbacks.onSound("gate"); }
       if (gate.x < -8.4) { gate.root.dispose(); this.gates.splice(index, 1); }
     }
   }
@@ -132,6 +133,6 @@ export class GameWorld {
   }
 
   private addScore(amount: number) { this.score += amount; if (this.score > this.best) { this.best = this.score; window.localStorage.setItem("toolbox-galaxy-orbit-dash-best", String(this.best)); } this.callbacks.onScore(this.score, this.best); }
-  private endRun() { this.status = "over"; this.callbacks.onStatus(this.status); }
+  private endRun() { this.status = "over"; this.callbacks.onStatus(this.status); this.callbacks.onSound("collision"); }
   dispose() { window.removeEventListener("keydown", this.onKeyDown); window.removeEventListener("keyup", this.onKeyUp); this.canvas.removeEventListener("pointermove", this.onPointer); this.canvas.removeEventListener("pointerdown", this.onPointer); this.gates.forEach((gate) => gate.root.dispose()); this.player.dispose(); }
 }
