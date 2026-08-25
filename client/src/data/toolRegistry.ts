@@ -18,7 +18,10 @@ export type ToolKind =
   | "uuid"
   | "gradient"
   | "qr"
-  | "imageResize";
+  | "imageResize"
+  | "favicon"
+  | "hash"
+  | "passwordAudit";
 
 export type ToolDefinition = {
   slug: string;
@@ -199,6 +202,33 @@ export const tools: ToolDefinition[] = [
     category: "Create",
     description: "Resize and compress images locally with controlled export settings.",
     kind: "imageResize",
+    accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "favicon-generator",
+    name: "Favicon Generator",
+    category: "Create",
+    description: "Turn an image into a locally generated square PNG icon.",
+    kind: "favicon",
+    accent: "lime",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "hash-generator",
+    name: "Hash Generator",
+    category: "Code & Text",
+    description: "Create SHA-256, SHA-384, or SHA-512 digests locally.",
+    kind: "hash",
+    accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "password-strength-auditor",
+    name: "Password Strength Auditor",
+    category: "Code & Text",
+    description: "Check a password against clear local strength signals.",
+    kind: "passwordAudit",
     accent: "sky",
     tags: ["Local", "Private"],
   },
