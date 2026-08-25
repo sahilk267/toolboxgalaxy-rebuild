@@ -91,3 +91,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - The `TOOLBOX / GALAXY` wordmark and Orbit Mark remain visible in the primary navigation/identity area on every AppShell route.
 - Dock lines and telemetry strips are structural motifs: each major card, form, and feature panel exposes a visible metadata or status layer.
 - Tool detail pages are treated as operational instrument consoles, using labeled input/output zones, verified/local state, and precise panel framing.
+- Game play screens retain a compact Toolbox Galaxy identity layer with the Orbit Mark, Games Bay route label, and telemetry HUD so they remain part of the same workbench system.
+- Dock lines are structural rather than decorative: each major page exposes a visible runway relationship between its rail, hero, and primary panels.
+- Games use warm ember for launch energy and playful module accents; Signal Lime remains reserved for active, verified, successful, and primary-action states.

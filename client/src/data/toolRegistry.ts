@@ -21,7 +21,9 @@ export type ToolKind =
   | "imageResize"
   | "favicon"
   | "hash"
-  | "passwordAudit";
+  | "passwordAudit"
+  | "markdown"
+  | "contrast";
 
 export type ToolDefinition = {
   slug: string;
@@ -231,6 +233,24 @@ export const tools: ToolDefinition[] = [
     kind: "passwordAudit",
     accent: "sky",
     tags: ["Local", "Private"],
+  },
+  {
+    slug: "markdown-workspace",
+    name: "Markdown Workspace",
+    category: "Code & Text",
+    description: "Write Markdown, inspect a safe local preview, and export sanitized HTML.",
+    kind: "markdown",
+    accent: "violet",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "color-contrast-checker",
+    name: "Color Contrast Checker",
+    category: "Create",
+    description: "Check text and background colors against accessible contrast thresholds.",
+    kind: "contrast",
+    accent: "lime",
+    tags: ["Local", "Verified"],
   },
 ];
 

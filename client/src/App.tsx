@@ -16,6 +16,7 @@ import { lazy, Suspense } from "react";
 
 const OrbitDash = lazy(() => import("@/pages/OrbitDash"));
 const SignalSwitch = lazy(() => import("@/pages/SignalSwitch"));
+const CircuitShift = lazy(() => import("@/pages/CircuitShift"));
 
 function GameRoute() {
   return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Orbit Dash…</div>}><OrbitDash /></Suspense>;
@@ -23,6 +24,10 @@ function GameRoute() {
 
 function SignalSwitchRoute() {
   return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Signal Switch…</div>}><SignalSwitch /></Suspense>;
+}
+
+function CircuitShiftRoute() {
+  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Circuit Shift…</div>}><CircuitShift /></Suspense>;
 }
 
 export default function App() {
@@ -38,6 +43,7 @@ export default function App() {
             <Route path="/games" component={Games} />
             <Route path="/games/orbit-dash" component={GameRoute} />
             <Route path="/games/signal-switch" component={SignalSwitchRoute} />
+            <Route path="/games/circuit-shift" component={CircuitShiftRoute} />
             <Route path="/contact" component={Contact} />
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />

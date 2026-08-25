@@ -1,0 +1,8 @@
+// Circuit Shift: lifecycle-safe React canvas adapter; the puzzle world owns all Babylon gameplay state.
+import { Engine } from "@babylonjs/core/Engines/engine";
+import "@/game/registerStandardShaders";
+import { createCircuitShiftScene, type CircuitShiftHandle } from "@/game/circuitShift/scene";
+import type { CircuitShiftCallbacks } from "@/game/circuitShift/CircuitShiftWorld";
+import { useEffect, useRef } from "react";
+
+export default function CircuitShiftCanvas({ callbacks }: { callbacks: CircuitShiftCallbacks }) { const canvasRef = useRef<HTMLCanvasElement>(null); const started = useRef(false); const callbackRef = useRef(callbacks); callbackRef.current = callbacks; useEffect(() => { const canvas = canvasRef.current; if (!canvas || started.current) return; started.current = true; const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, adaptToDeviceRatio: true }); let handle: CircuitShiftHandle | null = null; createCircuitShiftScene(engine, canvas, { onScore: (score, best) => callbackRef.current.onScore(score, best), onStatus: (status) => callbackRef.current.onStatus(status), onMoves: (moves) => callbackRef.current.onMoves(moves), onSound: (event) => callbackRef.current.onSound(event) }).then((game) => { handle = game; engine.runRenderLoop(() => game.scene.render()); }); const resize = () => engine.resize(); window.addEventListener("resize", resize); return () => { window.removeEventListener("resize", resize); handle?.dispose(); engine.dispose(); started.current = false; }; }, []); return <canvas ref={canvasRef} className="game-canvas" style={{ touchAction: "none" }} aria-label="Circuit Shift game canvas" />; }

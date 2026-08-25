@@ -1,5 +1,6 @@
 // Orbit Dash / Orbital Workbench: React owns the canvas frame; Babylon owns the gameplay scene and render loop.
 import { Engine } from "@babylonjs/core/Engines/engine";
+import "@/game/registerStandardShaders";
 import { createGameScene, type GameCallbacks, type GameHandle } from "@/game/scene";
 import { useEffect, useRef } from "react";
 

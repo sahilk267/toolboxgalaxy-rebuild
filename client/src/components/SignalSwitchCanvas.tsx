@@ -1,5 +1,6 @@
 // Signal Switch: React owns the canvas mount; Babylon owns the procedural board and relay loop.
 import { Engine } from "@babylonjs/core/Engines/engine";
+import "@/game/registerStandardShaders";
 import { createSignalSwitchScene, type SignalSwitchHandle } from "@/game/signalSwitch/scene";
 import type { SignalSwitchCallbacks } from "@/game/signalSwitch/SignalSwitchWorld";
 import { useEffect, useRef } from "react";

@@ -28,5 +28,21 @@ Signal Switch is a lightweight, single-player browser reflex game. A signal pack
   - A correct input updates score, progresses the relay sequence, and triggers the appropriate opt-in sound effect.
   - A wrong input or completed countdown shows a clear game-over state and keeps the high score local to the browser.
   - `?demo` runs a deterministic relay sequence for visual verification.
-  - The HUD, touch targets, sound toggle, and start/restart controls stay readable on desktop and mobile.
-  - No missing textures, console errors, clipped controls, or placeholder gameplay elements appear in the captured run.
+- The HUD, touch targets, sound toggle, and start/restart controls stay readable on desktop and mobile.
+- No missing textures, console errors, clipped controls, or placeholder gameplay elements appear in the captured run.
+
+---
+
+# Game Plan: Circuit Shift
+
+## Main Build
+
+Circuit Shift is a lightweight, single-player rotation puzzle. The player turns tiles on a fixed 4×4 board until a continuous signal path reaches the output relay. A solved board starts the next deterministic layout and improves a browser-local score; a timer measures the current solve without a forced game-over. The scene uses procedural tiles and one generated reference image, avoiding physics, imported models, multiplayer, and server state.
+
+- **Assets needed:** One generated 16:9 in-game reference establishes the navy control-board, lime circuit traces, cyan selection outline, and restrained amber warning accent. The sixteen tiles, input/output sockets, board frame, and glow effects remain procedural Babylon geometry.
+- **Verify:**
+  - Clicking/tapping a tile or using arrow keys plus space rotates the selected tile by exactly 90 degrees.
+  - A valid connected route from input to output visibly changes the HUD to solved, adds score, and triggers the opt-in success sound.
+  - Reset loads the deterministic starting layout; local high score remains only in browser storage.
+  - `?demo` rotates the known solution sequence so capture shows an in-progress or completed board.
+  - HUD, touch targets, sound control, and restart behavior are readable on desktop and mobile, with no missing asset, console, or network failures.

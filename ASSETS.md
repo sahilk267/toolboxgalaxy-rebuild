@@ -20,3 +20,11 @@ The player ship, gates, collectible signal fragments, and starfield are procedur
 | Asset | Usage | Source |
 |---|---|---|
 | Signal Switch 16:9 in-game reference | Games Bay card artwork and visual QA reference | `/manus-storage/toolbox-galaxy-signal-switch-reference_73b96409.jpg` |
+
+## Circuit Shift Assets
+
+**Art direction:** A straight-on 4×4 orbital circuit puzzle board: midnight-blue panels, tactile dark relay tiles, neon-lime power traces, cyan selection feedback, and a restrained amber warning path. The fixed board stays minimal enough to read as an actual browser game rather than decorative concept art.
+
+| Asset | Usage | Source |
+|---|---|---|
+| Circuit Shift 16:9 in-game reference | Games Bay card artwork and visual QA reference | `/manus-storage/toolbox-galaxy-circuit-shift-reference_92722146.jpg` |
