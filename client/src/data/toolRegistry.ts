@@ -12,10 +12,8 @@ export type ToolKind =
   | "discount"
   | "age"
   | "dateDiff"
-  | "urlEncode"
-  | "urlDecode"
-  | "htmlEncode"
-  | "htmlDecode"
+  | "url"
+  | "html"
   | "textCase"
   | "uuid"
   | "gradient"
@@ -142,19 +140,19 @@ export const tools: ToolDefinition[] = [
   },
   {
     slug: "url-workbench",
-    name: "URL Encoder",
+    name: "URL Encoder / Decoder",
     category: "Code & Text",
-    description: "Encode URL components locally for use in links and query strings.",
-    kind: "urlEncode",
+    description: "Encode or decode URL-safe text directly in your browser.",
+    kind: "url",
     accent: "lime",
     tags: ["Local", "Private"],
   },
   {
     slug: "html-entity-tool",
-    name: "HTML Entity Encoder",
+    name: "HTML Entity Encoder / Decoder",
     category: "Code & Text",
-    description: "Convert reserved HTML characters into safe entities locally.",
-    kind: "htmlEncode",
+    description: "Encode or decode HTML entities without a remote service.",
+    kind: "html",
     accent: "ember",
     tags: ["Local", "Private"],
   },
@@ -166,24 +164,6 @@ export const tools: ToolDefinition[] = [
     kind: "textCase",
     accent: "sky",
     tags: ["Local", "Verified"],
-  },
-  {
-    slug: "url-decoder",
-    name: "URL Decoder",
-    category: "Code & Text",
-    description: "Decode URL components locally into readable text.",
-    kind: "urlDecode",
-    accent: "violet",
-    tags: ["Local", "Private"],
-  },
-  {
-    slug: "html-entity-decoder",
-    name: "HTML Entity Decoder",
-    category: "Code & Text",
-    description: "Decode HTML entities into readable text without a remote service.",
-    kind: "htmlDecode",
-    accent: "sky",
-    tags: ["Local", "Private"],
   },
   {
     slug: "uuid-generator",
