@@ -1,6 +1,6 @@
 # Hostinger Shared Hosting Deployment
 
-This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current nineteen tools plus Orbit Dash and Signal Switch are browser-local, so the core experience does not require an API or database.
+This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current twenty-four tools plus Orbit Dash, Signal Switch, and Circuit Shift are browser-local, so the core experience does not require an API or database.
 
 ## Build and upload
 
@@ -19,10 +19,12 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 | Check | Expected result |
 |---|---|
 | Root document | `public_html/index.html` exists after upload |
-| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, and `/games/signal-switch` open directly without 404 errors |
+| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, `/games/signal-switch`, and `/games/circuit-shift` open directly without 404 errors |
 | HTTPS | `https://toolboxgalaxy.com` is enabled and the HTTP version redirects to HTTPS |
 | Assets | `/manus-storage/` URLs must be replaced by equivalent permanent image URLs if deploying outside Manus hosting |
 | Headers | Confirm the `.htaccess` header directives work with the selected Hostinger server stack |
+| PWA files | `manifest.webmanifest`, `service-worker.js`, and `offline.html` are present at the document root after upload |
+| Offline fallback | After one successful load over HTTPS, temporarily disable the network and reload a recently visited route; the cached app shell or the explicit offline screen appears |
 | Sitemap | `https://toolboxgalaxy.com/sitemap.xml` returns the new sitemap |
 
 ## Important asset note
@@ -30,6 +32,12 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 The current build uses Manus-hosted visual asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the five generated assets and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with your permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
 
 The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). Build production with `VITE_ASSET_BASE_URL=/assets` after the asset references have been moved to the Hostinger location.
+
+## Offline and install behavior
+
+The service worker is a small static file with no API dependency. It caches the app shell plus same-origin files that the browser has successfully visited, and it uses a network-first path for navigations so new releases are discovered whenever the visitor is online. The `.htaccess` file marks `service-worker.js` as non-cacheable so Hostinger clients can receive the next cache version promptly.
+
+The native install button appears only in browsers that emit the standard install prompt and only after the manifest, HTTPS, and service worker meet that browser’s own requirements. The current manifest uses the preview Orbit Mark path; before production, replace its icon source with the permanent `/assets/orbit-mark.png` path alongside the other Manus-hosted image replacements.
 
 ## Future PHP APIs
 

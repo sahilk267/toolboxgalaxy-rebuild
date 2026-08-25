@@ -94,3 +94,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Game play screens retain a compact Toolbox Galaxy identity layer with the Orbit Mark, Games Bay route label, and telemetry HUD so they remain part of the same workbench system.
 - Dock lines are structural rather than decorative: each major page exposes a visible runway relationship between its rail, hero, and primary panels.
 - Games use warm ember for launch energy and playful module accents; Signal Lime remains reserved for active, verified, successful, and primary-action states.
+- Every route, including games and offline states, exposes a compact Orbit Mark, `TOOLBOX / GALAXY` lockup, route label, and telemetry/status signal.
+- Games use Ember for score and playful module energy; Signal Lime is retained for live paths, verified state, success, and primary actions.
+- Dock lines must visibly relate the shell, hero or playfield, and primary panels as a structural blueprint system rather than decorative borders.
