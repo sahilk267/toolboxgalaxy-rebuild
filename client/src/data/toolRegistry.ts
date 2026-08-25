@@ -17,7 +17,8 @@ export type ToolKind =
   | "textCase"
   | "uuid"
   | "gradient"
-  | "qr";
+  | "qr"
+  | "imageResize";
 
 export type ToolDefinition = {
   slug: string;
@@ -190,6 +191,15 @@ export const tools: ToolDefinition[] = [
     description: "Generate a shareable QR image locally from text or a link.",
     kind: "qr",
     accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "image-resizer",
+    name: "Image Resizer",
+    category: "Create",
+    description: "Resize and compress images locally with controlled export settings.",
+    kind: "imageResize",
+    accent: "sky",
     tags: ["Local", "Private"],
   },
 ];

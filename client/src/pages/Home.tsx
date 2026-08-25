@@ -36,7 +36,7 @@ export default function Home() {
 
     <section className="page-section game-callout">
       <div className="game-art"><img src={gamesImage} alt="An abstract arcade spacecraft navigating orbit gates" /></div>
-      <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / NEXT UP</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. The first launch will start with one local score-chasing arcade game.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
+      <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / READY NOW</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. Orbit Dash and Signal Switch both keep scores in the browser and sound under your control.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
     </section>
   </AppShell>;
 }

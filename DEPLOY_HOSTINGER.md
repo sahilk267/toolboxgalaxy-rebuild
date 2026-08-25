@@ -1,6 +1,6 @@
 # Hostinger Shared Hosting Deployment
 
-This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The first eight tools and the Orbit Dash game are browser-local, so this deployment does not require an API or database.
+This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current nineteen tools plus Orbit Dash and Signal Switch are browser-local, so the core experience does not require an API or database.
 
 ## Build and upload
 
@@ -19,7 +19,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 | Check | Expected result |
 |---|---|
 | Root document | `public_html/index.html` exists after upload |
-| SPA fallback | `/tools`, `/tools/json-station`, and `/games/orbit-dash` open directly without 404 errors |
+| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, and `/games/signal-switch` open directly without 404 errors |
 | HTTPS | `https://toolboxgalaxy.com` is enabled and the HTTP version redirects to HTTPS |
 | Assets | `/manus-storage/` URLs must be replaced by equivalent permanent image URLs if deploying outside Manus hosting |
 | Headers | Confirm the `.htaccess` header directives work with the selected Hostinger server stack |
@@ -27,7 +27,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 
 ## Important asset note
 
-The first build uses Manus-hosted visual asset URLs. Those URLs are suitable for the current project preview. Before the Hostinger release, download/export the four generated assets and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with your permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
+The current build uses Manus-hosted visual asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the five generated assets and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with your permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
 
 The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). Build production with `VITE_ASSET_BASE_URL=/assets` after the asset references have been moved to the Hostinger location.
 
@@ -36,6 +36,8 @@ The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTI
 When a tool genuinely needs server processing, expose it behind a single PHP API base such as `/api/v1/`. Keep the frontend request path in one environment-driven adapter instead of hard-coding endpoints in individual pages. The PHP endpoint should validate inputs, return consistent JSON errors, enforce file limits for uploads, and restrict cross-origin access to the production domain.
 
 The contact form boundary and expected `/api/v1/contact` request/response shape are defined in [`API_CONTACT_CONTRACT.md`](./API_CONTACT_CONTRACT.md). The frontend remains in safe email-fallback mode until `VITE_CONTACT_ENDPOINT` is configured at build time.
+
+The upload-ready PHP handoff archive lives outside this static project at `/home/ubuntu/hostinger-toolboxgalaxy-php-handoff.zip`. Copy its endpoint to `public_html/api/v1/contact.php`, copy and configure its secret config file outside `public_html` where the hosting layout allows it, then complete the HTTPS and origin tests described in its `INSTALL.md` before enabling the frontend endpoint variable.
 
 ## Before launch
 

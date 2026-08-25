@@ -13,3 +13,20 @@ Orbit Dash is a lightweight, single-player browser arcade game. The player moves
   - `?demo` activates a deterministic autopilot so a screenshot visibly shows gameplay in progress.
   - No missing textures, clipped HUD, or console errors occur during the captured run.
   - The finished route retains the Orbit Workbench palette: midnight ink, signal lime, controlled ember-orange, and a compact telemetry HUD.
+
+---
+
+# Game Plan: Signal Switch
+
+## Main Build
+
+Signal Switch is a lightweight, single-player browser reflex game. A signal packet arrives at one of four relay pads around a central hub. The player selects the matching pad using arrow keys, WASD, or a direct tap/click before the countdown expires. Correct relays increase a browser-local score and shorten the next relay window; an incorrect selection or expiry ends the run. The fixed top-down orthographic scene uses procedural Babylon meshes, local high score storage, and the existing user-initiated sound-effect model.
+
+- **Assets needed:** One generated 16:9 in-game reference image establishes the midnight-blue console board, signal-lime active pad, ember packet, and sparse starfield. The pad grid, hub, selector, and packet remain lightweight procedural geometry.
+- **Verify:**
+  - Arrow keys and WASD select the matching relay pad; clicking/tapping a pad selects it directly.
+  - A correct input updates score, progresses the relay sequence, and triggers the appropriate opt-in sound effect.
+  - A wrong input or completed countdown shows a clear game-over state and keeps the high score local to the browser.
+  - `?demo` runs a deterministic relay sequence for visual verification.
+  - The HUD, touch targets, sound toggle, and start/restart controls stay readable on desktop and mobile.
+  - No missing textures, console errors, clipped controls, or placeholder gameplay elements appear in the captured run.

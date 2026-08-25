@@ -1,5 +1,5 @@
 // Orbit Dash: compact synthesized effects; audio is never started until the player explicitly enables it.
-export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle";
+export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle" | "relayCorrect" | "relayFail";
 
 export class OrbitAudio {
   private context: AudioContext | null = null;
@@ -28,6 +28,8 @@ export class OrbitAudio {
       gate: [[290, 0.045, "triangle", 0]],
       collision: [[180, 0.18, "sawtooth", 0], [110, 0.24, "sawtooth", 0.07]],
       toggle: [[540, 0.06, "sine", 0]],
+      relayCorrect: [[640, 0.065, "sine", 0], [880, 0.09, "triangle", 0.055]],
+      relayFail: [[210, 0.15, "sawtooth", 0], [145, 0.18, "sawtooth", 0.06]],
     };
     tones[event].forEach(([frequency, duration, type, delay]) => this.tone(context, frequency, duration, type, delay));
   }

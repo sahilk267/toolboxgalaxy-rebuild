@@ -12,3 +12,11 @@
 The four source images are also mapped for Hostinger in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). The handoff copies live outside this project at `/home/ubuntu/hostinger-toolboxgalaxy-assets/` so they are not included in the static deployment bundle.
 
 The player ship, gates, collectible signal fragments, and starfield are procedural Babylon geometry. This keeps the game bundle compact and avoids shipping large local media files.
+
+## Signal Switch Assets
+
+**Art direction:** A straight-on, top-down orbital relay console: square midnight-blue metallic board, a central silver-black hub, four large relay pads at cardinal directions, one active pad in signal-lime, one ember-orange packet, and a sparse starfield. The game uses crisp procedural meshes instead of imported models, preserving visual separation and lightweight browser performance.
+
+| Asset | Usage | Source |
+|---|---|---|
+| Signal Switch 16:9 in-game reference | Games Bay card artwork and visual QA reference | `/manus-storage/toolbox-galaxy-signal-switch-reference_73b96409.jpg` |

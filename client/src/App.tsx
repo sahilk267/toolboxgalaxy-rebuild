@@ -15,9 +15,14 @@ import { Route, Switch } from "wouter";
 import { lazy, Suspense } from "react";
 
 const OrbitDash = lazy(() => import("@/pages/OrbitDash"));
+const SignalSwitch = lazy(() => import("@/pages/SignalSwitch"));
 
 function GameRoute() {
   return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Orbit Dash…</div>}><OrbitDash /></Suspense>;
+}
+
+function SignalSwitchRoute() {
+  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Signal Switch…</div>}><SignalSwitch /></Suspense>;
 }
 
 export default function App() {
@@ -32,6 +37,7 @@ export default function App() {
             <Route path="/tools/:slug" component={ToolWorkspace} />
             <Route path="/games" component={Games} />
             <Route path="/games/orbit-dash" component={GameRoute} />
+            <Route path="/games/signal-switch" component={SignalSwitchRoute} />
             <Route path="/contact" component={Contact} />
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />

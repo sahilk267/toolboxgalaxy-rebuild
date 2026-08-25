@@ -8,5 +8,6 @@ The original visual files were copied into the external handoff directory `/home
 | `/assets/hero-orbital-workbench.jpg` | `hero-orbital-workbench.jpg` | Homepage hero panel |
 | `/assets/tools-station.jpg` | `tools-station.jpg` | Homepage tools story panel |
 | `/assets/games-arcade.jpg` | `games-arcade.jpg` | Games hub and Orbit Dash background art |
+| `/assets/signal-switch-reference.jpg` | `signal-switch-reference.jpg` | Signal Switch Games Bay card and visual QA reference |
 
 For production, build with `VITE_ASSET_BASE_URL=/assets` and replace the temporary `/manus-storage/…` image references with this asset base. The original handoff artwork is deliberately outside the web project so the static deployment bundle stays small.
