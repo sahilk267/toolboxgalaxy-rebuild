@@ -7,7 +7,17 @@ export type ToolKind =
   | "json"
   | "password"
   | "textStats"
-  | "color";
+  | "color"
+  | "bmi"
+  | "discount"
+  | "age"
+  | "dateDiff"
+  | "url"
+  | "html"
+  | "textCase"
+  | "uuid"
+  | "gradient"
+  | "qr";
 
 export type ToolDefinition = {
   slug: string;
@@ -91,6 +101,96 @@ export const tools: ToolDefinition[] = [
     kind: "color",
     accent: "violet",
     tags: ["Local", "Verified"],
+  },
+  {
+    slug: "bmi-calculator",
+    name: "BMI Calculator",
+    category: "Calculate",
+    description: "Calculate body mass index using height and weight inputs.",
+    kind: "bmi",
+    accent: "lime",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "discount-calculator",
+    name: "Discount Calculator",
+    category: "Calculate",
+    description: "See the final price and savings before you buy.",
+    kind: "discount",
+    accent: "ember",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "age-calculator",
+    name: "Age Calculator",
+    category: "Calculate",
+    description: "Find an age in years, months, and days from a date of birth.",
+    kind: "age",
+    accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "date-difference",
+    name: "Date Difference",
+    category: "Calculate",
+    description: "Measure the calendar distance between two dates.",
+    kind: "dateDiff",
+    accent: "violet",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "url-workbench",
+    name: "URL Workbench",
+    category: "Code & Text",
+    description: "Encode or decode URL-safe text directly in your browser.",
+    kind: "url",
+    accent: "lime",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "html-entity-tool",
+    name: "HTML Entity Tool",
+    category: "Code & Text",
+    description: "Encode or decode HTML entities without a remote service.",
+    kind: "html",
+    accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "text-case-tool",
+    name: "Text Case Tool",
+    category: "Code & Text",
+    description: "Shift text between readable and developer-friendly cases.",
+    kind: "textCase",
+    accent: "sky",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "uuid-generator",
+    name: "UUID Generator",
+    category: "Create",
+    description: "Generate UUID v4 values using browser cryptography.",
+    kind: "uuid",
+    accent: "violet",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "gradient-forge",
+    name: "Gradient Forge",
+    category: "Create",
+    description: "Build a two-stop CSS linear gradient and copy the code.",
+    kind: "gradient",
+    accent: "lime",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "qr-code-generator",
+    name: "QR Code Generator",
+    category: "Create",
+    description: "Generate a shareable QR image locally from text or a link.",
+    kind: "qr",
+    accent: "ember",
+    tags: ["Local", "Private"],
   },
 ];
 

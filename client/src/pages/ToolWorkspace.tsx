@@ -1,5 +1,6 @@
 // Orbital Workbench: local-only tool runners with visible validation and no legacy endpoint dependency.
 import AppShell from "@/components/AppShell";
+import { AgeTool, BmiTool, DateDifferenceTool, DiscountTool, GradientTool, HtmlTool, QrTool, TextCaseTool, UrlTool, UuidTool } from "@/components/AdvancedToolRunners";
 import { getTool } from "@/data/toolRegistry";
 import { Check, Clipboard, RotateCcw, ShieldCheck } from "lucide-react";
 import { Link, useRoute } from "wouter";
@@ -39,6 +40,6 @@ function TextStats() { const [input, setInput] = useState("Write something usefu
 
 function ColorSignal() { const [value, setValue] = useState("#c7f36b"); const parsed = useMemo(() => /^#?[0-9a-fA-F]{6}$/.test(value) ? `#${value.replace("#", "").toUpperCase()}` : "", [value]); const rgb = parsed ? `${parseInt(parsed.slice(1, 3), 16)}, ${parseInt(parsed.slice(3, 5), 16)}, ${parseInt(parsed.slice(5, 7), 16)}` : ""; return <div className="runner-stack"><div className="color-layout"><div className="color-preview" style={{ background: parsed || "#1f2937" }} /><label>HEX color<input value={value} onChange={(e) => setValue(e.target.value)} /></label></div><Result value={parsed ? `HEX ${parsed}\nRGB ${rgb}` : "Use a six-digit HEX colour, e.g. #C7F36B."} /></div>; }
 
-const runnerByKind = { calculator: Calculator, percentage: Percentage, unit: UnitConverter, base64: Base64, json: JsonStation, password: Password, textStats: TextStats, color: ColorSignal };
+const runnerByKind = { calculator: Calculator, percentage: Percentage, unit: UnitConverter, base64: Base64, json: JsonStation, password: Password, textStats: TextStats, color: ColorSignal, bmi: BmiTool, discount: DiscountTool, age: AgeTool, dateDiff: DateDifferenceTool, url: UrlTool, html: HtmlTool, textCase: TextCaseTool, uuid: UuidTool, gradient: GradientTool, qr: QrTool };
 
 export default function ToolWorkspace() { const [, params] = useRoute("/tools/:slug"); const tool = getTool(params?.slug || ""); if (!tool) return <AppShell><section className="page-section"><p className="mono-label">MODULE NOT FOUND</p><Link href="/tools" className="signal-button mt-5 inline-flex">Return to tools</Link></section></AppShell>; const Runner = runnerByKind[tool.kind]; return <WorkspaceFrame title={tool.name} description={tool.description}><Runner /></WorkspaceFrame>; }

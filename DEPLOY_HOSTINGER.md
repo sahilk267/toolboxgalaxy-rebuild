@@ -29,9 +29,13 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 
 The first build uses Manus-hosted visual asset URLs. Those URLs are suitable for the current project preview. Before the Hostinger release, download/export the four generated assets and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with your permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
 
+The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). Build production with `VITE_ASSET_BASE_URL=/assets` after the asset references have been moved to the Hostinger location.
+
 ## Future PHP APIs
 
 When a tool genuinely needs server processing, expose it behind a single PHP API base such as `/api/v1/`. Keep the frontend request path in one environment-driven adapter instead of hard-coding endpoints in individual pages. The PHP endpoint should validate inputs, return consistent JSON errors, enforce file limits for uploads, and restrict cross-origin access to the production domain.
+
+The contact form boundary and expected `/api/v1/contact` request/response shape are defined in [`API_CONTACT_CONTRACT.md`](./API_CONTACT_CONTRACT.md). The frontend remains in safe email-fallback mode until `VITE_CONTACT_ENDPOINT` is configured at build time.
 
 ## Before launch
 
