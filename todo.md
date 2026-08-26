@@ -93,3 +93,9 @@
 - [x] Add a global browser-local game sound preference and a secondary music control that respects browser autoplay requirements.
 - [x] Add deterministic local-date puzzle transformations, rotating daily difficulty, and source-aligned next-move hints for all six modules.
 - [x] Validate full-screen desktop/mobile routes, contrast, audio preference behavior, daily variation, hints, logic tests, current logs, and a static build before checkpointing.
+
+## Required Hands-On Playtest Gate
+
+- [x] Play every direct puzzle route in a browser before further feature work: normal input, one wrong move, Hint, Reset, daily field, and completion behavior.
+- [x] Verify master sound and optional music from visible controls using a user gesture, including shared persistence across Games Bay routes.
+- [x] Record confirmed findings and repair only verified interaction defects before proposing another game change. The only confirmed defect was delayed visible MUSIC feedback during asynchronous playback startup; the common control now updates immediately and reconciles with persisted state.
