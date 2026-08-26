@@ -120,3 +120,7 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Signal Lime outlines or dominates Games Bay modules only for active, verified, live, successful, or primary states; cyan stays quiet blueprint structure and Ember carries launch/play warmth.
 - Games Bay arcade rows are docked relay instruments with named chassis zones, telemetry bands, local-state framing, and terminal corners—not generic launch cards.
 - The Games Bay hero, arcade modules, verified daily fields, and local streak console attach to one visible blueprint runway; imagery is treated as an instrument-field capture rather than cinematic key art.
+- Patches composes its board, clue bus, progress, validator relay, assist channel, and hint band as one docked `Constraint Field` chassis; the assist panel is never a floating card.
+- Patches telemetry separates clue-owner count, named partition lock, and authored search depth into distinct mono readout clusters; density state changes hierarchy through the shared lime/ember system rather than new decorative colors.
+- Patches boards expose rectangle ownership as semantic field information through a named partition bus, live clue-owner caption, shape-aware clue markers, and a visible validator relay.
+- Each Patches edition signals authorship through its named partition lock, clue count, search profile, and Calm/Standard/Dense telemetry treatment while preserving the common Orbital Workbench cockpit.

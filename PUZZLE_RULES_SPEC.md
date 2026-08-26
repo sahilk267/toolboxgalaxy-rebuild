@@ -34,7 +34,7 @@ Every claimed fresh daily edition is selected deterministically from a device-lo
 
 ## Weekly local streak calendar contract
 
-The Games Bay calendar is a **derived read-only view** of `toolboxgalaxy:puzzle-completions`; it does not create another progress record or receive player input. It recognizes only edition-specific completion keys for the independently authored Mini Sudoku, Tango, Queens, and Zip banks. A date with one or more qualifying completed fields becomes one verified day; the field total still reports each completed game separately. The `current streak` counts backward from the device-local current date through uninterrupted verified dates, while `longest streak` considers all reached qualifying local dates.
+The Games Bay calendar is a **derived read-only view** of `toolboxgalaxy:puzzle-completions`; it does not create another progress record or receive player input. It recognizes only edition-specific completion keys for the independently authored Mini Sudoku, Tango, Queens, Patches, and Zip banks. A date with one or more qualifying completed fields becomes one verified day; the field total still reports each completed game separately. The `current streak` counts backward from the device-local current date through uninterrupted verified dates, while `longest streak` considers all reached qualifying local dates.
 
 Route navigation, demo completion, a transformed presentation, fixed-board legacy keys, malformed records, and dates later than the device-local date are ignored. The weekly view begins Monday, can move through prior or later weeks without changing storage, and the visible Today control only returns its view offset to the device-local current week. `scripts/verify-weekly-logic-streak.ts` asserts the key filter, same-day idempotence, reached-date suppression, current/longest streak math, and calendar-boundary behavior; the trusted browser suite verifies the actual marker and control interactions.
 
@@ -60,6 +60,8 @@ The validator rejects a patch when it is out of bounds, overlaps an existing pat
 | Valid patch overlaps existing patch | Reject before placement. |
 | All patches placed with a gap | Remain unsolved. |
 | Alternate complete partition | Board is rejected during authoring. |
+
+`patchesBank.ts` contains seven deterministic date-selected 6×6 editions (`Apollo` through `Galileo`). Each owns a distinct exact-cover rectangle solution, freeform clue/area/shape map, clue count, Calm/Standard/Dense authoring band, and recorded solver-search depth. The permanent verifier rejects repeated literal partitions, repeated clue signatures, and any partition equivalent under the eight square symmetries; it also asserts unique exact cover, incomplete-cover failure, clue-area/boundary mutation failure, genuine occupied-rectangle overlap failure, and coverage across seven consecutive device-local dates. Completion storage uses `patches-<edition-id>` plus the local date so results cannot mix between fields.
 
 ## Zip contract
 

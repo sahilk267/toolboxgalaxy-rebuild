@@ -144,3 +144,13 @@
 - [x] Extend deterministic unit/regression checks and trusted browser flows for same-day idempotence, cross-edition aggregation, week boundaries, navigation, no-demo writes, and mobile/desktop visibility.
 - [x] Update local-data, privacy, architecture, deployment, memory, plan, research, and checklist documentation after the model is validated.
 - [x] Run full typecheck, logic tests, browser tests, static build, PWA artifacts, and current-log review before one milestone checkpoint.
+
+## Patches Seven-Edition Clue and Partition Bank
+
+- [x] Play the current Patches field in a browser and audit its exact-cover solver, clue contract, route UI, date transform, completion key, and existing authored partition before changing it.
+- [x] Define a seven-edition 6×6 Patches schema with independently authored rectangle partitions, clue sets, difficulty bands, local-date selection, and edition-specific completion keys.
+- [x] Author seven non-equivalent clue and partition fields; prove each has one exact-cover completion and a distinct clue/partition reasoning topology rather than a reflection, rotation, palette change, or opening-assist variation.
+- [x] Integrate the selected partition, named edition/difficulty HUD, clue markers, solution, demo, Hint, Reset, live validation, and local completion persistence into the direct full-screen route.
+- [x] Extend permanent solver tests and the trusted browser harness for seven edition mounts, invalid multi-clue/overlap attempts, Hint, Reset, pointer completion, visible clues, audio, desktop/mobile layouts, and date coverage.
+- [x] Update the daily-edition research audit, puzzle contract, architecture/resumability/deployment/privacy notes, and checklist only after successful integration and validation.
+- [x] Run final TypeScript, full logic verification, all browser suites, static build, PWA checks, and current-log review before one milestone checkpoint.

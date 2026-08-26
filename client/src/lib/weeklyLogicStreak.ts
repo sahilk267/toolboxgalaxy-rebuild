@@ -1,7 +1,7 @@
 // Orbital Workbench: derive a transparent weekly activity view from existing local completion flags only; no game opens, demos, accounts, or network data count.
 import { readPuzzleCompletionMap, type PuzzleCompletionMap } from "@/lib/puzzleCompletion";
 
-export const genuineDailyLogicSlugs = ["mini-sudoku", "tango", "queens", "zip"] as const;
+export const genuineDailyLogicSlugs = ["mini-sudoku", "tango", "queens", "patches", "zip"] as const;
 export type GenuineDailyLogicSlug = typeof genuineDailyLogicSlugs[number];
 export type WeeklyLogicDay = { id: string; shortLabel: string; dayNumber: number; isToday: boolean; isFuture: boolean; completedFields: GenuineDailyLogicSlug[] };
 export type WeeklyLogicSummary = { weekStart: string; weekEnd: string; days: WeeklyLogicDay[]; currentStreak: number; longestStreak: number; completedDays: number; totalCompletedFields: number };
@@ -11,7 +11,7 @@ const formatId = (date: Date) => `${date.getFullYear()}-${String(date.getMonth()
 const fromId = (id: string) => { const [year, month, day] = id.split("-").map(Number); return new Date(year, month - 1, day); };
 const addDays = (date: Date, amount: number) => { const next = new Date(date); next.setDate(next.getDate() + amount); return next; };
 const monday = (date: Date) => addDays(new Date(date.getFullYear(), date.getMonth(), date.getDate()), -((date.getDay() + 6) % 7));
-const completionPrefixes: Record<GenuineDailyLogicSlug, string> = { "mini-sudoku": "mini-sudoku-sudoku-", tango: "tango-tango-", queens: "queens-queens-", zip: "zip-zip-" };
+const completionPrefixes: Record<GenuineDailyLogicSlug, string> = { "mini-sudoku": "mini-sudoku-sudoku-", tango: "tango-tango-", queens: "queens-queens-", patches: "patches-patches-", zip: "zip-zip-" };
 const completionSlugFor = (slug: GenuineDailyLogicSlug) => completionPrefixes[slug];
 const genuineGameForCompletionSlug = (slug: string): GenuineDailyLogicSlug | null => genuineDailyLogicSlugs.find((game) => slug.startsWith(completionSlugFor(game))) ?? null;
 
