@@ -97,3 +97,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Every route, including games and offline states, exposes a compact Orbit Mark, `TOOLBOX / GALAXY` lockup, route label, and telemetry/status signal.
 - Games use Ember for score and playful module energy; Signal Lime is retained for live paths, verified state, success, and primary actions.
 - Dock lines must visibly relate the shell, hero or playfield, and primary panels as a structural blueprint system rather than decorative borders.
+- On Tools routes, category differentiation comes from mono telemetry, labels, and layout rhythm—not rainbow accents. Signal Lime stays reserved for verified, active, successful, and primary-action states; Ember remains game/launch energy.
+- Every major route hero pairs its direct headline with an offset control or telemetry panel so the first viewport unmistakably reads as an Orbital Workbench.
+- Tool listing cards use a single graphite instrument-console grammar with blueprint dock lines, status chips, and mono metadata; hierarchy comes from typography and panel structure rather than decorative colors.

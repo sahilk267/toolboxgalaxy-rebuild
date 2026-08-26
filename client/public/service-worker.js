@@ -1,9 +1,13 @@
 /* Toolbox Galaxy static PWA cache: app shell first, same-origin runtime assets opportunistically. */
-const CACHE_NAME = "toolbox-galaxy-static-v1";
+const CACHE_NAME = "toolbox-galaxy-static-v2";
 const APP_SHELL = ["/", "/offline.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {

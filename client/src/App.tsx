@@ -2,6 +2,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import PwaUpdateNotice from "@/components/PwaUpdateNotice";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Contact from "@/pages/Contact";
 import Games from "@/pages/Games";
@@ -36,6 +37,7 @@ export default function App() {
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster theme="dark" position="bottom-right" />
+          <PwaUpdateNotice />
           <Switch>
             <Route path="/" component={Home} />
             <Route path="/tools" component={Tools} />

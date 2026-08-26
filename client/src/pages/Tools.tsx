@@ -1,10 +1,13 @@
 // Orbital Workbench: searchable verified-tool registry and no unverified legacy links.
 import AppShell from "@/components/AppShell";
+import RecentToolHistory from "@/components/RecentToolHistory";
 import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
 import { categories, tools } from "@/data/toolRegistry";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
+
+const orbitMark = "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png";
 
 export default function Tools() {
   const [query, setQuery] = useState("");
@@ -17,8 +20,8 @@ export default function Tools() {
   return (
     <AppShell>
       <section className="page-section page-section--tools">
-        <div className="page-kicker"><span>01</span><span>VERIFIED TOOL FOUNDRY</span></div>
-        <SectionHeading eyebrow="LOCAL-FIRST / ZERO SERVER DEPENDENCIES" title="Small tools. Clear outcomes." copy="The first release keeps only browser-run utilities that can be tested, explained, and used without sending your input away." />
+        <div className="tools-hero-runway"><div><div className="page-kicker"><span>01</span><span>VERIFIED TOOL FOUNDRY</span></div><SectionHeading eyebrow="LOCAL-FIRST / ZERO SERVER DEPENDENCIES" title="Small tools. Clear outcomes." copy="The first release keeps only browser-run utilities that can be tested, explained, and used without sending your input away." /></div><aside className="tools-signal-panel" aria-label="Tool foundry status"><div className="tools-signal-panel__head"><img src={orbitMark} alt="" /><span>ORBITAL TOOL CONTROL</span><i>LIVE</i></div><strong>24 <small>verified modules</small></strong><div className="tools-signal-panel__metrics"><span>LOCAL EXECUTORS <b>24/24</b></span><span>REMOTE DEPENDENCIES <b>00</b></span><span>INPUT RETENTION <b>NONE</b></span></div></aside></div>
+        <RecentToolHistory />
 
         <div className="tool-controls">
           <label className="search-field">

@@ -35,9 +35,13 @@ The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTI
 
 ## Offline and install behavior
 
-The service worker is a small static file with no API dependency. It caches the app shell plus same-origin files that the browser has successfully visited, and it uses a network-first path for navigations so new releases are discovered whenever the visitor is online. The `.htaccess` file marks `service-worker.js` as non-cacheable so Hostinger clients can receive the next cache version promptly.
+The service worker is a small static file with no API dependency. It caches the app shell plus same-origin files that the browser has successfully visited, and it uses a network-first path for navigations so new releases are discovered whenever the visitor is online. A new worker waits for the user’s explicit **Refresh** action in the visible update-ready notice, avoiding an automatic reload during local tool work. The `.htaccess` file marks `service-worker.js` as non-cacheable so Hostinger clients can receive the next cache version promptly.
 
 The native install button appears only in browsers that emit the standard install prompt and only after the manifest, HTTPS, and service worker meet that browser’s own requirements. The current manifest uses the preview Orbit Mark path; before production, replace its icon source with the permanent `/assets/orbit-mark.png` path alongside the other Manus-hosted image replacements.
+
+## Browser-local recent tools
+
+The Tools hub can retain up to six recently opened tool routes in the current browser’s `localStorage`. It stores only the public route metadata already present in the tool registry—tool slug, name, category, and visit timestamp. It does **not** store workspace inputs, outputs, uploaded files, generated content, passwords, hashes, or images. Visitors can clear that small log or export the metadata as JSON directly from the Tools page; neither action contacts a server.
 
 ## Future PHP APIs
 

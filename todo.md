@@ -17,3 +17,11 @@
 - [x] Add browser-local Circuit Shift difficulty presets while preserving opt-in sound and deterministic demo mode.
 - [x] Update Hostinger deployment guidance and project architecture notes.
 - [x] Validate install/offline behavior where available, TypeScript, production build, current browser logs, and desktop/mobile routes before checkpointing.
+
+## PWA Update Notice and Local History Checklist
+
+- [x] Define which route-level metadata can be stored locally without retaining user inputs or generated content.
+- [x] Add a recent-tools history panel with clear and JSON-export controls.
+- [ ] Add a recent-tools history panel with clear and JSON-export controls.
+- [x] Document the local-storage, privacy, and Hostinger delivery behavior.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile routes before checkpointing.
