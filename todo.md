@@ -25,3 +25,11 @@
 - [ ] Add a recent-tools history panel with clear and JSON-export controls.
 - [x] Document the local-storage, privacy, and Hostinger delivery behavior.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile routes before checkpointing.
+
+## Circuit Shift Daily Challenge Checklist
+
+- [x] Define a date-based deterministic seed, local completion storage, and a no-network privacy boundary.
+- [x] Implement the daily board mode, daily best score, and HUD/overlay selection flow.
+- [x] Preserve touch, keyboard, explicit sound opt-in, and `?demo` behavior across normal and daily modes.
+- [x] Document the static local challenge contract and update relevant game architecture notes.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile daily routes before checkpointing.

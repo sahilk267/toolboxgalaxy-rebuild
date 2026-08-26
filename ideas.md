@@ -100,3 +100,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - On Tools routes, category differentiation comes from mono telemetry, labels, and layout rhythm—not rainbow accents. Signal Lime stays reserved for verified, active, successful, and primary-action states; Ember remains game/launch energy.
 - Every major route hero pairs its direct headline with an offset control or telemetry panel so the first viewport unmistakably reads as an Orbital Workbench.
 - Tool listing cards use a single graphite instrument-console grammar with blueprint dock lines, status chips, and mono metadata; hierarchy comes from typography and panel structure rather than decorative colors.
+- Game selection overlays are docked relay-control consoles with named operational zones, visible module/status hierarchy, and blueprint lines that connect them to the playfield.
+- Circuit Shift’s signature is relay/circuit logic: lime indicates live path or successful connection; Ember is reserved for scoring, local bests, and launch energy.
+- Game display headlines stay declarative and technical-compact, while mono control labels carry the Orbital Workbench voice around them.

@@ -45,4 +45,8 @@ Circuit Shift is a lightweight, single-player rotation puzzle. The player turns 
   - A valid connected route from input to output visibly changes the HUD to solved, adds score, and triggers the opt-in success sound.
   - Reset loads the deterministic starting layout; local high score remains only in browser storage.
   - `?demo` rotates the known solution sequence so capture shows an in-progress or completed board.
-  - HUD, touch targets, sound control, and restart behavior are readable on desktop and mobile, with no missing asset, console, or network failures.
+- HUD, touch targets, sound control, and restart behavior are readable on desktop and mobile, with no missing asset, console, or network failures.
+
+### Daily Challenge extension
+
+The Daily Challenge derives the board scramble from the visitor’s local calendar date. For the same device-local date, the challenge seed and tile offsets are reproducible; no time service, account, API, or server leaderboard is used. The mode stores only that date’s local best score under its own browser key and applies a fixed 1.9× score multiplier. `?daily=1&demo=1` runs the daily board’s known auto-rotation sequence for visual verification while sound remains disabled until the player uses the visible sound/start action.

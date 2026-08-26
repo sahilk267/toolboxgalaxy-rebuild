@@ -43,6 +43,10 @@ The native install button appears only in browsers that emit the standard instal
 
 The Tools hub can retain up to six recently opened tool routes in the current browser’s `localStorage`. It stores only the public route metadata already present in the tool registry—tool slug, name, category, and visit timestamp. It does **not** store workspace inputs, outputs, uploaded files, generated content, passwords, hashes, or images. Visitors can clear that small log or export the metadata as JSON directly from the Tools page; neither action contacts a server.
 
+## Circuit Shift Daily Challenge
+
+Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scramble is derived from the visitor device’s local calendar date, so it does not need a clock API, database, login, or leaderboard. The date-specific daily best remains in that browser’s local storage and is separate from normal practice best scores. Confirm `/games/circuit-shift?daily=1` and `/games/circuit-shift?daily=1&demo=1` after Hostinger upload; the latter is a visual QA route only and keeps game sound disabled until a visible player action enables it.
+
 ## Future PHP APIs
 
 When a tool genuinely needs server processing, expose it behind a single PHP API base such as `/api/v1/`. Keep the frontend request path in one environment-driven adapter instead of hard-coding endpoints in individual pages. The PHP endpoint should validate inputs, return consistent JSON errors, enforce file limits for uploads, and restrict cross-origin access to the production domain.
