@@ -41,3 +41,11 @@
 - [x] Add a Favorites deck to the Tools hub with a local clear action and transparent privacy note.
 - [x] Document the browser-local favorite contract and update architecture notes.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile favorites behavior before checkpointing.
+
+## Circuit Shift Daily Streak Checklist
+
+- [x] Define same-device daily completion and consecutive-date calculation without accounts or remote storage.
+- [x] Add the streak record, completion update, and Daily Challenge HUD/status treatment.
+- [x] Preserve normal practice play, explicit sound opt-in, and deterministic `?daily=1&demo=1` behavior.
+- [x] Document the local streak privacy and deployment contract.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile daily-streak routes before checkpointing.
