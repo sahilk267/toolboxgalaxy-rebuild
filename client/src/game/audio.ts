@@ -1,9 +1,19 @@
-// Orbit Dash: compact synthesized effects; audio is never started until the player explicitly enables it.
+// Orbital Workbench: shared browser-local game-audio preference; audible output still starts only from a visitor gesture.
 export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle" | "relayCorrect" | "relayFail" | "rotate" | "puzzleSolve";
+
+const SOUND_STORAGE_KEY = "toolboxgalaxy:game-sound";
+const MUSIC_STORAGE_KEY = "toolboxgalaxy:logic-music";
+const logicMusicUrl = "/manus-storage/toolbox-galaxy-logic-lab-loop_ea48028d.mp3";
+const readPreference = (key: string) => typeof window !== "undefined" && window.localStorage.getItem(key) === "on";
 
 export class OrbitAudio {
   private context: AudioContext | null = null;
-  private enabled = false;
+  private music: HTMLAudioElement | null = null;
+  private enabled = readPreference(SOUND_STORAGE_KEY);
+  private musicEnabled = readPreference(MUSIC_STORAGE_KEY);
+
+  isEnabled() { return this.enabled; }
+  isMusicEnabled() { return this.musicEnabled; }
 
   private getContext() {
     this.context ??= new AudioContext();
@@ -12,15 +22,26 @@ export class OrbitAudio {
 
   async setEnabled(next: boolean) {
     this.enabled = next;
-    if (!next) { await this.context?.suspend(); return false; }
+    window.localStorage.setItem(SOUND_STORAGE_KEY, next ? "on" : "off");
+    if (!next) { this.pauseMusic(); await this.context?.suspend(); return false; }
     const context = this.getContext();
     if (context.state === "suspended") await context.resume();
     this.play("toggle");
     return true;
   }
 
+  async setMusicEnabled(next: boolean) {
+    this.musicEnabled = next;
+    window.localStorage.setItem(MUSIC_STORAGE_KEY, next ? "on" : "off");
+    if (!next) { this.pauseMusic(); return false; }
+    if (!this.enabled) await this.setEnabled(true);
+    await this.startMusic();
+    return true;
+  }
+
   play(event: SoundEvent) {
     if (!this.enabled) return;
+    if (this.musicEnabled) void this.startMusic();
     const context = this.getContext();
     const tones: Record<SoundEvent, Array<[number, number, OscillatorType, number]>> = {
       start: [[310, 0.08, "triangle", 0], [470, 0.1, "triangle", 0.09]],
@@ -44,5 +65,13 @@ export class OrbitAudio {
     oscillator.connect(gain); gain.connect(context.destination); oscillator.start(now); oscillator.stop(now + duration + 0.02);
   }
 
-  dispose() { void this.context?.close(); this.context = null; }
+  private async startMusic() {
+    if (!this.enabled || !this.musicEnabled) return;
+    this.music ??= Object.assign(new Audio(logicMusicUrl), { loop: true, volume: 0.16, preload: "none" });
+    try { await this.music.play(); } catch { /* The visible control remains available when a browser defers audible playback. */ }
+  }
+
+  private pauseMusic() { this.music?.pause(); }
+
+  dispose() { this.pauseMusic(); this.music = null; void this.context?.close(); this.context = null; }
 }

@@ -50,6 +50,14 @@ Source: [Games on LinkedIn](https://www.linkedin.com/help/linkedin/answer/a68635
 
 LinkedIn describes its games as daily, thinking-oriented puzzles and states that new editions release at midnight Pacific Time. Toolbox Galaxy will retain browser-local date-based deterministic boards instead of mirroring LinkedIn’s schedule, identity, leaderboards, or network features.
 
+## Daily editions, assistance, and local audio controls
+
+The current [Games on LinkedIn Help page](https://www.linkedin.com/help/linkedin/answer/a6863543) confirms that LinkedIn positions the games as daily thinking puzzles and releases new puzzles at midnight Pacific Time. The current [Zip Help page](https://www.linkedin.com/help/linkedin/answer/a7445030) specifically states that a new puzzle for each game releases daily and specifies the assistance pattern: a hint removes the path through the first mistake and reveals the next correct step, Undo reverts the last move, and Clear resets the board.
+
+Toolbox Galaxy will not copy that release schedule or fetch external editions. Instead, it will derive a deterministic **local-date edition ID** from the visitor device date, choose only transformations or clue profiles that have already passed the same validator/uniqueness checks, and rotate an honest `calm`, `standard`, or `dense` local challenge label. The label will describe the local clue/assist profile rather than claim LinkedIn difficulty parity.
+
+For browser audio, MDN documents that audible media and Web Audio are generally subject to autoplay blocking until a visitor interaction, and recommends explicit user controls.[^mdn-autoplay] [^mdn-web-audio] The Toolbox Galaxy implementation will therefore store a browser-local sound preference, but will create/resume audio and begin an optional low-volume music loop only from a visible player click. Music is not started by navigation, demo playback, or background timers.
+
 ## Tango — official LinkedIn Help
 
 Source: [Play Tango game on LinkedIn](https://www.linkedin.com/help/linkedin/answer/a6861672), accessed 2026-08-26.
@@ -104,3 +112,6 @@ The page transcript describes the remaining freeform clue as a “very nice 8 ce
 Source: [LinkedIn Announces Patches](https://news.linkedin.com/2026/LinkedIn-Announces-Patches-A-New-Thinking-Oriented-Game-Inspired-by-Zip/LinkedIn-Announces-Patches-A-New-Thinking-Oriented-Game-Inspired-by-Zip), accessed 2026-08-26.
 
 LinkedIn’s announcement explicitly describes Patches as filling the board “with rectangles and squares” from preset clues, with no overlap or gaps. For the Toolbox Galaxy edition, all patches will therefore be axis-aligned rectangles; `square`, `wide`, and `tall` constrain aspect ratio, while an unconstrained/free clue permits any axis-aligned rectangle. This transparent local contract avoids inventing an unsupported arbitrary-polyomino mechanic.
+
+[^mdn-autoplay]: [MDN — Autoplay guide for media and Web Audio APIs](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay), accessed 2026-08-26.
+[^mdn-web-audio]: [MDN — Web Audio API best practices](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices), accessed 2026-08-26.

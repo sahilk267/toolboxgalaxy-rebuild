@@ -57,6 +57,7 @@ export default function App() {
             <Route path="/games/signal-switch" component={SignalSwitchRoute} />
             <Route path="/games/circuit-shift" component={CircuitShiftRoute} />
             <Route path="/games/logic-lab" component={LogicLabRoute} />
+            <Route path="/games/:slug" component={LogicPuzzleRoute} />
             <Route path="/games/logic/:slug" component={LogicPuzzleRoute} />
             <Route path="/contact" component={Contact} />
             <Route path="/privacy" component={Privacy} />

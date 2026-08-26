@@ -35,4 +35,7 @@ The player ship, gates, collectible signal fragments, and starfield are procedur
 
 | Asset | Usage | Source |
 |---|---|---|
-| Logic Lab 16:9 reference | Games Bay Logic Lab card and Logic Lab catalog hero | `/manus-storage/toolbox-galaxy-logic-puzzle-suite-reference_aebb6519.jpg` |
+| Logic Lab 16:9 reference | Direct Games Bay puzzle field and optional Logic Lab catalog artwork | `/manus-storage/toolbox-galaxy-logic-puzzle-suite-reference_aebb6519.jpg` |
+| Logic Lab ambient loop | Optional, user-started music bed for direct full-screen puzzle routes | `/manus-storage/toolbox-galaxy-logic-lab-loop_ea48028d.mp3` |
+
+The music loop is **not autoplayed**. The visitor must use the visible MUSIC control; the player’s choice is stored only in that browser alongside the shared Games Bay sound preference.

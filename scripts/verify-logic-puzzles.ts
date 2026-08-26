@@ -1,13 +1,16 @@
 import { countSudokuSolutions, miniSudokuGivens, miniSudokuSolution, solvedSudoku } from "../client/src/game/logicPuzzles/miniSudoku";
+import { miniSudokuProfiles } from "../client/src/game/logicPuzzles/dailyProfiles";
 import { countTangoSolutions, solvedTango, tangoGivens, tangoSolution, tangoViolations } from "../client/src/game/logicPuzzles/tango";
 import { countQueensSolutions, queensSolution, solvedQueens, queensViolations, type QueenState } from "../client/src/game/logicPuzzles/queens";
 import { countPatchSolutions, patchesSolution, solvedPatches } from "../client/src/game/logicPuzzles/patches";
 import { countZipSolutions, solvedZip, zipSolution } from "../client/src/game/logicPuzzles/zip";
 import { solvedWend, validWendPath, wendWords } from "../client/src/game/logicPuzzles/wend";
+import { baseToDisplay, displayToBase, getLogicDaily } from "../client/src/game/logicPuzzles/daily";
 
 const assert = (condition: unknown, message: string) => { if (!condition) throw new Error(message); };
 assert(solvedSudoku(miniSudokuSolution), "Mini Sudoku solution must validate");
 assert(countSudokuSolutions(miniSudokuGivens) === 1, "Mini Sudoku givens must have one solution");
+Object.entries(miniSudokuProfiles).forEach(([difficulty, profile]) => assert(countSudokuSolutions(profile) === 1, `Mini Sudoku ${difficulty} profile must have one solution`));
 const duplicateSudoku = miniSudokuSolution.map((row) => [...row]); duplicateSudoku[0][1] = 1; assert(!solvedSudoku(duplicateSudoku), "Mini Sudoku duplicate must fail");
 assert(solvedTango(tangoSolution), "Tango solution must validate");
 assert(countTangoSolutions(tangoGivens) === 1, "Tango givens must have one solution");
@@ -16,4 +19,5 @@ const queensGrid: QueenState[][] = Array.from({ length: 6 }, () => Array.from({ 
 assert(solvedPatches(patchesSolution), "Patches authored partition must validate"); assert(countPatchSolutions() === 1, "Patches clues must have one partition"); assert(!solvedPatches(patchesSolution.slice(0, -1)), "Patches incomplete cover must fail");
 assert(solvedZip(zipSolution), "Zip authored path must validate"); assert(countZipSolutions() === 1, "Zip board must have one valid path"); assert(!solvedZip([...zipSolution.slice(0, 3), zipSolution[4]]), "Zip skipped cell must fail");
 assert(validWendPath(wendWords[0].path), "Wend authored word path must be orthogonal"); assert(solvedWend(wendWords), "Wend authored paths must exactly cover grid"); assert(!solvedWend(wendWords.slice(0, -1)), "Wend incomplete word cover must fail");
+const date = new Date(2026, 7, 26); const firstDaily = getLogicDaily(date); const secondDaily = getLogicDaily(date); assert(firstDaily.id === secondDaily.id && firstDaily.difficulty === secondDaily.difficulty && firstDaily.transform === secondDaily.transform, "Daily field must be deterministic for one local date"); ([0, 1, 2, 3] as const).forEach((transform) => { const display = baseToDisplay(1, 2, 6, transform); const base = displayToBase(display.row, display.col, 6, transform); assert(base.row === 1 && base.col === 2, "Daily board transform must round-trip coordinates"); });
 console.log("Logic puzzle validators passed: Mini Sudoku, Tango, Queens, Patches, Zip, Wend.");

@@ -83,3 +83,13 @@
 - [x] Implement every confirmed puzzle with logic validation before styling/integration.
 - [x] Integrate all confirmed puzzles into Games Bay, documentation, and static Hostinger deployment guidance.
 - [x] Validate unit logic, user interactions, desktop/mobile routes, TypeScript, static production build, and current browser logs before checkpointing.
+
+## Logic Lab Full-Screen and Daily Upgrade Checklist
+
+- [x] Research and document the refined daily variation, difficulty, hint, shared-audio, and browser-autoplay contracts without compromising source-verified puzzle rules.
+- [x] Surface all six puzzle modules directly in Games Bay while retaining a catalog only as an optional secondary route.
+- [x] Rebuild every puzzle into the existing full-screen Games Bay treatment with clear exits, high-contrast controls, and a shared visual language.
+- [x] Correct Mini Sudoku’s six 2×3 region boundaries and strengthen puzzle-grid contrast for dark displays.
+- [x] Add a global browser-local game sound preference and a secondary music control that respects browser autoplay requirements.
+- [x] Add deterministic local-date puzzle transformations, rotating daily difficulty, and source-aligned next-move hints for all six modules.
+- [x] Validate full-screen desktop/mobile routes, contrast, audio preference behavior, daily variation, hints, logic tests, current logs, and a static build before checkpointing.

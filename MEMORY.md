@@ -26,7 +26,10 @@
 ## Logic Lab Build Notes
 
 - Logic Lab is a DOM/React puzzle suite rather than a Babylon canvas game because fixed grid constraints need reliable semantic buttons, keyboard access, and deterministic touch targets.
-- It provides six local routes: Mini Sudoku, Tango, Queens, Patches, Zip, and Wend. `PUZZLE_RULES_SPEC.md` remains the implementation contract; `research-linkedin-puzzles.md` records the underlying source research.
-- Every board is authored and deterministic. `scripts/verify-logic-puzzles.ts` verifies known solutions, representative invalid states, and the applicable uniqueness claims before release.
-- Patches is an exact rectangle cover with one clue per rectangle; Zip is a non-repeating ordered orthogonal path that respects wall edges; Wend is the confirmed orthogonal word-path exact cover, not a substituted word game.
-- The route flag `?demo=1` is purely visual QA. It stays silent, does not persist completion/progress, and never contacts a service. Synthesized game sound remains an explicit visitor opt-in.
+- It provides direct full-screen Games Bay routes: `/games/mini-sudoku`, `/games/tango`, `/games/queens`, `/games/patches`, `/games/zip`, and `/games/wend`. `/games/logic-lab` is optional navigation and `/games/logic/:slug` remains compatible. `PUZZLE_RULES_SPEC.md` remains the implementation contract; `research-linkedin-puzzles.md` records the underlying source research.
+- Every board is authored and deterministic. `scripts/verify-logic-puzzles.ts` verifies known solutions, representative invalid states, applicable uniqueness claims, Mini Sudoku’s three clue-density profiles, and local daily-transform coordinate round trips before release.
+- Patches is a 6×6 exact rectangle cover with one clue per rectangle; Zip is a 5×5 non-repeating ordered orthogonal path that respects wall edges; Wend is the confirmed orthogonal word-path exact cover, not a substituted word game.
+- `daily.ts` derives a browser-local date ID, Calm/Standard/Dense profile, and reversible mirror orientation—no calendar API, remote daily feed, or account is involved. Mini Sudoku profiles differ in solver-checked clue density; the other games vary orientation and opening assistance while their rule contracts stay intact.
+- Every direct game page has a visible Reset and one verified next-move Hint. Hints never consult a service; they reveal or repair only an authored solution fact that the local validator already owns.
+- `OrbitAudio` persists one Games Bay master SOUND preference across Orbit Dash, Signal Switch, Circuit Shift, and Logic Lab. Logic Lab offers an optional ambient MUSIC loop. Both controls remain explicit user gestures, and master sound off pauses music; no route autoplay is attempted.
+- The route flag `?demo=1` is purely visual QA. It stays silent, does not persist completion/progress, and never contacts a service.

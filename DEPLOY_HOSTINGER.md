@@ -19,7 +19,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 | Check | Expected result |
 |---|---|
 | Root document | `public_html/index.html` exists after upload |
-| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, `/games/signal-switch`, `/games/circuit-shift`, `/games/logic-lab`, and `/games/logic/wend` open directly without 404 errors |
+| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, `/games/signal-switch`, `/games/circuit-shift`, `/games/mini-sudoku`, `/games/tango`, `/games/queens`, `/games/patches`, `/games/zip`, and `/games/wend` open directly without 404 errors |
 | HTTPS | `https://toolboxgalaxy.com` is enabled and the HTTP version redirects to HTTPS |
 | Assets | `/manus-storage/` URLs must be replaced by equivalent permanent image URLs if deploying outside Manus hosting |
 | Headers | Confirm the `.htaccess` header directives work with the selected Hostinger server stack |
@@ -29,7 +29,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 
 ## Important asset note
 
-The current build uses Manus-hosted visual asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the mapped generated assets, including `logic-puzzle-suite-reference.jpg`, and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
+The current build uses Manus-hosted visual and audio asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the mapped generated assets, including `logic-puzzle-suite-reference.jpg` and `logic-lab-loop.mp3`, and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
 
 The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). Build production with `VITE_ASSET_BASE_URL=/assets` after the asset references have been moved to the Hostinger location.
 
@@ -65,7 +65,9 @@ After a real solved practice or daily board, Circuit Shift can create a browser-
 
 ## Logic Lab puzzle suite
 
-Logic Lab exposes six fixed, browser-local puzzle modules at `/games/logic/:slug`: `mini-sudoku`, `tango`, `queens`, `patches`, `zip`, and `wend`. Their pure validators and authored test script are bundled with the frontend; they do not scrape LinkedIn, query a dictionary, fetch daily boards, send player input, or require an account. Each module supports pointer controls and focusable controls, has a visible reset action, keeps synthesized sound disabled until the visitor explicitly enables it, and supports a deterministic, silent `?demo=1` visual-QA state. Validate `/games/logic-lab` and all six module routes after upload.
+Logic Lab exposes six direct, full-screen Games Bay routes: `/games/mini-sudoku`, `/games/tango`, `/games/queens`, `/games/patches`, `/games/zip`, and `/games/wend`. Legacy `/games/logic/:slug` links remain compatible. Their pure validators and authored test script are bundled with the frontend; they do not scrape LinkedIn, query a dictionary, fetch daily boards, send player input, or require an account.
+
+Each route derives a reproducible visual orientation and Calm, Standard, or Dense assist profile from the visitor device’s local date. Mini Sudoku additionally uses an independently solver-checked clue-density profile; the remaining fields use date-local orientation plus an honest opening-assist profile. The date is neither fetched nor transmitted. All six modules support pointer controls and focusable controls, a visible verified-next-move hint, reset action, and deterministic silent `?demo=1` visual QA state. The shared SOUND preference follows the visitor across all Games Bay routes in browser storage; optional Logic Lab MUSIC starts only from the visible user-controlled button, respecting autoplay policy. Validate all six direct module routes and their `?demo=1` variants after upload.
 
 ## Future PHP APIs
 
