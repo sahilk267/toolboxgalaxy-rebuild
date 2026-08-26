@@ -2,16 +2,13 @@
 import type { Cell } from "@/game/logicPuzzles/core";
 import { keyOf, orthogonal, sameCell } from "@/game/logicPuzzles/core";
 import { zipEditionBank, type ZipBoard, type ZipEdition } from "@/game/logicPuzzles/zipBank";
-
 export type Edge = [Cell, Cell];
 export type { ZipBoard, ZipEdition } from "@/game/logicPuzzles/zipBank";
 export { zipEditionBank, zipEditionForDate } from "@/game/logicPuzzles/zipBank";
-
 export const zipBoard = zipEditionBank[0].board;
 export const zipSolution = zipEditionBank[0].solution;
 const blocked = (board: ZipBoard, a: Cell, b: Cell) => board.blockedEdges.some(([left, right]) => sameCell(left, a) && sameCell(right, b) || sameCell(left, b) && sameCell(right, a));
 const numberAt = (board: ZipBoard, cell: Cell) => board.numbers.find((item) => sameCell(item.cell, cell))?.value;
-
 export function validZipPath(path: Cell[], board: ZipBoard = zipBoard) {
   if (!path.length || !sameCell(path[0], board.numbers[0].cell)) return false;
   const visited = new Set<string>(); let expected = 1;
@@ -24,9 +21,7 @@ export function validZipPath(path: Cell[], board: ZipBoard = zipBoard) {
   }
   return true;
 }
-
 export function solvedZip(path: Cell[], board: ZipBoard = zipBoard) { return validZipPath(path, board) && path.length === board.rows * board.cols && board.numbers.every((item) => path.some((cell) => sameCell(cell, item.cell))); }
-
 export function countZipSolutions(board: ZipBoard = zipBoard, limit = 2) {
   let count = 0; const allCells = Array.from({ length: board.rows * board.cols }, (_, index) => ({ row: Math.floor(index / board.cols), col: index % board.cols }));
   const connected = (current: Cell, visited: Set<string>) => {

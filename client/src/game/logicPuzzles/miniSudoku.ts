@@ -1,10 +1,12 @@
 // Logic Lab / Mini Sudoku: 6×6 all-different solver for rows, columns, and 2×3 regions.
 import { cloneGrid } from "@/game/logicPuzzles/core";
+import { miniSudokuEditionBank } from "@/game/logicPuzzles/miniSudokuBank";
 
 export const MINI_SUDOKU_SIZE = 6;
 export type SudokuGrid = number[][];
-export const miniSudokuSolution: SudokuGrid = [[1, 2, 3, 4, 5, 6], [4, 5, 6, 1, 2, 3], [2, 3, 4, 5, 6, 1], [5, 6, 1, 2, 3, 4], [3, 4, 5, 6, 1, 2], [6, 1, 2, 3, 4, 5]];
-export const miniSudokuGivens: SudokuGrid = [[1, 0, 3, 4, 0, 6], [0, 5, 6, 0, 2, 3], [2, 3, 0, 5, 6, 0], [5, 0, 1, 2, 0, 4], [3, 4, 0, 6, 1, 0], [0, 1, 2, 0, 4, 5]];
+export { miniSudokuEditionBank, miniSudokuEditionForDate } from "@/game/logicPuzzles/miniSudokuBank";
+export const miniSudokuSolution: SudokuGrid = miniSudokuEditionBank[0].solution;
+export const miniSudokuGivens: SudokuGrid = miniSudokuEditionBank[0].givens;
 
 export function boxIndex(row: number, col: number) { return Math.floor(row / 2) * 2 + Math.floor(col / 3); }
 export function validSudokuPlacement(grid: SudokuGrid, row: number, col: number, value: number) { if (value < 1 || value > 6) return false; for (let index = 0; index < MINI_SUDOKU_SIZE; index += 1) { if (index !== col && grid[row][index] === value) return false; if (index !== row && grid[index][col] === value) return false; } const boxRow = Math.floor(row / 2) * 2; const boxCol = Math.floor(col / 3) * 3; for (let r = boxRow; r < boxRow + 2; r += 1) for (let c = boxCol; c < boxCol + 3; c += 1) if ((r !== row || c !== col) && grid[r][c] === value) return false; return true; }

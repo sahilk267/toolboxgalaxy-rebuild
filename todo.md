@@ -107,26 +107,11 @@
 - [x] Record a privacy-safe browser-local per-puzzle completion marker and show when the current local daily field has been completed.
 - [x] Play-test normal, completed, and reset states in the browser so completion is visibly understandable without reading hidden feedback text.
 
-## Zip Strategic Challenge Upgrade
+## Mini Sudoku Seven-Edition Board Bank
 
-- [x] Research and document authoring criteria that prevent an obvious serpentine or straight-line Zip solution.
-- [x] Author a larger non-linear Zip route with meaningful forks, dead ends, wall constraints, and ordered checkpoints.
-- [x] Prove the new field’s intended route and uniqueness with the independent Zip solver before UI use.
-- [x] Update Zip guidance and Hint feedback to explain the strategic constraints without revealing the full route.
-- [x] Play-test wrong branches, backtracking, hints, full completion, desktop/mobile readability, and current build output before checkpointing.
-
-## Meaningful Daily Puzzle Editions
-
-- [x] Research how credible daily-puzzle products create replay value without relying on superficial board rotations.
-- [x] Assess the current local puzzle suite for board novelty, difficulty integrity, replay reason, and authoring cost.
-- [x] Define a minimum standard for a new local edition: independently verified puzzle difference, difficulty rationale, and no repeated solution topology.
-- [x] Present the recommended content strategy and wait for approval before expanding the daily-board catalog.
-
-## Zip Seven-Edition Board Bank
-
-- [x] Define the verified Zip edition schema, date-selection policy, difficulty bands, and edition-level completion key.
-- [x] Author seven non-equivalent Zip boards with distinct route topology, checkpoint placement, and wall layout.
-- [x] Prove every Zip board’s known route, wall legality, uniqueness, and anti-serpentine complexity in the independent authoring suite.
+- [x] Define the verified 6×6 Mini Sudoku edition schema, daily selection policy, difficulty bands, and per-edition completion key.
+- [x] Author seven non-equivalent Mini Sudoku solutions with distinct solver-verified clue layouts and no repeated solution grid.
+- [x] Prove every Mini Sudoku edition has exactly one solution and preserves 2×3 box, row, and column constraints.
 - [x] Integrate device-local date selection from the bundled board bank and display the actual edition/difficulty honestly.
 - [x] Extend hints, reset, completion, replay, and progress persistence to the selected edition without mixing daily records.
-- [x] Run full browser playtests for all seven editions plus desktop/mobile screens, TypeScript, all logic validators, and a static build before checkpointing.
+- [x] Run full keyboard/pointer browser playtests for all seven editions plus desktop/mobile screens, TypeScript, all logic validators, and a static build before checkpointing.

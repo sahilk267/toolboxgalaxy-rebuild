@@ -27,7 +27,7 @@ Source: [Play Zip game on LinkedIn](https://www.linkedin.com/help/linkedin/answe
 | Input | Click/tap-and-hold the 1 cell, then draw; click/tap/drag back to a cell to erase path segments. |
 | Assistance | Hint erases to the first mistake and reveals the next correct step; Undo reverts the last move; Clear resets the grid. |
 
-**Implementation note.** A faithful local version needs Hamiltonian-path validation with required ordered waypoints and blocked directed edges. It must support live backtracking rather than accepting disjoint path segments. The current local field deliberately uses a solver-verified 6×6 non-serpentine route, ten scattered checkpoints, and walls that create real fork/dead-end decisions; it does not claim parity with any LinkedIn daily board.
+**Implementation note.** A faithful local version needs Hamiltonian-path validation with required ordered waypoints and blocked directed edges. It must support live backtracking rather than accepting disjoint path segments.
 
 ## Mini Sudoku — LinkedIn game evidence
 
@@ -57,32 +57,6 @@ The current [Games on LinkedIn Help page](https://www.linkedin.com/help/linkedin
 Toolbox Galaxy will not copy that release schedule or fetch external editions. Instead, it will derive a deterministic **local-date edition ID** from the visitor device date, choose only transformations or clue profiles that have already passed the same validator/uniqueness checks, and rotate an honest `calm`, `standard`, or `dense` local challenge label. The label will describe the local clue/assist profile rather than claim LinkedIn difficulty parity.
 
 For browser audio, MDN documents that audible media and Web Audio are generally subject to autoplay blocking until a visitor interaction, and recommends explicit user controls.[^mdn-autoplay] [^mdn-web-audio] The Toolbox Galaxy implementation will therefore store a browser-local sound preference, but will create/resume audio and begin an optional low-volume music loop only from a visible player click. Music is not started by navigation, demo playback, or background timers.
-
-## Meaningful repeatable-edition research
-
-The repeatability concern is valid: a solved deterministic puzzle has little replay value when the next date only rotates the same topology. LinkedIn describes its games as daily thinking puzzles, releases new puzzles each day, and pairs play with scores, streaks, and leaderboards.[^linkedin-games] The value proposition is therefore a fresh daily challenge plus a visible reason to return—not the ability to redraw an already-known route.
-
-The New York Times Games portfolio similarly combines several mechanically distinct daily formats, states that it serves solvers across skill levels, and supports its daily titles with hints and discussion/companion surfaces.[^nyt-games] This is useful product evidence, not proof of a universal retention formula: a local static site should not claim comparable network features or performance results.
-
-**Local implementation conclusion.** A Toolbox Galaxy date-local edition should be called “new” only when it changes the reasoning problem itself: a separately solver-verified board, a distinct checkpoint/clue/region/word arrangement, an independently justified difficulty band, and no repeated solution topology. Rotation, reflection, theme swaps, or a different initial assist alone are acceptable visual/accessibility variants but are **not** sufficient as a daily puzzle edition.
-
-### Current Toolbox Galaxy audit — 2026-08-26
-
-| Module | Current date-local change | Does the underlying reasoning field change? | Assessment after a player has solved it |
-|---|---|---|---|
-| Mini Sudoku | One of three clue-density profiles plus reflection | No; all profiles resolve to the same 6×6 solution | Better than a pure rotation, but not a genuinely new daily puzzle. |
-| Tango | Extra calm givens plus reflection | No; the solution and relation graph are fixed | A repeat presentation, not fresh deduction content. |
-| Queens | One optional calm Crown plus reflection | No; the region map and crown assignment are fixed | A repeat presentation, not a new region puzzle. |
-| Patches | One optional calm rectangle plus reflection | No; the clue partition is fixed | A repeat presentation, not a new partition challenge. |
-| Zip | One optional calm opening path plus reflection | No; the 6×6 strategic route, stations, and walls are fixed | Strong as a single puzzle, but should not be marketed as a new daily route. |
-| Wend | One optional calm discovered word plus reflection | No; the target words and exact cover are fixed | A repeat presentation, not a new word-cover puzzle. |
-
-### Recommended browser-local content strategy
-
-1. **Truthful immediate position.** Keep the date stamp and assist rotation, but describe it as a *local daily field setting*, not as a new daily puzzle. Do not promise a fresh board until the reasoning graph is actually different.
-2. **Minimum credible launch pack.** Author at least **seven independent solver-verified boards per puzzle**—one for each weekday—before calling the experience daily. Each board must have a different clue/region/wall/word layout and a distinct verified solution topology. A seven-board pack across six modules means forty-two authored, tested puzzles, not forty-two reflections.
-3. **Sustainable static-hosting model.** Keep a bundled board bank and choose an authored edition from the device-local date. A seed may select from the bank, but it must not generate unchecked runtime puzzles. Every release candidate should pass the same known-solution, mutation, uniqueness, accessibility, and browser-playtest checks as the current boards.
-4. **Variety beyond board data.** Use a predictable weekly mix—one compact easy entry, several standard reasoning fields, and one dense weekend challenge—plus optional archive/replay and local streak history. These should complement fresh boards, never substitute for them.
 
 ## Tango — official LinkedIn Help
 
