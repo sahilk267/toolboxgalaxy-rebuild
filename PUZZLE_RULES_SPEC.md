@@ -23,14 +23,14 @@ All puzzle engines are framework-independent TypeScript modules under `client/sr
 | Audio | A single browser-local sound preference applies across all Games Bay routes. Audio contexts and optional music may start only from a visible user gesture; demo mode remains silent. |
 | Local state | Only progress, best result, and optional streak date are retained in `localStorage`; no inputs are transmitted. |
 | Undo/reset | User moves are stored as immutable snapshots. Reset returns to the original deterministic board. |
-| Daily-style boards | A local calendar date chooses only pre-validated fixed-board transformations or clue profiles. The local `calm`/`standard`/`dense` label rotates deterministically and never fetches a remote challenge. |
+| Daily-style boards | A local calendar date chooses a pre-validated bundled edition where a game claims genuine daily freshness. Orientation remains a display transform only; it is never presented as a new board. The local `calm`/`standard`/`dense` label is tied to that authored edition and never fetches a remote challenge. |
 | Accessibility | Cells have accessible labels describing coordinates, clue/state, and violation state; color is never the only status indicator. |
 
 ## Assistance and local daily-edition contract
 
 The local assistance controls adapt the documented in-game interaction patterns without pretending to mirror any network edition. A hint always uses the already authored verified solution and communicates exactly what it changed; it never queries an external solver or dictionary. Patches reveals one correct region; Zip removes the path after the first incorrect step and reveals the next correct cell; Mini Sudoku reveals one empty value and highlights its row/column/2×3 box; Tango identifies one incorrect/forced cell; Queens identifies one correct queen location or excess queen; and Wend clears an active mistaken trace or reveals the next tile of one unsolved target. Each module also records immutable move snapshots for **Undo**, while Reset restores the date-selected starting state.
 
-Every daily edition is derived from a device-local `YYYY-MM-DD` seed and a small authored transform set such as rotation, reflection, symbol-theme swap, validated clue removal, or pre-authored region/path permutation. Before a transform/profile can ship it must pass the same known-solution, mutation, and uniqueness checks as the base board. The effect is a visibly different local daily board and rotating assist level without scraping LinkedIn or inventing unchecked random puzzles.
+Every claimed fresh daily edition is selected deterministically from a device-local `YYYY-MM-DD` ID and a small independently authored bank. Its solution and relevant reasoning topology must be distinct, and it must pass known-solution, mutation, and uniqueness checks before shipping. Rotation, reflection, symbol-theme swap, or opening assistance may improve presentation but cannot by themselves be called a fresh board.
 
 ## Patches contract
 
@@ -85,6 +85,8 @@ type TangoRelation = { a: Cell; b: Cell; relation: "same" | "different" };
 ```
 
 For a 6-cell line, partial validation rejects counts above three, prevents remaining blanks from making balance impossible, rejects any horizontal/vertical triple, and enforces every completed relation. Shipped boards must be uniquely solvable under all four constraint families.
+
+`tangoBank.ts` contains seven date-selected editions (`Apollo` through `Galileo`). Each stores its own 6×6 solution, null-preserving given mask, equal/different adjacent relation map, clue count, and Calm/Standard/Dense authoring band. The permanent verifier rejects any repeated solution signature, given-mask signature, or relation-topology signature; it also asserts a unique solution, a triple violation, a direct relation violation, and coverage across seven consecutive local dates. Completion storage uses `tango-<edition-id>` plus the local date so records cannot mix.
 
 ## Queens contract
 

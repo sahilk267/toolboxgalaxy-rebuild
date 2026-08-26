@@ -115,3 +115,12 @@
 - [x] Integrate device-local date selection from the bundled board bank and display the actual edition/difficulty honestly.
 - [x] Extend hints, reset, completion, replay, and progress persistence to the selected edition without mixing daily records.
 - [x] Run full keyboard/pointer browser playtests for all seven editions plus desktop/mobile screens, TypeScript, all logic validators, and a static build before checkpointing.
+
+## Tango Seven-Edition Board Bank
+
+- [x] Define the verified 6×6 Tango edition schema, local-date selection policy, difficulty bands, and per-edition completion key.
+- [x] Author seven non-equivalent binary solution layouts with distinct givens, equal/different relation maps, and no repeated solution or relation topology.
+- [x] Prove every Tango edition has exactly one solution and satisfies line balance, triple prevention, and all visible relation constraints.
+- [x] Integrate device-local date selection from the bundled board bank and display the actual edition/difficulty honestly.
+- [x] Extend hints, reset, completion, replay, relation markers, and progress persistence to the selected edition without mixing daily records.
+- [x] Run full keyboard/pointer browser playtests for all seven editions plus desktop/mobile screens, TypeScript, all logic validators, a static build, PWA artifact checks, and a current clean log tail before checkpointing.
