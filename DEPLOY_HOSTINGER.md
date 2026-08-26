@@ -47,6 +47,10 @@ The Tools hub can retain up to six recently opened tool routes in the current br
 
 Visitors can pin up to twelve verified tools for repeat access. The favorite feature stores only the tool route slug in the current browser’s `localStorage`, then resolves its visible title, category, and description from the already bundled registry. It never stores tool inputs, outputs, files, generated content, or account data. A visitor can remove any individual pin or clear all pins directly from the Tools hub; no favorite data is sent to Hostinger or any other service.
 
+## Keyboard shortcut reference
+
+The global shortcut reference is static UI only and has no persistence, API, or analytics dependency. It opens from the visible rail control or with `?` when focus is outside editable fields; it only documents the existing controls and does not create a global command system. All documented game keys retain a visible pointer/touch equivalent. For visual QA, append `?shortcuts=1` to a route to open the reference panel directly.
+
 ## Circuit Shift Daily Challenge
 
 Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scramble is derived from the visitor device’s local calendar date, so it does not need a clock API, database, login, or leaderboard. The date-specific daily best remains in that browser’s local storage and is separate from normal practice best scores. A local Daily Streak stores only the completed local date plus current/longest consecutive counts; repeat solves on the same date cannot increase it. Confirm `/games/circuit-shift?daily=1` and `/games/circuit-shift?daily=1&demo=1` after Hostinger upload; the latter is a visual QA route only, keeps game sound disabled until a visible player action enables it, and does not write a streak.

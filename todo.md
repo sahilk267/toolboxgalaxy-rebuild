@@ -49,3 +49,11 @@
 - [x] Preserve normal practice play, explicit sound opt-in, and deterministic `?daily=1&demo=1` behavior.
 - [x] Document the local streak privacy and deployment contract.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile daily-streak routes before checkpointing.
+
+## Keyboard Shortcut Reference Checklist
+
+- [x] Define browser-safe shortcut guidance without intercepting normal typing or existing game keys.
+- [x] Add an accessible shortcut reference trigger and panel to the shared application shell.
+- [x] Add contextual Circuit Shift keyboard guidance and visible touch-equivalent messaging.
+- [x] Document shortcut behavior and update architecture notes.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile shortcut-reference routes before checkpointing.

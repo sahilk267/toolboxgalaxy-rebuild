@@ -30,12 +30,12 @@ export default function Home() {
     </section>
 
     <section className="page-section story-split">
-      <div className="story-image"><img src={toolsImage} alt="A graphic workstation of calculation and developer tool objects" /></div>
+      <div className="story-image"><img src={toolsImage} alt="A graphic workstation of calculation and developer tool objects" /><p className="image-telemetry">EVIDENCE PANEL / LOCAL MODULE INSTRUMENTS</p></div>
       <div className="story-copy"><p className="mono-label text-[#c7f36b]">THE REBUILD RULE</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">If it isn’t verified, it isn’t in the launch bay.</h2><p>Every tool is local-first wherever possible. That keeps the Hostinger deployment lighter, avoids broken inherited endpoints, and makes the expected behavior easier to test.</p><div className="story-list"><span><Wrench size={17} /> Typed tool registry</span><span><ShieldCheck size={17} /> Explicit privacy behavior</span><span><Sparkles size={17} /> Consistent interaction patterns</span></div></div>
     </section>
 
     <section className="page-section game-callout">
-      <div className="game-art"><img src={gamesImage} alt="An abstract arcade spacecraft navigating orbit gates" /></div>
+      <div className="game-art"><img src={gamesImage} alt="An abstract arcade spacecraft navigating orbit gates" /><p className="image-telemetry image-telemetry--ember">PLAYFIELD RECORD / 03 ARCADE MODULES</p></div>
       <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / READY NOW</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. Orbit Dash, Signal Switch, and Circuit Shift keep scores in the browser and sound under your control.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
     </section>
   </AppShell>;

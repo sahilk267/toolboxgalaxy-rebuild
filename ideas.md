@@ -107,3 +107,4 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Tool grids avoid brochure-card repetition by grouping modules as docked operational fields with distinct telemetry headers and panel rhythm, while retaining one graphite console grammar.
 - The Orbit Mark and `TOOLBOX / GALAXY` lockup behave as a compact mission patch with enough visual weight to remain custom and operational across routes.
 - Game headlines use compact technical grotesque at display scale—never cinematic, serif, or luxury-editorial treatments. Game overlays read as relay-control consoles with named zones, terminal edges, and dock lines to the playfield.
+- Tool cards never use decorative category colors: graphite console structure, blue blueprint separators, and Signal Lime live/verified states carry the hierarchy. Every card exposes a compact operational payload, and image panels include instrument-style telemetry captions.
