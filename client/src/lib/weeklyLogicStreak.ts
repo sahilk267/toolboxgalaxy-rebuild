@@ -1,0 +1,27 @@
+// Orbital Workbench: derive a transparent weekly activity view from existing local completion flags only; no game opens, demos, accounts, or network data count.
+import { readPuzzleCompletionMap, type PuzzleCompletionMap } from "@/lib/puzzleCompletion";
+
+export const genuineDailyLogicSlugs = ["mini-sudoku", "tango", "queens", "zip"] as const;
+export type GenuineDailyLogicSlug = typeof genuineDailyLogicSlugs[number];
+export type WeeklyLogicDay = { id: string; shortLabel: string; dayNumber: number; isToday: boolean; isFuture: boolean; completedFields: GenuineDailyLogicSlug[] };
+export type WeeklyLogicSummary = { weekStart: string; weekEnd: string; days: WeeklyLogicDay[]; currentStreak: number; longestStreak: number; completedDays: number; totalCompletedFields: number };
+
+const oneDay = 86_400_000;
+const formatId = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const fromId = (id: string) => { const [year, month, day] = id.split("-").map(Number); return new Date(year, month - 1, day); };
+const addDays = (date: Date, amount: number) => { const next = new Date(date); next.setDate(next.getDate() + amount); return next; };
+const monday = (date: Date) => addDays(new Date(date.getFullYear(), date.getMonth(), date.getDate()), -((date.getDay() + 6) % 7));
+const completionPrefixes: Record<GenuineDailyLogicSlug, string> = { "mini-sudoku": "mini-sudoku-sudoku-", tango: "tango-tango-", queens: "queens-queens-", zip: "zip-zip-" };
+const completionSlugFor = (slug: GenuineDailyLogicSlug) => completionPrefixes[slug];
+const genuineGameForCompletionSlug = (slug: string): GenuineDailyLogicSlug | null => genuineDailyLogicSlugs.find((game) => slug.startsWith(completionSlugFor(game))) ?? null;
+
+export function completedFieldsForDate(dateId: string, completions: PuzzleCompletionMap): GenuineDailyLogicSlug[] { return genuineDailyLogicSlugs.filter((game) => Object.keys(completions).some((key) => { const separator = key.lastIndexOf(":"); return separator >= 0 && key.slice(separator + 1) === dateId && key.slice(0, separator).startsWith(completionSlugFor(game)); })); }
+export function completedLogicDates(completions: PuzzleCompletionMap) { const dates = new Set<string>(); Object.keys(completions).forEach((key) => { const separator = key.lastIndexOf(":"); if (separator < 0) return; const slug = key.slice(0, separator); const dateId = key.slice(separator + 1); if (genuineGameForCompletionSlug(slug) && /^\d{4}-\d{2}-\d{2}$/.test(dateId)) dates.add(dateId); }); return Array.from(dates).sort(); }
+const longestRun = (dateIds: string[]) => { let longest = 0; let current = 0; let previous = ""; dateIds.forEach((id) => { current = previous && fromId(id).getTime() - fromId(previous).getTime() === oneDay ? current + 1 : 1; longest = Math.max(longest, current); previous = id; }); return longest; };
+const currentRun = (today: Date, completed: Set<string>) => { let count = 0; let cursor = new Date(today.getFullYear(), today.getMonth(), today.getDate()); while (completed.has(formatId(cursor))) { count += 1; cursor = addDays(cursor, -1); } return count; };
+
+export function weeklyLogicSummary(reference = new Date(), weekOffset = 0, completions = readPuzzleCompletionMap()): WeeklyLogicSummary {
+  const today = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate()); const todayId = formatId(today); const weekStartDate = addDays(monday(today), weekOffset * 7); const completedDateIds = completedLogicDates(completions).filter((id) => id <= todayId); const completedSet = new Set(completedDateIds);
+  const days = Array.from({ length: 7 }, (_, index) => { const date = addDays(weekStartDate, index); const id = formatId(date); const isFuture = date.getTime() > today.getTime(); return { id, shortLabel: new Intl.DateTimeFormat("en", { weekday: "short" }).format(date).toUpperCase(), dayNumber: date.getDate(), isToday: id === todayId, isFuture, completedFields: isFuture ? [] : completedFieldsForDate(id, completions) }; });
+  return { weekStart: formatId(weekStartDate), weekEnd: formatId(addDays(weekStartDate, 6)), days, currentStreak: currentRun(today, completedSet), longestStreak: longestRun(completedDateIds), completedDays: completedDateIds.length, totalCompletedFields: Object.keys(completions).filter((key) => { const separator = key.lastIndexOf(":"); return separator >= 0 && Boolean(genuineGameForCompletionSlug(key.slice(0, separator))) && key.slice(separator + 1) <= todayId; }).length };
+}

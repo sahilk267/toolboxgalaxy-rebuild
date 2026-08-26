@@ -117,3 +117,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - The game-route mission patch remains visually competitive with the module title through framed Orbit Mark treatment, two-line lockup, and a compact `MISSION PATCH / LOCAL COCKPIT` designation.
 - Queens region fills are semantic connected constraint zones, never decorative swatches: each field exposes a named region bus, zone coordinates, a six-zone map label, and a docked validator relay to tie color to rule logic.
 - Each authored Queens edition communicates personality through map-lock telemetry, connected-zone profile, search-depth readout, and its calm/standard/dense state—not through changing the shared Orbital Workbench palette.
+- Signal Lime outlines or dominates Games Bay modules only for active, verified, live, successful, or primary states; cyan stays quiet blueprint structure and Ember carries launch/play warmth.
+- Games Bay arcade rows are docked relay instruments with named chassis zones, telemetry bands, local-state framing, and terminal corners—not generic launch cards.
+- The Games Bay hero, arcade modules, verified daily fields, and local streak console attach to one visible blueprint runway; imagery is treated as an instrument-field capture rather than cinematic key art.

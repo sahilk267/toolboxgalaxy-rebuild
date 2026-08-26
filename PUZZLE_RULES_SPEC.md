@@ -32,6 +32,12 @@ The local assistance controls adapt the documented in-game interaction patterns 
 
 Every claimed fresh daily edition is selected deterministically from a device-local `YYYY-MM-DD` ID and a small independently authored bank. Its solution and relevant reasoning topology must be distinct, and it must pass known-solution, mutation, and uniqueness checks before shipping. Rotation, reflection, symbol-theme swap, or opening assistance may improve presentation but cannot by themselves be called a fresh board.
 
+## Weekly local streak calendar contract
+
+The Games Bay calendar is a **derived read-only view** of `toolboxgalaxy:puzzle-completions`; it does not create another progress record or receive player input. It recognizes only edition-specific completion keys for the independently authored Mini Sudoku, Tango, Queens, and Zip banks. A date with one or more qualifying completed fields becomes one verified day; the field total still reports each completed game separately. The `current streak` counts backward from the device-local current date through uninterrupted verified dates, while `longest streak` considers all reached qualifying local dates.
+
+Route navigation, demo completion, a transformed presentation, fixed-board legacy keys, malformed records, and dates later than the device-local date are ignored. The weekly view begins Monday, can move through prior or later weeks without changing storage, and the visible Today control only returns its view offset to the device-local current week. `scripts/verify-weekly-logic-streak.ts` asserts the key filter, same-day idempotence, reached-date suppression, current/longest streak math, and calendar-boundary behavior; the trusted browser suite verifies the actual marker and control interactions.
+
 ## Patches contract
 
 LinkedIn’s official help requires full non-overlapping coverage and exactly one clue per shape.[^patches-help] LinkedIn’s announcement describes rectangles and squares.[^patches-news] The local edition therefore uses **axis-aligned rectangles only**. `square`, `wide`, and `tall` constrain aspect ratio; `free` means any axis-aligned rectangle, a disclosed local interpretation of the official freeform clue label.
