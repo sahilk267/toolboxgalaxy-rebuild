@@ -108,3 +108,4 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - The Orbit Mark and `TOOLBOX / GALAXY` lockup behave as a compact mission patch with enough visual weight to remain custom and operational across routes.
 - Game headlines use compact technical grotesque at display scale—never cinematic, serif, or luxury-editorial treatments. Game overlays read as relay-control consoles with named zones, terminal edges, and dock lines to the playfield.
 - Tool cards never use decorative category colors: graphite console structure, blue blueprint separators, and Signal Lime live/verified states carry the hierarchy. Every card exposes a compact operational payload, and image panels include instrument-style telemetry captions.
+- Homepage bays dock into a continuous blueprint runway through shared field lines, telemetry labels, and vertical terminal ticks; Ember stays reserved for the games pause/play field only.

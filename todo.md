@@ -57,3 +57,11 @@
 - [x] Add contextual Circuit Shift keyboard guidance and visible touch-equivalent messaging.
 - [x] Document shortcut behavior and update architecture notes.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile shortcut-reference routes before checkpointing.
+
+## Command Palette Checklist
+
+- [x] Define navigation-only command coverage and safe keyboard activation outside editable fields or open dialogs.
+- [x] Add an accessible command palette trigger, search, route results, keyboard navigation, and explicit close behavior.
+- [x] Integrate the palette with the shared shell and protect Circuit Shift from background game-key input while it is open.
+- [x] Document command palette behavior and update architecture notes.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile command-palette routes before checkpointing.

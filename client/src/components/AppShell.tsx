@@ -2,6 +2,7 @@
 import { Link, useLocation } from "wouter";
 import InstallWorkbench from "@/components/InstallWorkbench";
 import ShortcutReference from "@/components/ShortcutReference";
+import CommandPalette from "@/components/CommandPalette";
 import { Gamepad2, Menu, Orbit, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -35,6 +36,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="rail-bottom">
+          <CommandPalette />
           <ShortcutReference />
           <InstallWorkbench />
           <div className="rail-status"><span className="status-dot" aria-hidden="true" /><div><p className="mono-label">SYSTEM STATUS</p><p className="text-sm text-white/80">Local-first build</p></div></div>

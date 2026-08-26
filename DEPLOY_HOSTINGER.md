@@ -51,6 +51,10 @@ Visitors can pin up to twelve verified tools for repeat access. The favorite fea
 
 The global shortcut reference is static UI only and has no persistence, API, or analytics dependency. It opens from the visible rail control or with `?` when focus is outside editable fields; it only documents the existing controls and does not create a global command system. All documented game keys retain a visible pointer/touch equivalent. For visual QA, append `?shortcuts=1` to a route to open the reference panel directly.
 
+## Command palette
+
+The command palette is also static UI only. It searches the already bundled route/module catalog and opens from the rail or Ctrl/Cmd+K only when a visitor is not typing and no dialog is open. It does not query an API, persist search terms, or inspect tool workspace content. For visual QA, append `?command=1` to a route to open it directly.
+
 ## Circuit Shift Daily Challenge
 
 Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scramble is derived from the visitor device’s local calendar date, so it does not need a clock API, database, login, or leaderboard. The date-specific daily best remains in that browser’s local storage and is separate from normal practice best scores. A local Daily Streak stores only the completed local date plus current/longest consecutive counts; repeat solves on the same date cannot increase it. Confirm `/games/circuit-shift?daily=1` and `/games/circuit-shift?daily=1&demo=1` after Hostinger upload; the latter is a visual QA route only, keeps game sound disabled until a visible player action enables it, and does not write a streak.
