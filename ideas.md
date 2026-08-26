@@ -103,3 +103,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Game selection overlays are docked relay-control consoles with named operational zones, visible module/status hierarchy, and blueprint lines that connect them to the playfield.
 - Circuit Shift’s signature is relay/circuit logic: lime indicates live path or successful connection; Ember is reserved for scoring, local bests, and launch energy.
 - Game display headlines stay declarative and technical-compact, while mono control labels carry the Orbital Workbench voice around them.
+- Cyan/blue is blueprint structure only; Signal Lime `#C7F36B` is the live system color for active navigation, verified/local trust, primary actions, and successful output.
+- Tool grids avoid brochure-card repetition by grouping modules as docked operational fields with distinct telemetry headers and panel rhythm, while retaining one graphite console grammar.
+- The Orbit Mark and `TOOLBOX / GALAXY` lockup behave as a compact mission patch with enough visual weight to remain custom and operational across routes.

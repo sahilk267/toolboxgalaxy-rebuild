@@ -33,3 +33,11 @@
 - [x] Preserve touch, keyboard, explicit sound opt-in, and `?demo` behavior across normal and daily modes.
 - [x] Document the static local challenge contract and update relevant game architecture notes.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile daily routes before checkpointing.
+
+## Tool Favorites Checklist
+
+- [x] Define a metadata-only local favorites storage boundary with no tool workspace data.
+- [x] Add accessible favorite/unfavorite controls to tool cards and workspaces.
+- [x] Add a Favorites deck to the Tools hub with a local clear action and transparent privacy note.
+- [x] Document the browser-local favorite contract and update architecture notes.
+- [x] Validate TypeScript, production build, current browser logs, and desktop/mobile favorites behavior before checkpointing.

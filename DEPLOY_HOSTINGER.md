@@ -43,6 +43,10 @@ The native install button appears only in browsers that emit the standard instal
 
 The Tools hub can retain up to six recently opened tool routes in the current browser’s `localStorage`. It stores only the public route metadata already present in the tool registry—tool slug, name, category, and visit timestamp. It does **not** store workspace inputs, outputs, uploaded files, generated content, passwords, hashes, or images. Visitors can clear that small log or export the metadata as JSON directly from the Tools page; neither action contacts a server.
 
+## Browser-local favorite tools
+
+Visitors can pin up to twelve verified tools for repeat access. The favorite feature stores only the tool route slug in the current browser’s `localStorage`, then resolves its visible title, category, and description from the already bundled registry. It never stores tool inputs, outputs, files, generated content, or account data. A visitor can remove any individual pin or clear all pins directly from the Tools hub; no favorite data is sent to Hostinger or any other service.
+
 ## Circuit Shift Daily Challenge
 
 Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scramble is derived from the visitor device’s local calendar date, so it does not need a clock API, database, login, or leaderboard. The date-specific daily best remains in that browser’s local storage and is separate from normal practice best scores. Confirm `/games/circuit-shift?daily=1` and `/games/circuit-shift?daily=1&demo=1` after Hostinger upload; the latter is a visual QA route only and keeps game sound disabled until a visible player action enables it.

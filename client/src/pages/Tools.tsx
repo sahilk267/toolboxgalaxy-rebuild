@@ -1,5 +1,6 @@
 // Orbital Workbench: searchable verified-tool registry and no unverified legacy links.
 import AppShell from "@/components/AppShell";
+import FavoriteTools from "@/components/FavoriteTools";
 import RecentToolHistory from "@/components/RecentToolHistory";
 import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
@@ -16,11 +17,13 @@ export default function Tools() {
     const matchesQuery = `${tool.name} ${tool.description} ${tool.category}`.toLowerCase().includes(query.toLowerCase());
     return matchesQuery && (activeCategory === "All" || tool.category === activeCategory);
   }), [activeCategory, query]);
+  const categoryGroups = useMemo(() => categories.filter((category) => category !== "All").map((category) => ({ category, items: visibleTools.filter((tool) => tool.category === category) })).filter((group) => group.items.length > 0), [visibleTools]);
 
   return (
     <AppShell>
       <section className="page-section page-section--tools">
         <div className="tools-hero-runway"><div><div className="page-kicker"><span>01</span><span>VERIFIED TOOL FOUNDRY</span></div><SectionHeading eyebrow="LOCAL-FIRST / ZERO SERVER DEPENDENCIES" title="Small tools. Clear outcomes." copy="The first release keeps only browser-run utilities that can be tested, explained, and used without sending your input away." /></div><aside className="tools-signal-panel" aria-label="Tool foundry status"><div className="tools-signal-panel__head"><img src={orbitMark} alt="" /><span>ORBITAL TOOL CONTROL</span><i>LIVE</i></div><strong>24 <small>verified modules</small></strong><div className="tools-signal-panel__metrics"><span>LOCAL EXECUTORS <b>24/24</b></span><span>REMOTE DEPENDENCIES <b>00</b></span><span>INPUT RETENTION <b>NONE</b></span></div></aside></div>
+        <FavoriteTools />
         <RecentToolHistory />
 
         <div className="tool-controls">
@@ -35,9 +38,7 @@ export default function Tools() {
         </div>
 
         <div className="tools-result-line"><span>{visibleTools.length.toString().padStart(2, "0")} verified modules</span><span>runs in your browser</span></div>
-        <div className="tool-grid">
-          {visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}
-        </div>
+        {activeCategory === "All" ? <div className="tool-module-fields">{categoryGroups.map((group, index) => <section className="tool-group" key={group.category} aria-labelledby={`tool-group-${group.category.replace(/\W+/g, "-")}`}><div className="tool-group__head"><span>{String(index + 1).padStart(2, "0")}</span><h2 id={`tool-group-${group.category.replace(/\W+/g, "-")}`}>{group.category} modules</h2><b>{String(group.items.length).padStart(2, "0")} online</b></div><div className="tool-grid">{group.items.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div></section>)}</div> : <div className="tool-grid">{visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div>}
         {visibleTools.length === 0 && <div className="empty-state"><p className="mono-label">NO MODULE FOUND</p><p>Try a shorter search or return to all categories.</p></div>}
       </section>
     </AppShell>

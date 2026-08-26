@@ -4,14 +4,15 @@ import { AgeTool, BmiTool, DateDifferenceTool, DiscountTool, GradientTool, HtmlT
 import ImageResizerTool from "@/components/ImageResizerTool";
 import { FaviconGeneratorTool, HashGeneratorTool, PasswordStrengthTool } from "@/components/LocalSecurityTools";
 import { ContrastCheckerTool, MarkdownWorkspaceTool } from "@/components/ContentTools";
+import FavoriteToolButton from "@/components/FavoriteToolButton";
 import { getTool } from "@/data/toolRegistry";
 import { recordToolVisit } from "@/lib/recentToolHistory";
 import { Check, Clipboard, RotateCcw, ShieldCheck } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { useEffect, useMemo, useState } from "react";
 
-function WorkspaceFrame({ children, title, description }: { children: React.ReactNode; title: string; description: string }) {
-  return <AppShell><section className="page-section workspace"><Link href="/tools" className="back-link">← Back to tool foundry</Link><div className="workspace-intro"><div><p className="mono-label text-[#c7f36b]">VERIFIED LOCAL MODULE</p><h1 className="font-display mt-3 text-4xl font-semibold tracking-[-0.06em] md:text-6xl">{title}</h1><p className="mt-4 max-w-xl text-white/62">{description}</p></div><div className="privacy-note"><ShieldCheck size={19} /><span>Input stays in this browser tab.</span></div></div><div className="workspace-panel"><div className="console-divider"><span>01 · INPUT DECK</span><span>LOCAL EXECUTOR</span><span>02 · OUTPUT BAY</span></div>{children}</div></section></AppShell>;
+function WorkspaceFrame({ children, tool }: { children: React.ReactNode; tool: NonNullable<ReturnType<typeof getTool>> }) {
+  return <AppShell><section className="page-section workspace"><Link href="/tools" className="back-link">← Back to tool foundry</Link><div className="workspace-intro"><div><p className="mono-label text-[#c7f36b]">VERIFIED LOCAL MODULE</p><h1 className="font-display mt-3 text-4xl font-semibold tracking-[-0.06em] md:text-6xl">{tool.name}</h1><p className="mt-4 max-w-xl text-white/62">{tool.description}</p></div><div className="workspace-side-actions"><FavoriteToolButton tool={tool} className="workspace-favorite" /><div className="privacy-note"><ShieldCheck size={19} /><span>Input stays in this browser tab.</span></div></div></div><div className="workspace-panel"><div className="console-divider"><span>01 · INPUT DECK</span><span>LOCAL EXECUTOR</span><span>02 · OUTPUT BAY</span></div>{children}</div></section></AppShell>;
 }
 
 function Result({ value, error }: { value: string; error?: string }) {
@@ -46,4 +47,4 @@ function ColorSignal() { const [value, setValue] = useState("#c7f36b"); const pa
 
 const runnerByKind = { calculator: Calculator, percentage: Percentage, unit: UnitConverter, base64: Base64, json: JsonStation, password: Password, textStats: TextStats, color: ColorSignal, bmi: BmiTool, discount: DiscountTool, age: AgeTool, dateDiff: DateDifferenceTool, url: UrlTool, html: HtmlTool, textCase: TextCaseTool, uuid: UuidTool, gradient: GradientTool, qr: QrTool, imageResize: ImageResizerTool, favicon: FaviconGeneratorTool, hash: HashGeneratorTool, passwordAudit: PasswordStrengthTool, markdown: MarkdownWorkspaceTool, contrast: ContrastCheckerTool };
 
-export default function ToolWorkspace() { const [, params] = useRoute("/tools/:slug"); const tool = getTool(params?.slug || ""); useEffect(() => { if (tool) recordToolVisit(tool); }, [tool]); if (!tool) return <AppShell><section className="page-section"><p className="mono-label">MODULE NOT FOUND</p><Link href="/tools" className="signal-button mt-5 inline-flex">Return to tools</Link></section></AppShell>; const Runner = runnerByKind[tool.kind]; return <WorkspaceFrame title={tool.name} description={tool.description}><Runner /></WorkspaceFrame>; }
+export default function ToolWorkspace() { const [, params] = useRoute("/tools/:slug"); const tool = getTool(params?.slug || ""); useEffect(() => { if (tool) recordToolVisit(tool); }, [tool]); if (!tool) return <AppShell><section className="page-section"><p className="mono-label">MODULE NOT FOUND</p><Link href="/tools" className="signal-button mt-5 inline-flex">Return to tools</Link></section></AppShell>; const Runner = runnerByKind[tool.kind]; return <WorkspaceFrame tool={tool}><Runner /></WorkspaceFrame>; }
