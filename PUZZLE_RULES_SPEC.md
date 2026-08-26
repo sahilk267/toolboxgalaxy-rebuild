@@ -70,6 +70,8 @@ type ZipBoard = {
 
 The live path must begin at number 1, add only orthogonally adjacent unvisited cells, respect walls, and never reach a numbered cell before the previous number. Completion requires the path length to equal the grid cell count and the final waypoint sequence to be complete. Drag-back performs legitimate path backtracking; it does not create a branch.
 
+For the shipped strategic local field, authoring also rejects an obvious row-by-row serpentine route. The 6×6 edition must use a solver-verified unique Hamiltonian path with scattered ordered stations, wall-separated corridor decisions, and at least twenty direction changes. Walls may never be placed merely on the intended path; each must create a visible constraint or dead-end risk that the player must reason about.
+
 ## Mini Sudoku contract
 
 Mini Sudoku is a 6×6 grid with digits 1–6 exactly once in each row, column, and shaded box.[^mini-sudoku-tutorial] The local edition uses 2-row × 3-column boxes and a fixed, independently checked solution.

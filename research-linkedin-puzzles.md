@@ -27,7 +27,7 @@ Source: [Play Zip game on LinkedIn](https://www.linkedin.com/help/linkedin/answe
 | Input | Click/tap-and-hold the 1 cell, then draw; click/tap/drag back to a cell to erase path segments. |
 | Assistance | Hint erases to the first mistake and reveals the next correct step; Undo reverts the last move; Clear resets the grid. |
 
-**Implementation note.** A faithful local version needs Hamiltonian-path validation with required ordered waypoints and blocked directed edges. It must support live backtracking rather than accepting disjoint path segments.
+**Implementation note.** A faithful local version needs Hamiltonian-path validation with required ordered waypoints and blocked directed edges. It must support live backtracking rather than accepting disjoint path segments. The current local field deliberately uses a solver-verified 6×6 non-serpentine route, ten scattered checkpoints, and walls that create real fork/dead-end decisions; it does not claim parity with any LinkedIn daily board.
 
 ## Mini Sudoku — LinkedIn game evidence
 

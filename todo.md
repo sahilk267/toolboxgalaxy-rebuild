@@ -106,3 +106,11 @@
 - [x] Add an unmistakable completed-state panel with visible solved evidence and clear replay/reset behavior for every puzzle.
 - [x] Record a privacy-safe browser-local per-puzzle completion marker and show when the current local daily field has been completed.
 - [x] Play-test normal, completed, and reset states in the browser so completion is visibly understandable without reading hidden feedback text.
+
+## Zip Strategic Challenge Upgrade
+
+- [x] Research and document authoring criteria that prevent an obvious serpentine or straight-line Zip solution.
+- [x] Author a larger non-linear Zip route with meaningful forks, dead ends, wall constraints, and ordered checkpoints.
+- [x] Prove the new field’s intended route and uniqueness with the independent Zip solver before UI use.
+- [x] Update Zip guidance and Hint feedback to explain the strategic constraints without revealing the full route.
+- [x] Play-test wrong branches, backtracking, hints, full completion, desktop/mobile readability, and current build output before checkpointing.
