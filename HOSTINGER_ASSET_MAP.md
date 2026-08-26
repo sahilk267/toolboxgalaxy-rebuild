@@ -10,5 +10,6 @@ The original visual files were copied into the external handoff directory `/home
 | `/assets/games-arcade.jpg` | `games-arcade.jpg` | Games hub and Orbit Dash background art |
 | `/assets/signal-switch-reference.jpg` | `signal-switch-reference.jpg` | Signal Switch Games Bay card and visual QA reference |
 | `/assets/circuit-shift-reference.jpg` | `circuit-shift-reference.jpg` | Circuit Shift Games Bay card and visual QA reference |
+| `/assets/logic-puzzle-suite-reference.jpg` | `logic-puzzle-suite-reference.jpg` | Logic Lab Games Bay card and Logic Lab catalog hero |
 
 For production, build with `VITE_ASSET_BASE_URL=/assets` and replace the temporary `/manus-storage/…` image references with this asset base. The original handoff artwork is deliberately outside the web project so the static deployment bundle stays small.

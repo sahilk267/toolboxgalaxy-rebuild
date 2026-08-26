@@ -18,6 +18,8 @@ import { lazy, Suspense } from "react";
 const OrbitDash = lazy(() => import("@/pages/OrbitDash"));
 const SignalSwitch = lazy(() => import("@/pages/SignalSwitch"));
 const CircuitShift = lazy(() => import("@/pages/CircuitShift"));
+const LogicLab = lazy(() => import("@/pages/LogicLab"));
+const LogicPuzzle = lazy(() => import("@/pages/LogicPuzzle"));
 
 function GameRoute() {
   return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Orbit Dash…</div>}><OrbitDash /></Suspense>;
@@ -29,6 +31,14 @@ function SignalSwitchRoute() {
 
 function CircuitShiftRoute() {
   return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Circuit Shift…</div>}><CircuitShift /></Suspense>;
+}
+
+function LogicLabRoute() {
+  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Logic Lab…</div>}><LogicLab /></Suspense>;
+}
+
+function LogicPuzzleRoute() {
+  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading puzzle module…</div>}><LogicPuzzle /></Suspense>;
 }
 
 export default function App() {
@@ -46,6 +56,8 @@ export default function App() {
             <Route path="/games/orbit-dash" component={GameRoute} />
             <Route path="/games/signal-switch" component={SignalSwitchRoute} />
             <Route path="/games/circuit-shift" component={CircuitShiftRoute} />
+            <Route path="/games/logic-lab" component={LogicLabRoute} />
+            <Route path="/games/logic/:slug" component={LogicPuzzleRoute} />
             <Route path="/contact" component={Contact} />
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />

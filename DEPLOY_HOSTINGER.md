@@ -1,6 +1,6 @@
 # Hostinger Shared Hosting Deployment
 
-This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current twenty-four tools plus Orbit Dash, Signal Switch, and Circuit Shift are browser-local, so the core experience does not require an API or database.
+This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current twenty-four tools, three arcade games, and six Logic Lab modules are browser-local, so the core experience does not require an API or database.
 
 ## Build and upload
 
@@ -19,7 +19,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 | Check | Expected result |
 |---|---|
 | Root document | `public_html/index.html` exists after upload |
-| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, `/games/signal-switch`, and `/games/circuit-shift` open directly without 404 errors |
+| SPA fallback | `/tools`, `/tools/image-resizer`, `/games/orbit-dash`, `/games/signal-switch`, `/games/circuit-shift`, `/games/logic-lab`, and `/games/logic/wend` open directly without 404 errors |
 | HTTPS | `https://toolboxgalaxy.com` is enabled and the HTTP version redirects to HTTPS |
 | Assets | `/manus-storage/` URLs must be replaced by equivalent permanent image URLs if deploying outside Manus hosting |
 | Headers | Confirm the `.htaccess` header directives work with the selected Hostinger server stack |
@@ -29,7 +29,7 @@ Upload the contents of `dist/public/` to the domain document root, usually `publ
 
 ## Important asset note
 
-The current build uses Manus-hosted visual asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the five generated assets and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with your permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
+The current build uses Manus-hosted visual asset URLs. Those URLs are suitable for the project preview. Before the Hostinger release, export the mapped generated assets, including `logic-puzzle-suite-reference.jpg`, and upload them to the Hostinger site (for example, `public_html/assets/`), then replace the `/manus-storage/...` references with permanent HTTPS asset paths. Do not leave preview-only asset URLs in a production Hostinger upload.
 
 The complete source-to-destination list is in [`HOSTINGER_ASSET_MAP.md`](./HOSTINGER_ASSET_MAP.md). Build production with `VITE_ASSET_BASE_URL=/assets` after the asset references have been moved to the Hostinger location.
 
@@ -62,6 +62,10 @@ Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scr
 ## Circuit Shift local score summary
 
 After a real solved practice or daily board, Circuit Shift can create a browser-local text summary with only the visible mode, difficulty or daily ID, score, moves, and daily streak. A compatible browser may open its native share sheet; otherwise the visitor can copy the plain text or download it. No share action calls a server or includes a player identity, local-storage keys, puzzle layout, browser history, or hidden game state. The deterministic `?demo` path intentionally never exposes a result-sharing control. During local development only, `?share-preview=1` displays a non-production sample panel for visual QA; the bundle excludes this route behavior in production.
+
+## Logic Lab puzzle suite
+
+Logic Lab exposes six fixed, browser-local puzzle modules at `/games/logic/:slug`: `mini-sudoku`, `tango`, `queens`, `patches`, `zip`, and `wend`. Their pure validators and authored test script are bundled with the frontend; they do not scrape LinkedIn, query a dictionary, fetch daily boards, send player input, or require an account. Each module supports pointer controls and focusable controls, has a visible reset action, keeps synthesized sound disabled until the visitor explicitly enables it, and supports a deterministic, silent `?demo=1` visual-QA state. Validate `/games/logic-lab` and all six module routes after upload.
 
 ## Future PHP APIs
 

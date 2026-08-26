@@ -73,3 +73,13 @@
 - [x] Preserve Daily Challenge privacy, demo exclusion, explicit sound opt-in, and all existing practice/daily controls.
 - [x] Document the no-network local sharing contract and update game architecture notes.
 - [x] Validate TypeScript, static production build, current browser logs, and desktop/mobile sharing routes before checkpointing.
+
+## LinkedIn-Style Logic Puzzle Games Checklist
+
+- [x] Research official or authoritative rules, win conditions, constraints, interactions, and variants for Patches, Zip, Mini Sudoku, Tango, Queens, and Wend.
+- [x] Resolve the exact “Wend” game identity/variant before choosing its puzzle logic.
+- [x] Record source-backed game contracts, generators, solvers, and edge-case validation cases before UI implementation.
+- [x] Build a reusable browser-local puzzle framework with keyboard/touch parity, opt-in sound, local progress, and deterministic visual QA routes.
+- [x] Implement every confirmed puzzle with logic validation before styling/integration.
+- [x] Integrate all confirmed puzzles into Games Bay, documentation, and static Hostinger deployment guidance.
+- [x] Validate unit logic, user interactions, desktop/mobile routes, TypeScript, static production build, and current browser logs before checkpointing.

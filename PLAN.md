@@ -50,3 +50,11 @@ Circuit Shift is a lightweight, single-player rotation puzzle. The player turns 
 ### Daily Challenge extension
 
 The Daily Challenge derives the board scramble from the visitor’s local calendar date. For the same device-local date, the challenge seed and tile offsets are reproducible; no time service, account, API, or server leaderboard is used. The mode stores only that date’s local best score under its own browser key and applies a fixed 1.9× score multiplier. A Daily Streak stores only successfully completed device-local date IDs, counts consecutive calendar dates, and is idempotent for a same-day retry. `?daily=1&demo=1` runs the daily board’s known auto-rotation sequence for visual verification while sound remains disabled until the player uses the visible sound/start action; demo completion never writes a streak.
+
+---
+
+# Game Plan: Logic Puzzle Suite
+
+The Games Bay adds six browser-local puzzle editions informed by Patches, Zip, Mini Sudoku, Tango, Queens, and Wend. Detailed source-backed rules, local geometry choices, solver requirements, and authoring tests are maintained in [`PUZZLE_RULES_SPEC.md`](./PUZZLE_RULES_SPEC.md). The implementation ships only fixed puzzle definitions that pass independent validators and uniqueness checks where applicable; it does not scrape, reproduce, or depend on LinkedIn’s daily data.
+
+The completed suite is available from `/games/logic-lab` and its six `/games/logic/:slug` routes. The first three 6×6 games and the three remaining partition/path/word modules share the same AppShell puzzle frame, visible reset and sound opt-in controls, keyboard-focusable buttons, and silent deterministic demo route. The project validation script is `pnpm exec tsx scripts/verify-logic-puzzles.ts`.

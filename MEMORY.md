@@ -22,3 +22,11 @@
 - Circuit Shift intentionally uses a fixed 4×4 board and deterministic layouts rather than procedural level generation. That keeps visual QA, touch targets, and puzzle completion logic predictable on shared hosting.
 - Puzzle mechanics must remain readable in one screenshot: lime connected paths, dark inactive traces, a cyan selection outline, and a visible input/output relay.
 - The game will share the existing synthesized browser sound system, but only after the player explicitly enables sound through the game HUD.
+
+## Logic Lab Build Notes
+
+- Logic Lab is a DOM/React puzzle suite rather than a Babylon canvas game because fixed grid constraints need reliable semantic buttons, keyboard access, and deterministic touch targets.
+- It provides six local routes: Mini Sudoku, Tango, Queens, Patches, Zip, and Wend. `PUZZLE_RULES_SPEC.md` remains the implementation contract; `research-linkedin-puzzles.md` records the underlying source research.
+- Every board is authored and deterministic. `scripts/verify-logic-puzzles.ts` verifies known solutions, representative invalid states, and the applicable uniqueness claims before release.
+- Patches is an exact rectangle cover with one clue per rectangle; Zip is a non-repeating ordered orthogonal path that respects wall edges; Wend is the confirmed orthogonal word-path exact cover, not a substituted word game.
+- The route flag `?demo=1` is purely visual QA. It stays silent, does not persist completion/progress, and never contacts a service. Synthesized game sound remains an explicit visitor opt-in.

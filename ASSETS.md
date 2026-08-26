@@ -28,3 +28,11 @@ The player ship, gates, collectible signal fragments, and starfield are procedur
 | Asset | Usage | Source |
 |---|---|---|
 | Circuit Shift 16:9 in-game reference | Games Bay card artwork and visual QA reference | `/manus-storage/toolbox-galaxy-circuit-shift-reference_92722146.jpg` |
+
+## Logic Lab Assets
+
+**Art direction:** A midnight orbital workbench containing several readable constraint-system mechanisms. The reference supports the Games Bay and Logic Lab catalog while the actual Mini Sudoku, Tango, Queens, Patches, Zip, and Wend boards remain semantic HTML/CSS interfaces with no shipped scene media.
+
+| Asset | Usage | Source |
+|---|---|---|
+| Logic Lab 16:9 reference | Games Bay Logic Lab card and Logic Lab catalog hero | `/manus-storage/toolbox-galaxy-logic-puzzle-suite-reference_aebb6519.jpg` |
