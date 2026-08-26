@@ -94,6 +94,8 @@ Queens uses exactly one Crown in every row, column, and colored region, with no 
 
 The validator checks per-row, per-column, and per-region counts, then checks all eight neighboring cells of every queen. Marked cells are ignored by the solver and never count toward completion. Shipped region maps require a single valid queen assignment.
 
+`queensBank.ts` contains seven date-selected editions (`Apollo` through `Galileo`). Each stores an independently authored 6×6 connected region map, its own non-touching six-queen row-to-column solution, region-size profile, search-depth record, and Calm/Standard/Dense band. A region signature and canonical reflection/rotation signature are both unique across the bank, so an orientation change cannot be shipped as a new Queens field. The permanent verifier asserts six connected substantive regions, one legal assignment, distinct queen layouts, direct duplicate-region and adjacency mutations, distinct authoring complexity, and seven-consecutive-date selector coverage. Completion storage uses `queens-<edition-id>` plus the local date so records cannot mix.
+
 ## Wend contract
 
 Wend forms words from orthogonally adjacent letters; every letter must be used exactly once and words cannot overlap.[^wend-help] A local board stores a fixed letter grid, target words/lengths, and one valid path per target word.

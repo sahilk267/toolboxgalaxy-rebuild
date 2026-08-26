@@ -6,7 +6,7 @@ import { baseToDisplay, displayToBase, getLogicDaily, type LogicDaily } from "@/
 import { cloneGrid, sameCell } from "@/game/logicPuzzles/core";
 import type { Cell } from "@/game/logicPuzzles/core";
 import { miniSudokuEditionBank, miniSudokuEditionForDate, solvedSudoku, sudokuConflicts, type SudokuGrid } from "@/game/logicPuzzles/miniSudoku";
-import { queensRegions, queensSolution, solvedQueens, queensViolations, type QueenState } from "@/game/logicPuzzles/queens";
+import { queensEditionBank, queensEditionForDate, queensRegions, queensSolution, solvedQueens, queensViolations, type QueenState } from "@/game/logicPuzzles/queens";
 import { solvedTango, tangoGivens, tangoRelations, tangoSolution, tangoViolations, type TangoGrid, type TangoValue } from "@/game/logicPuzzles/tango";
 import { tangoEditionBank, tangoEditionForDate } from "@/game/logicPuzzles/tangoBank";
 import { patchCells, patchesBoard, patchesClues, patchesSolution, solvedPatches, validPatch, type Patch } from "@/game/logicPuzzles/patches";
@@ -95,6 +95,30 @@ function QueensPuzzle() {
   return <PuzzleFrame eyebrow="LOGIC MODULE 03 / REGIONS" title="Queens" rules="Place one Crown in every row, column, and colored region. Crowns cannot touch, even diagonally." solved={solved} onReset={() => { setGrid(initialQueens(daily)); setFeedback("Board reset to this date’s region assignment."); }} onHint={hint} audio={audio} daily={daily} feedback={feedback} progress={{ label: "CROWNS PLACED", value: crownCount, total: 6 }} completedOnDevice={completedOnDevice}><div className="logic-board-layout queens-layout"><div className="queens-board" role="grid" aria-label="Queens region puzzle">{Array.from({ length: 36 }, (_, index) => { const displayRow = Math.floor(index / 6); const displayCol = index % 6; const base = displayToBase(displayRow, displayCol, 6, daily.transform); const state = grid[base.row][base.col]; return <button key={cellKey(displayRow, displayCol)} type="button" role="gridcell" className={`queen-cell queen-cell--region-${queensRegions[base.row][base.col]} ${invalid.has(cellKey(base.row, base.col)) ? "puzzle-cell--invalid" : ""}`} onClick={() => cycle(base.row, base.col)} onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); cycle(base.row, base.col); } }} aria-label={`Row ${displayRow + 1}, column ${displayCol + 1}, region ${queensRegions[base.row][base.col] + 1}, ${state}`}>{state === "queen" ? <Crown size={23} /> : state === "marked" ? <X size={16} /> : ""}</button>; })}</div><aside className="logic-game-note"><Lightbulb size={17} /><p><b>INPUT</b> Click cycles blank → mark → Crown.</p><p><b>HINT</b> Removes an excess Crown or confirms the next location.</p><p><b>LIVE CHECK</b> Rows, columns, regions, and all adjacent cells are checked.</p></aside></div></PuzzleFrame>;
 }
 
+function QueensEditionPuzzle() {
+  const audio = useRef(new OrbitAudio());
+  const demo = demoMode();
+  const daily = useMemo(() => getLogicDaily(), []);
+  const editionOverride = new URLSearchParams(window.location.search).get("edition");
+  const edition = useMemo(() => queensEditionBank.find((item) => item.id === editionOverride) ?? queensEditionForDate(daily.id), [daily.id, editionOverride]);
+  const editionDaily = useMemo(() => ({ ...daily, difficulty: edition.difficulty }), [daily, edition.difficulty]);
+  const [grid, setGrid] = useState<QueenState[][]>(emptyQueens);
+  const [feedback, setFeedback] = useState("Use marks to test eliminations; only Crowns count toward this edition’s six region constraints.");
+  const solved = solvedQueens(grid, edition.regions);
+  const invalid = queensViolations(grid, edition.regions);
+  const solvedRef = useRef(false);
+  useEffect(() => () => audio.current.dispose(), []);
+  useEffect(() => { if (!demo) return; let row = 0; const timer = window.setInterval(() => { if (row >= 6) return window.clearInterval(timer); const active = row++; setGrid((current) => { const next = current.map((line) => [...line]); next[active][edition.solution[active]] = "queen"; return next; }); }, 175); return () => window.clearInterval(timer); }, [demo, edition.solution]);
+  useEffect(() => { if (solved && !solvedRef.current && !demo) audio.current.play("puzzleSolve"); solvedRef.current = solved; }, [solved, demo]);
+  const cycle = (row: number, col: number) => { setGrid((current) => { const next = current.map((line) => [...line]); next[row][col] = next[row][col] === "empty" ? "marked" : next[row][col] === "marked" ? "queen" : "empty"; return next; }); audio.current.play("rotate"); };
+  const hint = () => { const wrong = grid.flatMap((line, row) => line.map((value, col) => ({ row, col, value }))).find(({ row, col, value }) => value === "queen" && edition.solution[row] !== col); if (wrong) { setGrid((current) => { const next = current.map((line) => [...line]); next[wrong.row][wrong.col] = "empty"; return next; }); return setFeedback(`Hint: cleared the excess Crown at row ${wrong.row + 1}, column ${wrong.col + 1}.`); } const row = edition.solution.findIndex((col, currentRow) => grid[currentRow][col] !== "queen"); if (row < 0) return setFeedback("All six verified Crown locations are already present."); setGrid((current) => { const next = current.map((line) => [...line]); next[row][edition.solution[row]] = "queen"; return next; }); setFeedback(`Hint: a Crown belongs in row ${row + 1}, column ${edition.solution[row] + 1}.`); };
+  const completedOnDevice = usePuzzleCompletion(`queens-${edition.id}`, daily, solved, demo);
+  const crownCount = grid.flat().filter((value) => value === "queen").length;
+  return <PuzzleFrame eyebrow={`LOGIC MODULE 03 / ${edition.id.replace("queens-", "").toUpperCase()} / REGIONS`} title="Queens" rules={`Edition ${edition.id.replace("queens-", "").toUpperCase()}: place one Crown in every row, column, and connected region. Its ${edition.regionSizes.join("–")} zone profile is independently authored; Crowns cannot touch.`} solved={solved} onReset={() => { setGrid(emptyQueens()); setFeedback("Board reset to this edition’s verified region map."); }} onHint={hint} audio={audio} daily={editionDaily} feedback={feedback} progress={{ label: "CROWNS PLACED", value: crownCount, total: 6 }} completedOnDevice={completedOnDevice}>
+    <div className={`queens-edition-telemetry queens-edition-telemetry--${edition.difficulty}`}><span>REGION BUS / 06 CONNECTED ZONES</span><b>{edition.id.replace("queens-", "").toUpperCase()} / MAP LOCKED</b><span>SEARCH DEPTH / {edition.searchNodes}</span></div><div className="logic-board-layout queens-layout"><div className="queens-field-rack"><div className="queens-board" role="grid" aria-label={`Queens ${edition.id} region puzzle`}>{Array.from({ length: 36 }, (_, index) => { const displayRow = Math.floor(index / 6); const displayCol = index % 6; const base = displayToBase(displayRow, displayCol, 6, daily.transform); const state = grid[base.row][base.col]; const region = edition.regions[base.row][base.col]; return <button key={cellKey(displayRow, displayCol)} type="button" role="gridcell" className={`queen-cell queen-cell--region-${region} ${invalid.has(cellKey(base.row, base.col)) ? "puzzle-cell--invalid" : ""}`} onClick={() => cycle(base.row, base.col)} onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); cycle(base.row, base.col); } }} aria-label={`Row ${displayRow + 1}, column ${displayCol + 1}, region ${region + 1}, ${state}`}>{state === "queen" ? <Crown size={23} /> : state === "marked" ? <X size={16} /> : ""}</button>; })}</div></div><aside className="logic-game-note"><Lightbulb size={17} /><p><b>INPUT</b> Click cycles blank → mark → Crown.</p><p><b>HINT</b> Removes an excess Crown or confirms this edition’s next location.</p><p><b>LIVE CHECK</b> Rows, columns, regions, and all adjacent cells are checked.</p></aside></div>
+  </PuzzleFrame>;
+}
+
 function PatchesPuzzle() {
   const audio = useRef(new OrbitAudio()); const demo = demoMode(); const daily = useMemo(() => getLogicDaily(), []); const [placed, setPlaced] = useState<Patch[]>(() => daily.difficulty === "calm" ? [patchesSolution[0]] : []); const [anchor, setAnchor] = useState<Cell | null>(null); const [feedback, setFeedback] = useState("Choose a clue cell, then an opposite corner. This is the larger 6×6 partition field."); const solved = solvedPatches(placed);
   useEffect(() => () => audio.current.dispose(), []);
@@ -127,6 +151,6 @@ function WendPuzzle() {
 
 export default function LogicPuzzle() {
   const [, legacy] = useRoute("/games/logic/:slug"); const [, direct] = useRoute("/games/:slug"); const slug = legacy?.slug ?? direct?.slug;
-  if (slug === "mini-sudoku") return <MiniSudokuPuzzle />; if (slug === "tango") return <TangoEditionPuzzle />; if (slug === "queens") return <QueensPuzzle />; if (slug === "patches") return <PatchesPuzzle />; if (slug === "zip") return <ZipPuzzle />; if (slug === "wend") return <WendPuzzle />;
+  if (slug === "mini-sudoku") return <MiniSudokuPuzzle />; if (slug === "tango") return <TangoEditionPuzzle />; if (slug === "queens") return <QueensEditionPuzzle />; if (slug === "patches") return <PatchesPuzzle />; if (slug === "zip") return <ZipPuzzle />; if (slug === "wend") return <WendPuzzle />;
   return <section className="logic-game-page"><div className="logic-game-stage"><p className="mono-label">MODULE NOT DEPLOYED</p><h1 className="font-display">This verified puzzle field is unavailable.</h1><Link href="/games" className="signal-button">Return to Games Bay</Link></div></section>;
 }

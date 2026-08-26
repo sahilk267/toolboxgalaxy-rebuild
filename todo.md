@@ -124,3 +124,13 @@
 - [x] Integrate device-local date selection from the bundled board bank and display the actual edition/difficulty honestly.
 - [x] Extend hints, reset, completion, replay, relation markers, and progress persistence to the selected edition without mixing daily records.
 - [x] Run full keyboard/pointer browser playtests for all seven editions plus desktop/mobile screens, TypeScript, all logic validators, a static build, PWA artifact checks, and a current clean log tail before checkpointing.
+
+## Queens Seven-Edition Region-Map Bank
+
+- [x] Play the current Queens field in a browser and audit its solver, route UI, date transform, completion key, and existing authored region topology before changing it.
+- [x] Define a seven-edition 6×6 Queens schema with independently authored region maps, solution placements, difficulty bands, local-date selection, and edition-specific completion keys.
+- [x] Author seven non-equivalent region maps and queen arrangements; prove each has one legal solution and a distinct region/reasoning topology rather than a reflection, rotation, palette change, or opening-assist variation.
+- [x] Integrate the selected region map, named edition/difficulty HUD, solution, demo, Hint, Reset, visible region identity, and local completion persistence into the direct full-screen route.
+- [x] Extend permanent solver tests and the trusted browser harness for seven edition mounts, wrong placements, Hint, Reset, completion, visible regions, audio, desktop/mobile layouts, and date coverage.
+- [x] Update the daily-edition research audit, puzzle contract, architecture/resumability/deployment notes, and checklist only after successful integration and validation.
+- [x] Run final TypeScript, full logic verification, all browser suites, static build, PWA checks, and current-log review before one milestone checkpoint.

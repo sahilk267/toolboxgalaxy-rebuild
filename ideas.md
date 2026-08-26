@@ -114,3 +114,6 @@ Har CSS/component/page file ke top par style reminder add karna hai:
 - Game titles pair display-scale names with a visible mono `CONSTRAINT FIELD` designation so the hero reads as a named operational module rather than a generic puzzle masthead.
 - Authored daily-board variants expose a compact field-state telemetry strip; the signal changes by difficulty/edition state while keeping shared cockpit geometry, lime live-field semantics, and cyan blueprint structure.
 - The compact Orbit Mark and `TOOLBOX / GALAXY` lockup carries a framed, high-contrast mission-patch treatment on game routes before secondary controls compete for attention.
+- The game-route mission patch remains visually competitive with the module title through framed Orbit Mark treatment, two-line lockup, and a compact `MISSION PATCH / LOCAL COCKPIT` designation.
+- Queens region fills are semantic connected constraint zones, never decorative swatches: each field exposes a named region bus, zone coordinates, a six-zone map label, and a docked validator relay to tie color to rule logic.
+- Each authored Queens edition communicates personality through map-lock telemetry, connected-zone profile, search-depth readout, and its calm/standard/dense state—not through changing the shared Orbital Workbench palette.
