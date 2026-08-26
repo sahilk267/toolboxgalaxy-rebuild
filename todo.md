@@ -99,3 +99,10 @@
 - [x] Play every direct puzzle route in a browser before further feature work: normal input, one wrong move, Hint, Reset, daily field, and completion behavior.
 - [x] Verify master sound and optional music from visible controls using a user gesture, including shared persistence across Games Bay routes.
 - [x] Record confirmed findings and repair only verified interaction defects before proposing another game change. The only confirmed defect was delayed visible MUSIC feedback during asynchronous playback startup; the common control now updates immediately and reconciles with persisted state.
+
+## Visible Play and Completion Feedback
+
+- [x] Add clear, non-color-only progress counters and board/path highlights for all six puzzle modules.
+- [x] Add an unmistakable completed-state panel with visible solved evidence and clear replay/reset behavior for every puzzle.
+- [x] Record a privacy-safe browser-local per-puzzle completion marker and show when the current local daily field has been completed.
+- [x] Play-test normal, completed, and reset states in the browser so completion is visibly understandable without reading hidden feedback text.
