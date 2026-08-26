@@ -65,3 +65,11 @@
 - [x] Integrate the palette with the shared shell and protect Circuit Shift from background game-key input while it is open.
 - [x] Document command palette behavior and update architecture notes.
 - [x] Validate TypeScript, production build, current browser logs, and desktop/mobile command-palette routes before checkpointing.
+
+## Circuit Shift Local Score Sharing Checklist
+
+- [x] Define an exact result-summary payload that excludes player identity, browser history, and hidden game state.
+- [x] Add native share, clipboard-copy, and downloadable-text fallback controls after a real score result.
+- [x] Preserve Daily Challenge privacy, demo exclusion, explicit sound opt-in, and all existing practice/daily controls.
+- [x] Document the no-network local sharing contract and update game architecture notes.
+- [x] Validate TypeScript, static production build, current browser logs, and desktop/mobile sharing routes before checkpointing.

@@ -59,6 +59,10 @@ The command palette is also static UI only. It searches the already bundled rout
 
 Circuit Shift’s Daily Challenge is also static and browser-local. Its 4×4 scramble is derived from the visitor device’s local calendar date, so it does not need a clock API, database, login, or leaderboard. The date-specific daily best remains in that browser’s local storage and is separate from normal practice best scores. A local Daily Streak stores only the completed local date plus current/longest consecutive counts; repeat solves on the same date cannot increase it. Confirm `/games/circuit-shift?daily=1` and `/games/circuit-shift?daily=1&demo=1` after Hostinger upload; the latter is a visual QA route only, keeps game sound disabled until a visible player action enables it, and does not write a streak.
 
+## Circuit Shift local score summary
+
+After a real solved practice or daily board, Circuit Shift can create a browser-local text summary with only the visible mode, difficulty or daily ID, score, moves, and daily streak. A compatible browser may open its native share sheet; otherwise the visitor can copy the plain text or download it. No share action calls a server or includes a player identity, local-storage keys, puzzle layout, browser history, or hidden game state. The deterministic `?demo` path intentionally never exposes a result-sharing control. During local development only, `?share-preview=1` displays a non-production sample panel for visual QA; the bundle excludes this route behavior in production.
+
 ## Future PHP APIs
 
 When a tool genuinely needs server processing, expose it behind a single PHP API base such as `/api/v1/`. Keep the frontend request path in one environment-driven adapter instead of hard-coding endpoints in individual pages. The PHP endpoint should validate inputs, return consistent JSON errors, enforce file limits for uploads, and restrict cross-origin access to the production domain.
