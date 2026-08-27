@@ -114,6 +114,8 @@ type WendWord = { word: string; path: Cell[] };
 
 Each submitted selection must be an orthogonal non-repeating path. A selection resolves only when its letters match an unsolved target word and its path is valid for that target. Completion requires every target word and all 25 tiles. This avoids any network dictionary dependency and removes ambiguity from homographs or multiple external dictionary variants.
 
+`wendBank.ts` contains seven date-selected editions (`Apollo` through `Galileo`). Each stores an independently authored 5×5 letter grid, five target words, and five orthogonal non-repeating paths that together form an exact 25-cell cover. Target-word signatures and canonical square-symmetry path signatures are unique across the bank, so a reflection, rotation, palette swap, or opening assist cannot represent a new Wend field. The permanent verifier checks every path’s spelling and adjacency, each full cover, unique exact-cover count, word/path mutation rejection, and seven-consecutive-date selector coverage. Completion storage uses `wend-<edition-id>` plus the local date so records cannot mix.
+
 ## Verification sequence
 
 Every shipped board must pass these checks before it is exposed in the Games Bay.

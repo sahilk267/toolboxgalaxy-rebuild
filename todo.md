@@ -138,7 +138,7 @@
 ## Weekly Local Streak Calendar
 
 - [x] Audit the existing browser-local completion record, current direct Logic Lab routes, and completion-key conventions before adding any derived calendar state.
-- [x] Define a transparent local-only weekly activity model that counts only completed genuine Mini Sudoku, Tango, Queens, and Zip date-edition fields; never infer a completion from opening a route, a demo, or a visual transform.
+- [x] Define a transparent local-only weekly activity model that counts only completed genuine Mini Sudoku, Tango, Queens, Patches, Zip, and Wend date-edition fields; never infer a completion from opening a route, a demo, or a visual transform.
 - [x] Implement readable current-week navigation, per-day completion markers, current/longest streak metrics, empty state, and explicit local privacy copy without accounts, APIs, remote dates, or background jobs.
 - [x] Wire real completion events into the derived calendar idempotently, keeping existing game completion records intact and avoiding any new user input persistence.
 - [x] Extend deterministic unit/regression checks and trusted browser flows for same-day idempotence, cross-edition aggregation, week boundaries, navigation, no-demo writes, and mobile/desktop visibility.
@@ -154,3 +154,13 @@
 - [x] Extend permanent solver tests and the trusted browser harness for seven edition mounts, invalid multi-clue/overlap attempts, Hint, Reset, pointer completion, visible clues, audio, desktop/mobile layouts, and date coverage.
 - [x] Update the daily-edition research audit, puzzle contract, architecture/resumability/deployment/privacy notes, and checklist only after successful integration and validation.
 - [x] Run final TypeScript, full logic verification, all browser suites, static build, PWA checks, and current-log review before one milestone checkpoint.
+
+## Wend Seven-Edition Word-Path Bank
+
+- [x] Play the current Wend field in a browser and audit its word-path exact-cover solver, word/clue contract, route UI, date transform, completion key, and existing authored field before changing it.
+- [x] Define a seven-edition 5×5 Wend schema with independently authored target-word sets, orthogonal non-repeating exact-cover paths, difficulty bands, local-date selection, and edition-specific completion keys.
+- [x] Author seven non-equivalent target-word/path fields; prove every target path is orthogonal, each 25-cell cover is complete, all word and path signatures are distinct, and no edition is only a reflection, rotation, palette change, or opening-assist variation.
+- [x] Integrate the selected word set, named edition/difficulty HUD, solution paths, demo, Hint, Reset, live validation, visible word chips, and local completion persistence into the direct full-screen route.
+- [x] Extend permanent solver tests and the trusted browser harness for seven edition mounts, invalid non-adjacent selections, Hint, Reset, pointer completion, word-chip visibility, audio, desktop/mobile layouts, weekly-calendar aggregation, and date coverage.
+- [x] Update the daily-edition research audit, puzzle contract, architecture/resumability/deployment/privacy notes, and checklist after successful integration and validation.
+- [x] Run final TypeScript, full logic and calendar verification, all browser suites, static build, PWA checks, and current-log review before one milestone checkpoint.
