@@ -4,7 +4,7 @@ import { cropWithinSource, formatExtension, imageFileError, imageTransformLimits
 let failures = 0;
 function assert(condition: unknown, name: string) { if (condition) console.log(`PASS · ${name}`); else { failures += 1; console.error(`FAIL · ${name}`); } }
 
-assert(tools.length === 35 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && tools.some((tool) => tool.slug === "image-crop-rotate-convert" && tool.kind === "imageTransform"), "Image Crop / Rotate / Convert extends the unique 35-module registry without duplicate slug, name, or runner kind");
+assert(tools.length === 36 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && tools.some((tool) => tool.slug === "image-crop-rotate-convert" && tool.kind === "imageTransform"), "Image Crop / Rotate / Convert remains a unique 36-module registry without duplicate slug, name, or runner kind");
 const bounded = cropWithinSource({ width: 1200, height: 800 }, { x: -30, y: 790, width: 3000, height: 200 });
 assert(bounded.x === 0 && bounded.y === 790 && bounded.width === 1200 && bounded.height === 10, "Crop geometry clamps coordinates and dimensions to the selected source without producing an empty frame");
 assert(cropWithinSource({ width: 1200, height: 800 }, { x: 100, y: 50, width: 400, height: 300 }).width === 400, "An explicitly chosen in-bounds crop retains its exact source-pixel dimensions");

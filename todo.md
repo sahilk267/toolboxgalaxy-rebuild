@@ -245,3 +245,11 @@
 - [x] Add one accessible browser-local Image Crop / Rotate / Convert workspace with clear chosen-image, crop, rotation, conversion, download, reset, error, and no-persistence behavior.
 - [x] Add deterministic image geometry/output coverage and real-browser tests for file selection, crop/rotate controls, keyboard/pointer behavior, export, reset, mobile layout, and no persistence/network requests.
 - [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; run the complete static release gate before one milestone checkpoint.
+
+## Text Utilities — Batch 5 (Duplicate-Proof)
+
+- [x] Audit Text Statistics, Text Case Tool, Text Diff, Find / Replace, JSON Station, and CSV tools to define a distinct Line Sorter & De-duplicator contract.
+- [x] Define bounded current-tab line processing, including sort ordering, duplicate matching policy, blank-line handling, normalization/trim controls, and explicit limitations without upload or persistence.
+- [x] Add one accessible browser-local Line Sorter & De-duplicator workspace with visible options, useful counts, copy/download/reset feedback, clear errors, and current-tab-only text handling.
+- [x] Add deterministic coverage and real-browser tests for pointer/keyboard options, ordering, case/trim matching, blank lines, bounds, copy/download/reset, mobile layout, and no persistence/network requests.
+- [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; run the complete static release gate before one milestone checkpoint.

@@ -34,7 +34,8 @@ export type ToolKind =
   | "workShift"
   | "jsonCsv"
   | "csvViewer"
-  | "imageTransform";
+  | "imageTransform"
+  | "lineSorter";
 
 export type ToolDefinition = {
   slug: string;
@@ -360,6 +361,15 @@ export const tools: ToolDefinition[] = [
     description: "Crop an explicitly chosen image, turn it by 90°, and export a local PNG, JPG, or WebP copy.",
     kind: "imageTransform",
     accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "line-sorter-deduplicator",
+    name: "Line Sorter & De-duplicator",
+    category: "Code & Text",
+    description: "Sort pasted lines, remove repeats, and retain only the cleanup choices you make in this tab.",
+    kind: "lineSorter",
+    accent: "sky",
     tags: ["Local", "Private"],
   },
 ];

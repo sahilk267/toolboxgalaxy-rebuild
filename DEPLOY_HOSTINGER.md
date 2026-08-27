@@ -1,6 +1,6 @@
 # Hostinger Shared Hosting Deployment
 
-This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current twenty-four tools, three arcade games, and six Logic Lab modules are browser-local, so the core experience does not require an API or database.
+This project is designed to publish as a **static Vite build**. Hostinger does not need a permanent Node.js process to run the Tools and Games UI. The current thirty-six tools, three arcade games, and six Logic Lab modules are browser-local, so the core experience does not require an API or database.
 
 ## Build and upload
 
@@ -110,3 +110,9 @@ After uploading `dist/public`, open `/tools/json-csv-converter` and `/tools/csv-
 Image Crop / Rotate / Convert raises the static Tool Foundry to 35 modules. It needs no Hostinger image-upload handler, PHP endpoint, API, database, storage bucket, secret, cron job, account, or image-processing service. The visitor explicitly selects a PNG, JPG, or WebP in browser memory; source pixels and generated canvas output remain local. The original file is not modified. Crop starts at the complete source and presets can discard edges only after a visitor selects one; PNG preserves transparency, while JPG fills transparent areas white.
 
 After uploading `dist/public`, open `/tools/image-crop-rotate-convert` on the live HTTPS custom domain. Choose a modest PNG/JPG/WebP, confirm the source dimensions, enter X/Y/width/height values, test Square/4:5/16:9 presets, rotate left/right, create a PNG and a JPG/WebP export, then check download and Reset edit. Test a GIF/SVG or other unsupported selection for the visible error state and inspect the route on mobile. Confirm the Tool Foundry and quick-open label show 35 modules. Run `pnpm exec tsx scripts/verify-image-transform.ts` and `pnpm exec tsx scripts/playtest-image-transform.ts` with all existing release checks before publication.
+
+## Text Utilities Batch 5 QA
+
+Line Sorter & De-duplicator raises the static Tool Foundry to 36 modules. It processes only pasted current-tab text and needs no Hostinger API, PHP endpoint, database, storage, account, secret, cron job, file handling, text-processing service, or server runtime. Copy and `.txt` download are explicit browser actions; Reset restores only the bundled example and choices in the open tab.
+
+After uploading `dist/public`, open `/tools/line-sorter-deduplicator` directly on the live HTTPS custom domain. Paste case variants, repeated lines, whitespace-padded lines, and blank rows. Test A→Z, Z→A, and Keep first-seen order; toggle duplicate removal, trim, blank retention, and case-sensitive matching; then verify counters, Copy, Download, Reset, oversized-input error, and mobile layout. Confirm the Tool Foundry and quick-open label show 36 modules. Run `pnpm exec tsx scripts/verify-line-tool.ts` and `pnpm exec tsx scripts/playtest-line-tool.ts` with the established full static release gate before publication.
