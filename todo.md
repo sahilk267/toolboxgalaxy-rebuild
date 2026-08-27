@@ -188,3 +188,11 @@
 - [x] Add a compact six-game personal-best overview that clearly distinguishes completed editions from available authored fields without inferring any unsolved progress.
 - [x] Extend deterministic and trusted browser coverage for each game’s summary, all exclusion paths, same-day idempotence, cross-filter stability, accessibility, and mobile layout.
 - [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate TypeScript, all model tests, browser interactions, static build, PWA artifacts, and current logs before one checkpoint.
+
+## Weekly Local Calendar View Toggle
+
+- [x] Audit the existing calendar shell, day-cell semantics, visible summary/share card, filter behavior, and test harness before adding another current-session control.
+- [x] Define grid and timeline layouts that present the identical verified calendar data, metrics, day markers, filter scope, range, and share payload while retaining the same keyboard semantics.
+- [x] Add compact accessible Grid and Timeline controls that retain only in component memory, reset to Grid after a page load, and never write a preference or completion record.
+- [x] Extend deterministic and trusted browser coverage for view switching by pointer and keyboard, equivalent complete/future/empty states, filter/share stability, navigation, no-write behavior, and mobile layout.
+- [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate desktop/mobile, TypeScript, all model tests, browser interactions, static build, PWA artifacts, and current logs before one checkpoint.
