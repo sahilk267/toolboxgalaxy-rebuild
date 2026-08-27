@@ -5,7 +5,7 @@ import { Calculator, Gamepad2, Keyboard, Orbit, Search, Wrench } from "lucide-re
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 
-const routes = [{ label: "Workbench overview", href: "/", detail: "Overview", icon: Orbit }, { label: "Tool foundry", href: "/tools", detail: "24 verified modules", icon: Wrench }, { label: "Games bay", href: "/games", detail: "3 local games", icon: Gamepad2 }];
+const routes = [{ label: "Workbench overview", href: "/", detail: "Overview", icon: Orbit }, { label: "Tool foundry", href: "/tools", detail: `${tools.length} verified modules`, icon: Wrench }, { label: "Games bay", href: "/games", detail: "3 local games", icon: Gamepad2 }];
 const games = [{ label: "Orbit Dash", href: "/games/orbit-dash" }, { label: "Signal Switch", href: "/games/signal-switch" }, { label: "Circuit Shift", href: "/games/circuit-shift" }];
 const editable = (target: EventTarget | null) => target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 

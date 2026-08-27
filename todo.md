@@ -228,3 +228,12 @@
 - [x] Add deterministic formula coverage for split/tip rounding, EMI edge cases, and cross-midnight shift/break arithmetic plus registry uniqueness regression.
 - [x] Browser-test all three direct routes for normal/invalid input, pointer and keyboard controls, reset/copy feedback, desktop/mobile layout, no persistence, and full static release checks before one checkpoint.
 - [x] Update the registry, architecture, privacy, Hostinger QA, tool roadmap, and deployment documentation; deliver the three-tool batch and clearly identify the next distinct non-duplicate group.
+
+## Structured Data Tools — Batch 3 (Duplicate-Proof)
+
+- [x] Verify JSON Station, Text Diff, Find / Replace, and existing converters do not duplicate JSON↔CSV conversion or local CSV table inspection/cleaning; define their separate scoped contracts.
+- [x] Add typed pure CSV parser/serializer, JSON tabular conversion, preview bounds, column trimming, empty-row cleanup, and explicit errors without local file upload, persistence, account, API, or server handling.
+- [x] Add accessible JSON↔CSV and CSV Viewer & Cleaner workspaces with current-tab-only data, readable table semantics, copy/reset/download feedback, and clear import/export limitations.
+- [x] Add deterministic coverage for quoted delimiters, embedded newlines, JSON arrays, rectangular-table validation, duplicate headers, clean-up actions, bounds, and complete registry uniqueness.
+- [x] Browser-test direct routes, valid/invalid pasted data, pointer/keyboard conversion and clean actions, copy/download feedback, table/mobile layout, no persistence, and full static release checks before one checkpoint.
+- [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; deliver the two-tool batch before beginning another group.

@@ -31,7 +31,9 @@ export type ToolKind =
   | "findReplace"
   | "splitBill"
   | "loanEmi"
-  | "workShift";
+  | "workShift"
+  | "jsonCsv"
+  | "csvViewer";
 
 export type ToolDefinition = {
   slug: string;
@@ -329,6 +331,24 @@ export const tools: ToolDefinition[] = [
     category: "Calculate",
     description: "Calculate paid time after an unpaid break, including an overnight shift.",
     kind: "workShift",
+    accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "json-csv-converter",
+    name: "JSON ↔ CSV Converter",
+    category: "Convert",
+    description: "Convert a pasted flat JSON table or CSV table without uploading the data.",
+    kind: "jsonCsv",
+    accent: "violet",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "csv-viewer-cleaner",
+    name: "CSV Viewer & Cleaner",
+    category: "Code & Text",
+    description: "Inspect a pasted CSV table, trim cells, remove blank rows, and export a clean copy.",
+    kind: "csvViewer",
     accent: "sky",
     tags: ["Local", "Private"],
   },
