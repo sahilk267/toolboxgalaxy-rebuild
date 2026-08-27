@@ -5,7 +5,7 @@ let failures = 0;
 function assert(condition: unknown, name: string) { if (condition) console.log(`PASS · ${name}`); else { failures += 1; console.error(`FAIL · ${name}`); } }
 const valueOf = <T>(result: { value?: T; error?: string }) => result.value;
 const batchSlugs = ["json-csv-converter", "csv-viewer-cleaner"];
-assert(tools.length === 34 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "Structured Data Batch 3 extends a unique 34-module registry without duplicate slug, name, or runner kind");
+assert(tools.length === 35 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "Structured Data Batch 3 remains a unique 35-module registry without duplicate slug, name, or runner kind");
 
 const jsonSource = '[{"id":1,"memo":"North, \\"new\\"\\nline","ok":true,"gone":null},{"id":2,"new field":"arrived"}]';
 const jsonCsv = valueOf(jsonToCsv(jsonSource));

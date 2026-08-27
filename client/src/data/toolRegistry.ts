@@ -33,7 +33,8 @@ export type ToolKind =
   | "loanEmi"
   | "workShift"
   | "jsonCsv"
-  | "csvViewer";
+  | "csvViewer"
+  | "imageTransform";
 
 export type ToolDefinition = {
   slug: string;
@@ -350,6 +351,15 @@ export const tools: ToolDefinition[] = [
     description: "Inspect a pasted CSV table, trim cells, remove blank rows, and export a clean copy.",
     kind: "csvViewer",
     accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "image-crop-rotate-convert",
+    name: "Image Crop / Rotate / Convert",
+    category: "Create",
+    description: "Crop an explicitly chosen image, turn it by 90°, and export a local PNG, JPG, or WebP copy.",
+    kind: "imageTransform",
+    accent: "ember",
     tags: ["Local", "Private"],
   },
 ];

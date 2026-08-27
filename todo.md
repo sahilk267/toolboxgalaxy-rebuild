@@ -237,3 +237,11 @@
 - [x] Add deterministic coverage for quoted delimiters, embedded newlines, JSON arrays, rectangular-table validation, duplicate headers, clean-up actions, bounds, and complete registry uniqueness.
 - [x] Browser-test direct routes, valid/invalid pasted data, pointer/keyboard conversion and clean actions, copy/download feedback, table/mobile layout, no persistence, and full static release checks before one checkpoint.
 - [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; deliver the two-tool batch before beginning another group.
+
+## Image Tools — Batch 4 (Duplicate-Proof)
+
+- [x] Audit existing Image Resizer/Compressor, Favicon Generator, and other tools to define a distinct Crop / Rotate / Convert scope without duplicate workflows.
+- [x] Define a privacy-safe visitor-selected-image contract, including in-browser decoding, current-tab rendering/export behavior, bounds, supported output types, and an honest limitation notice.
+- [x] Add one accessible browser-local Image Crop / Rotate / Convert workspace with clear chosen-image, crop, rotation, conversion, download, reset, error, and no-persistence behavior.
+- [x] Add deterministic image geometry/output coverage and real-browser tests for file selection, crop/rotate controls, keyboard/pointer behavior, export, reset, mobile layout, and no persistence/network requests.
+- [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; run the complete static release gate before one milestone checkpoint.
