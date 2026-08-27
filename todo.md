@@ -219,3 +219,12 @@
 - [x] Add deterministic regression coverage for date arithmetic, timezone conversion, timestamp parsing, diff behavior, and literal/regular-expression replacement safeguards.
 - [x] Browser-test every new tool’s normal flow, invalid input, reset, copy action, direct route, desktop/mobile layout, and non-persistence; then run full static release checks before one checkpoint.
 - [x] Update registry, architecture, privacy, Hostinger QA, research, and deployment documentation; report the batch and remaining phased backlog without beginning another tool group.
+
+## High-Demand Daily Tools — Batch 2 (Duplicate-Proof)
+
+- [x] Verify no existing tool duplicates Split Bill & Tip, Loan/EMI Estimate, or Work Shift Duration; define their distinct current-input-only calculations and explicit non-advice boundaries.
+- [x] Add typed registry definitions, pure deterministic engines, and dedicated browser-local workspaces without rates, payment initiation, holiday data, accounts, saved financial data, or provider/API calls.
+- [x] Provide accessible calculations, validation, reset/copy feedback, clear assumptions for interest and shift breaks, and concise local-only disclosures without implying financial, employment, tax, or legal advice.
+- [x] Add deterministic formula coverage for split/tip rounding, EMI edge cases, and cross-midnight shift/break arithmetic plus registry uniqueness regression.
+- [x] Browser-test all three direct routes for normal/invalid input, pointer and keyboard controls, reset/copy feedback, desktop/mobile layout, no persistence, and full static release checks before one checkpoint.
+- [x] Update the registry, architecture, privacy, Hostinger QA, tool roadmap, and deployment documentation; deliver the three-tool batch and clearly identify the next distinct non-duplicate group.

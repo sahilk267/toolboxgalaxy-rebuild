@@ -1,4 +1,4 @@
-import { businessDaysBetween, convertEpoch, diffTextLines, findAndReplace, planMeetingTime } from "../client/src/lib/dailyToolEngines";
+import { businessDaysBetween, calculateWorkShift, convertEpoch, diffTextLines, estimateLoanEmi, findAndReplace, planMeetingTime, splitBillAndTip } from "../client/src/lib/dailyToolEngines";
 import { tools } from "../client/src/data/toolRegistry";
 
 let failures = 0;
@@ -6,8 +6,8 @@ function assert(condition: unknown, name: string) { if (!condition) { failures +
 const valueOf = <T>(result: { value?: T; error?: string }) => result.value;
 const unique = (values: string[]) => new Set(values).size === values.length;
 
-const batchSlugs = ["business-days-calculator", "time-zone-meeting-planner", "timestamp-converter", "text-diff-checker", "find-replace-workspace"];
-assert(tools.length === 29 && unique(tools.map((tool) => tool.slug)) && unique(tools.map((tool) => tool.name)) && unique(tools.map((tool) => tool.kind)) && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "The five daily tools extend a unique 29-module registry without duplicate slug, name, or runner kind");
+const batchSlugs = ["business-days-calculator", "time-zone-meeting-planner", "timestamp-converter", "text-diff-checker", "find-replace-workspace", "split-bill-tip-calculator", "loan-emi-estimate", "work-shift-duration"];
+assert(tools.length === 32 && unique(tools.map((tool) => tool.slug)) && unique(tools.map((tool) => tool.name)) && unique(tools.map((tool) => tool.kind)) && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "The eight daily tools extend a unique 32-module registry without duplicate slug, name, or runner kind");
 
 const weekdays = businessDaysBetween("2026-08-24", "2026-08-30", true);
 assert(valueOf(weekdays)?.businessDays === 5 && valueOf(weekdays)?.calendarDays === 7, "Business Days counts Monday–Friday and retains the selected end date");
@@ -35,6 +35,20 @@ assert(valueOf(literal)?.output === "Beacon Beacon Beacon" && valueOf(literal)?.
 assert(valueOf(findAndReplace("one one", "one", "two", { regex: false, caseSensitive: true, replaceAll: false }))?.output === "two one", "Find / Replace can replace only the first literal match");
 assert(valueOf(findAndReplace("id-42", "id-(\\d+)", "ref-$1", { regex: true, caseSensitive: true, replaceAll: true }))?.output === "ref-42", "Find / Replace supports explicit local regex capture references");
 assert(Boolean(findAndReplace("text", "[", "x", { regex: true, caseSensitive: true, replaceAll: true }).error), "Find / Replace protects the workspace from invalid regex input");
+
+const split = splitBillAndTip("2400", "10", "4");
+assert(valueOf(split)?.tip === 240 && valueOf(split)?.total === 2640 && valueOf(split)?.perPerson === 660, "Split Bill computes a chosen tip, group total, and exact per-person share");
+assert(Boolean(splitBillAndTip("100", "150", "2").error) && Boolean(splitBillAndTip("100", "10", "2.5").error), "Split Bill rejects an unrealistic tip or fractional people count");
+
+const emi = estimateLoanEmi("100000", "12", "12");
+assert(Math.abs((valueOf(emi)?.monthlyPayment ?? 0) - 8884.878867834166) < 0.000001 && Math.abs((valueOf(emi)?.totalInterest ?? 0) - 6618.546414009999) < 0.00001, "Loan / EMI uses the fixed-rate monthly-payment formula with a transparent interest total");
+assert(valueOf(estimateLoanEmi("120000", "0", "12"))?.monthlyPayment === 10000, "Loan / EMI handles a zero annual rate without division by zero");
+assert(Boolean(estimateLoanEmi("0", "9", "60").error) && Boolean(estimateLoanEmi("500000", "9", "0").error), "Loan / EMI rejects invalid amounts and repayment terms");
+
+const overnight = calculateWorkShift("22:00", "06:00", "30");
+assert(valueOf(overnight)?.grossMinutes === 480 && valueOf(overnight)?.paidMinutes === 450 && valueOf(overnight)?.crossesMidnight, "Work Shift calculates an overnight gross and paid duration after an unpaid break");
+assert(valueOf(calculateWorkShift("09:00", "17:30", "30"))?.paidMinutes === 480, "Work Shift calculates a same-day paid duration separately from Business Days");
+assert(Boolean(calculateWorkShift("09:00", "09:00", "0").error) && Boolean(calculateWorkShift("09:00", "10:00", "60").error), "Work Shift rejects zero-length shifts and breaks equal to the full shift");
 
 if (failures) { console.error(`\n${failures} daily-tool regression(s) failed.`); process.exit(1); }
 console.log("\nAll five daily-tool engine regressions passed.");

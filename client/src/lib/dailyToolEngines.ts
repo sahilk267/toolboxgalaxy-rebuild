@@ -85,3 +85,37 @@ export function findAndReplace(input: string, find: string, replacement: string,
     return { value: { output, replacements } };
   } catch { return { error: "That regular expression is not valid. Turn off Regex mode to search for the exact text." }; }
 }
+
+const finiteNumber = (value: string) => { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : null; };
+export function splitBillAndTip(subtotalValue: string, tipPercentValue: string, peopleValue: string): EngineResult<{ subtotal: number; tip: number; total: number; perPerson: number; people: number }> {
+  const subtotal = finiteNumber(subtotalValue); const tipPercent = finiteNumber(tipPercentValue); const people = finiteNumber(peopleValue);
+  if (subtotal === null || subtotal < 0) return { error: "Enter a valid non-negative bill subtotal." };
+  if (tipPercent === null || tipPercent < 0 || tipPercent > 100) return { error: "Enter a tip from 0% to 100%." };
+  if (people === null || !Number.isInteger(people) || people < 1 || people > 1000) return { error: "Enter a whole number of people from 1 to 1,000." };
+  const tip = subtotal * tipPercent / 100; const total = subtotal + tip;
+  return { value: { subtotal, tip, total, perPerson: total / people, people } };
+}
+
+export function estimateLoanEmi(principalValue: string, annualRateValue: string, monthsValue: string): EngineResult<{ principal: number; annualRate: number; months: number; monthlyPayment: number; totalPaid: number; totalInterest: number }> {
+  const principal = finiteNumber(principalValue); const annualRate = finiteNumber(annualRateValue); const months = finiteNumber(monthsValue);
+  if (principal === null || principal <= 0) return { error: "Enter a loan amount greater than zero." };
+  if (annualRate === null || annualRate < 0 || annualRate > 100) return { error: "Enter an annual interest rate from 0% to 100%." };
+  if (months === null || !Number.isInteger(months) || months < 1 || months > 600) return { error: "Enter a whole repayment term from 1 to 600 months." };
+  const monthlyRate = annualRate / 1200;
+  const monthlyPayment = monthlyRate === 0 ? principal / months : principal * monthlyRate * (1 + monthlyRate) ** months / ((1 + monthlyRate) ** months - 1);
+  const totalPaid = monthlyPayment * months;
+  return { value: { principal, annualRate, months, monthlyPayment, totalPaid, totalInterest: totalPaid - principal } };
+}
+
+function minutesFromClock(value: string): number | null { const match = /^(\d{2}):(\d{2})$/.exec(value); if (!match) return null; const hour = Number(match[1]); const minute = Number(match[2]); return hour < 24 && minute < 60 ? hour * 60 + minute : null; }
+export function calculateWorkShift(startValue: string, endValue: string, breakValue: string): EngineResult<{ grossMinutes: number; breakMinutes: number; paidMinutes: number; crossesMidnight: boolean }> {
+  const start = minutesFromClock(startValue); const end = minutesFromClock(endValue); const breakMinutes = finiteNumber(breakValue);
+  if (start === null || end === null) return { error: "Choose valid start and end times." };
+  if (start === end) return { error: "Start and end cannot be the same time for one shift." };
+  if (breakMinutes === null || breakMinutes < 0 || !Number.isInteger(breakMinutes)) return { error: "Enter a whole non-negative unpaid break in minutes." };
+  const crossesMidnight = end < start; const grossMinutes = (end - start + (crossesMidnight ? 1440 : 0));
+  if (breakMinutes >= grossMinutes) return { error: "The unpaid break must be shorter than the shift." };
+  return { value: { grossMinutes, breakMinutes, paidMinutes: grossMinutes - breakMinutes, crossesMidnight } };
+}
+
+export function formatDuration(minutes: number) { const hours = Math.floor(minutes / 60); const remainder = minutes % 60; return `${hours}h ${remainder}m`; }

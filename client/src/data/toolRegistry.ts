@@ -28,7 +28,10 @@ export type ToolKind =
   | "timeZone"
   | "timestamp"
   | "textDiff"
-  | "findReplace";
+  | "findReplace"
+  | "splitBill"
+  | "loanEmi"
+  | "workShift";
 
 export type ToolDefinition = {
   slug: string;
@@ -299,6 +302,33 @@ export const tools: ToolDefinition[] = [
     category: "Code & Text",
     description: "Replace literal text or simple regex matches without uploading a draft.",
     kind: "findReplace",
+    accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "split-bill-tip-calculator",
+    name: "Split Bill & Tip",
+    category: "Calculate",
+    description: "Divide a bill and a chosen tip across a group in one local readout.",
+    kind: "splitBill",
+    accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "loan-emi-estimate",
+    name: "Loan / EMI Estimate",
+    category: "Calculate",
+    description: "Estimate a fixed-rate monthly payment from the amount, annual rate, and term.",
+    kind: "loanEmi",
+    accent: "lime",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "work-shift-duration",
+    name: "Work Shift Duration",
+    category: "Calculate",
+    description: "Calculate paid time after an unpaid break, including an overnight shift.",
+    kind: "workShift",
     accent: "sky",
     tags: ["Local", "Private"],
   },
