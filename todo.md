@@ -180,3 +180,11 @@
 - [x] Add a compact accessible share card with native share, clipboard-copy, and downloadable-text fallback controls that only appear after a local field is genuinely completed.
 - [x] Extend deterministic and trusted browser coverage for filter-aware payloads, empty-state suppression, native-share availability, copy fallback, text-download fallback, and no write/network behavior.
 - [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate desktop/mobile, TypeScript, production build, PWA artifacts, and current logs before one checkpoint.
+
+## Logic Lab Personal-Best Summary
+
+- [x] Audit existing genuine completion records, all six bank conventions, Games Bay composition, and current calendar/share behavior before adding personal progress data.
+- [x] Define honest browser-local per-game metrics based only on qualifying completed edition dates; exclude route visits, demos, legacy keys, malformed records, future dates, board content, and player identity.
+- [x] Add a compact six-game personal-best overview that clearly distinguishes completed editions from available authored fields without inferring any unsolved progress.
+- [x] Extend deterministic and trusted browser coverage for each game’s summary, all exclusion paths, same-day idempotence, cross-filter stability, accessibility, and mobile layout.
+- [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate TypeScript, all model tests, browser interactions, static build, PWA artifacts, and current logs before one checkpoint.
