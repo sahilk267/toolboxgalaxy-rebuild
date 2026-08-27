@@ -26,9 +26,17 @@ assert(completedFieldsForDate("2026-08-26", base).join(",") === "queens,patches,
 assert(summary.days.find((day) => day.id === "2026-08-28")?.completedFields.length === 0, "Future-dated records must never light a future local calendar day.");
 assert(summary.days.find((day) => day.id === "2026-08-27")?.completedFields.length === 0, "Legacy fixed-board completions must not count toward the genuine daily calendar.");
 
+const wendOnly = weeklyLogicSummary(reference, 0, base, "wend");
+assert(completedLogicDates(base, "wend").join(",") === "2026-08-26", "A selected field filter must derive activity only from its genuine edition prefix.");
+assert(completedFieldsForDate("2026-08-26", base, "wend").join(",") === "wend", "A selected field filter must retain only its own day marker.");
+assert(wendOnly.currentStreak === 0 && wendOnly.longestStreak === 1 && wendOnly.completedDays === 1 && wendOnly.totalCompletedFields === 1, "A selected field filter must recalculate streaks and totals rather than merely hiding all-field markers.");
+assert(wendOnly.days.find((day) => day.id === "2026-08-26")?.completedFields.join(",") === "wend" && wendOnly.days.find((day) => day.id === "2026-08-28")?.completedFields.length === 0, "A selected field filter must preserve future-date suppression.");
+
 const withToday: PuzzleCompletionMap = { ...base, "tango-tango-apollo:2026-08-27": true };
 const current = weeklyLogicSummary(reference, 0, withToday);
 assert(current.currentStreak === 4 && current.longestStreak === 4 && current.completedDays === 4 && current.totalCompletedFields === 7, "A current genuine field must extend the local run once while retaining same-day aggregation.");
+const tangoOnly = weeklyLogicSummary(reference, 0, withToday, "tango");
+assert(tangoOnly.currentStreak === 1 && tangoOnly.longestStreak === 1 && tangoOnly.completedDays === 2 && tangoOnly.totalCompletedFields === 2, "A selected field filter must keep only its own non-consecutive historical and current completions.");
 assert(weeklyLogicSummary(reference, -1, withToday).days.every((day) => day.completedFields.length === 0), "Previous-week navigation must keep non-overlapping weeks free of later activity.");
 
 const monthBoundary: PuzzleCompletionMap = { "zip-zip-apollo:2026-08-30": true, "queens-queens-apollo:2026-08-31": true };
@@ -36,4 +44,4 @@ const boundarySummary = weeklyLogicSummary(new Date(2026, 7, 31), 0, monthBounda
 assert(boundarySummary.weekStart === "2026-08-31" && boundarySummary.currentStreak === 2 && boundarySummary.longestStreak === 2, "Sunday-to-Monday activity must remain a two-day consecutive streak across the calendar-week boundary.");
 assert(weeklyLogicSummary(new Date(2026, 7, 31), -1, monthBoundary).days.find((day) => day.id === "2026-08-30")?.completedFields.join(",") === "zip", "Previous-week navigation must retain the Sunday completed field at a month boundary.");
 
-console.log("Weekly local streak model verified: genuine edition parsing, same-day idempotence, current/longest runs, week navigation, boundaries, future suppression, and legacy-key exclusion.");
+console.log("Weekly local streak model verified: genuine edition parsing, all-fields and selected-field aggregation, same-day idempotence, current/longest runs, week navigation, boundaries, future suppression, and legacy-key exclusion.");

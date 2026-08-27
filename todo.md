@@ -164,3 +164,11 @@
 - [x] Extend permanent solver tests and the trusted browser harness for seven edition mounts, invalid non-adjacent selections, Hint, Reset, pointer completion, word-chip visibility, audio, desktop/mobile layouts, weekly-calendar aggregation, and date coverage.
 - [x] Update the daily-edition research audit, puzzle contract, architecture/resumability/deployment/privacy notes, and checklist after successful integration and validation.
 - [x] Run final TypeScript, full logic and calendar verification, all browser suites, static build, PWA checks, and current-log review before one milestone checkpoint.
+
+## Weekly Local Streak Calendar Game-Type Filter
+
+- [x] Audit the existing verified-only aggregation model, calendar controls, visual hierarchy, and browser fixture before changing behavior.
+- [x] Define an accessible browser-local `All fields` and individual-game filter contract that never changes stored completion records or counts non-genuine keys.
+- [x] Extend the pure calendar model and deterministic verifier so filtered streaks, verified days, fields, and date markers derive only from the selected genuine edition prefix.
+- [x] Add a compact keyboard-accessible filter control to Games Bay, preserving week navigation, Today return, clear no-match feedback, and the Orbital Workbench visual system.
+- [x] Play-test pointer and keyboard filter changes on desktop and mobile with genuine, legacy, demo, malformed, and future completion records; then validate build, PWA artifacts, and current logs before one checkpoint.
