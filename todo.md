@@ -172,3 +172,11 @@
 - [x] Extend the pure calendar model and deterministic verifier so filtered streaks, verified days, fields, and date markers derive only from the selected genuine edition prefix.
 - [x] Add a compact keyboard-accessible filter control to Games Bay, preserving week navigation, Today return, clear no-match feedback, and the Orbital Workbench visual system.
 - [x] Play-test pointer and keyboard filter changes on desktop and mobile with genuine, legacy, demo, malformed, and future completion records; then validate build, PWA artifacts, and current logs before one checkpoint.
+
+## Weekly Local Completion Share Card
+
+- [x] Audit the derived calendar summary, filter behavior, and existing local share implementation before adding another export surface.
+- [x] Define a minimal weekly share payload containing only visible week range, selected game scope, streak, verified-day, and field-count values; exclude identity, local keys, puzzle layouts, browser history, and hidden records.
+- [x] Add a compact accessible share card with native share, clipboard-copy, and downloadable-text fallback controls that only appear after a local field is genuinely completed.
+- [x] Extend deterministic and trusted browser coverage for filter-aware payloads, empty-state suppression, native-share availability, copy fallback, text-download fallback, and no write/network behavior.
+- [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate desktop/mobile, TypeScript, production build, PWA artifacts, and current logs before one checkpoint.
