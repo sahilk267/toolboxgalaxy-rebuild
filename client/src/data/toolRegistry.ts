@@ -23,7 +23,12 @@ export type ToolKind =
   | "hash"
   | "passwordAudit"
   | "markdown"
-  | "contrast";
+  | "contrast"
+  | "businessDays"
+  | "timeZone"
+  | "timestamp"
+  | "textDiff"
+  | "findReplace";
 
 export type ToolDefinition = {
   slug: string;
@@ -251,6 +256,51 @@ export const tools: ToolDefinition[] = [
     kind: "contrast",
     accent: "lime",
     tags: ["Local", "Verified"],
+  },
+  {
+    slug: "business-days-calculator",
+    name: "Business Days Calculator",
+    category: "Calculate",
+    description: "Count Monday–Friday dates in a selected range without a holiday feed.",
+    kind: "businessDays",
+    accent: "lime",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "time-zone-meeting-planner",
+    name: "Time Zone Meeting Planner",
+    category: "Convert",
+    description: "Translate one local meeting time between common browser-supported zones.",
+    kind: "timeZone",
+    accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "timestamp-converter",
+    name: "Timestamp Converter",
+    category: "Convert",
+    description: "Read a Unix timestamp as ISO, UTC, and your browser’s local time.",
+    kind: "timestamp",
+    accent: "violet",
+    tags: ["Local", "Verified"],
+  },
+  {
+    slug: "text-diff-checker",
+    name: "Text Diff Checker",
+    category: "Code & Text",
+    description: "Compare two text blocks line by line, directly in your browser.",
+    kind: "textDiff",
+    accent: "ember",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "find-replace-workspace",
+    name: "Find / Replace Workspace",
+    category: "Code & Text",
+    description: "Replace literal text or simple regex matches without uploading a draft.",
+    kind: "findReplace",
+    accent: "sky",
+    tags: ["Local", "Private"],
   },
 ];
 

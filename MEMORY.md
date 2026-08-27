@@ -34,3 +34,7 @@
 - Every direct game page has a visible Reset and one verified next-move Hint. Hints never consult a service; they reveal or repair only an authored solution fact that the local validator already owns.
 - `OrbitAudio` persists one Games Bay master SOUND preference across Orbit Dash, Signal Switch, Circuit Shift, and Logic Lab. Logic Lab offers an optional ambient MUSIC loop. Both controls remain explicit user gestures, and master sound off pauses music; no route autoplay is attempted.
 - The route flag `?demo=1` is purely visual QA. It stays silent, does not persist completion/progress, and never contacts a service.
+
+## Daily Tools Batch 1
+
+- The Tool Foundry now has 29 registry-backed local modules. `dailyToolEngines.ts` is the pure no-storage/no-network owner for Business Days, Time Zone Meeting Planner, Timestamp Converter, Text Diff, and Find / Replace; `DailyToolRunners.tsx` is only the controlled UI layer. Business Days deliberately uses Monday–Friday only, with no holiday data. Time Zone Planner relies on browser `Intl`, detects missing daylight-saving local times, and makes no calendar-sync claim. The five contracts, exclusion boundaries, and duplicate proof are in `TOOL_BATCH_1_SPEC.md`. Before any change run `pnpm exec tsx scripts/verify-daily-tools.ts` for engine plus unique slug/name/kind coverage and `pnpm exec tsx scripts/playtest-daily-tools.ts` for actual Chromium route/input/error/reset/copy coverage.

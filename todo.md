@@ -204,3 +204,18 @@
 - [x] Correct only confirmed public-facing copy, navigation, semantic, or interaction gaps while preserving the Orbital Workbench system, genuine daily-bank policy, and no-network architecture.
 - [x] Re-test critical tool/game/logic-calendar/share routes, keyboard access, PWA/offline assets, static build, and current logs; record any intentionally deferred or host-managed launch steps.
 - [x] Update final release and Hostinger QA notes, then save one launch-candidate checkpoint after all verified fixes are complete.
+
+## High-Demand Daily Tool Gap Analysis
+
+- [x] Audit the current verified 24-tool registry against common browser-local daily utility categories.
+- [x] Research practical high-demand gaps and exclude tools that require an unapproved real-time provider, backend, account, copyrighted content source, or unsafe data handling.
+- [x] Produce a user-facing phased recommendation with a realistic count, priority, local feasibility, and explicit deferred categories; do not begin implementation without approval.
+
+## High-Demand Daily Tools — Batch 1 (Duplicate-Proof)
+
+- [x] Verify no existing tool duplicates Business Days Calculator, Time Zone Meeting Planner, Timestamp Converter, Text Diff Checker, or Find/Replace Workspace; document each distinct input, output, and local-only boundary.
+- [x] Add typed registry definitions, pure local engines, and dedicated runner workspaces for all five tools without remote clocks, holiday feeds, accounts, stored text, or provider/API calls.
+- [x] Provide clear input validation, useful empty/error states, copy/reset controls, keyboard support, and concise browser-local disclosures for every new workspace.
+- [x] Add deterministic regression coverage for date arithmetic, timezone conversion, timestamp parsing, diff behavior, and literal/regular-expression replacement safeguards.
+- [x] Browser-test every new tool’s normal flow, invalid input, reset, copy action, direct route, desktop/mobile layout, and non-persistence; then run full static release checks before one checkpoint.
+- [x] Update registry, architecture, privacy, Hostinger QA, research, and deployment documentation; report the batch and remaining phased backlog without beginning another tool group.
