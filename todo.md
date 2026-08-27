@@ -196,3 +196,11 @@
 - [x] Add compact accessible Grid and Timeline controls that retain only in component memory, reset to Grid after a page load, and never write a preference or completion record.
 - [x] Extend deterministic and trusted browser coverage for view switching by pointer and keyboard, equivalent complete/future/empty states, filter/share stability, navigation, no-write behavior, and mobile layout.
 - [x] Update privacy, rules, architecture, research, Hostinger QA, and checklist notes; validate desktop/mobile, TypeScript, all model tests, browser interactions, static build, PWA artifacts, and current logs before one checkpoint.
+
+## Final Public-Launch Content & UX QA
+
+- [x] Inventory every public route, visible navigation entry, tool/game launch link, legal page, PWA entry, and deployment claim for static-release completeness.
+- [x] Audit representative desktop and mobile public journeys for readability, contrast, navigation escape routes, meaningful empty states, controls, and accurate local-only wording.
+- [x] Correct only confirmed public-facing copy, navigation, semantic, or interaction gaps while preserving the Orbital Workbench system, genuine daily-bank policy, and no-network architecture.
+- [x] Re-test critical tool/game/logic-calendar/share routes, keyboard access, PWA/offline assets, static build, and current logs; record any intentionally deferred or host-managed launch steps.
+- [x] Update final release and Hostinger QA notes, then save one launch-candidate checkpoint after all verified fixes are complete.

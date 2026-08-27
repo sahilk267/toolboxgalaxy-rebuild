@@ -1,4 +1,4 @@
-// Orbital Workbench: searchable verified-tool registry and no unverified legacy links.
+// Orbital Workbench: searchable verified-tool registry arranged as connected, data-driven module bays rather than an unverified legacy catalogue.
 import AppShell from "@/components/AppShell";
 import FavoriteTools from "@/components/FavoriteTools";
 import RecentToolHistory from "@/components/RecentToolHistory";
@@ -38,7 +38,7 @@ export default function Tools() {
         </div>
 
         <div className="tools-result-line"><span>{visibleTools.length.toString().padStart(2, "0")} verified modules</span><span>runs in your browser</span></div>
-        {activeCategory === "All" ? <div className="tool-module-fields">{categoryGroups.map((group, index) => <section className="tool-group" key={group.category} aria-labelledby={`tool-group-${group.category.replace(/\W+/g, "-")}`}><div className="tool-group__head"><span>{String(index + 1).padStart(2, "0")}</span><h2 id={`tool-group-${group.category.replace(/\W+/g, "-")}`}>{group.category} modules</h2><b>{String(group.items.length).padStart(2, "0")} online</b></div><div className="tool-grid">{group.items.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div></section>)}</div> : <div className="tool-grid">{visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div>}
+        {activeCategory === "All" ? <div className="tool-module-fields">{categoryGroups.map((group, index) => <section className="tool-group" key={group.category} aria-labelledby={`tool-group-${group.category.replace(/\W+/g, "-")}`}><div className="tool-group__head"><span>{String(index + 1).padStart(2, "0")}</span><h2 id={`tool-group-${group.category.replace(/\W+/g, "-")}`}>{group.category} modules</h2><b>{String(group.items.length).padStart(2, "0")} online</b></div><p className="tool-group__readout">BAY {String(index + 1).padStart(2, "0")} / {group.items.length} BROWSER-LOCAL EXECUTOR{group.items.length === 1 ? "" : "S"} / MOUNTED</p><div className="tool-grid">{group.items.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div></section>)}</div> : <div className="tool-grid">{visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} />)}</div>}
         {visibleTools.length === 0 && <div className="empty-state"><p className="mono-label">NO MODULE FOUND</p><p>Try a shorter search or return to all categories.</p></div>}
       </section>
     </AppShell>

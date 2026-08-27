@@ -82,3 +82,8 @@ The upload-ready PHP handoff archive lives outside this static project at `/home
 ## Before launch
 
 The privacy and terms pages are initial product copy, not legal advice. Review them with the final analytics, advertising, form, file-upload, and retention configuration before publishing publicly.
+## Final release-candidate QA
+
+The static release candidate was checked through Home, Tools, Games Bay, Contact, Privacy, Terms, and the public fallback route at desktop and mobile breakpoints. The contact route now makes its delivery path explicit: until the optional same-origin Hostinger PHP endpoint is configured, a visitor-controlled `mailto:` relay opens their mail app with their current draft and does not save or automatically send it from Toolbox Galaxy. Privacy renders the same local-first facts as a readable evidence ledger; the tools catalogue retains only browser-run modules and category-bay readouts.
+
+Before publication, repeat the documented `dist/public` upload, test the live custom-domain routes directly, and decide whether to retain the email relay or configure the optional contact endpoint. The final candidate has no account, database, remote daily feed, analytics feature, or server requirement. The established `pnpm check`, deterministic verifiers, public-route QA script, browser playtests, production build, `manifest.webmanifest`, `service-worker.js`, and `offline.html` checks passed in the development release gate.
