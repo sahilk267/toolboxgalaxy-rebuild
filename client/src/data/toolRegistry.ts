@@ -35,7 +35,8 @@ export type ToolKind =
   | "jsonCsv"
   | "csvViewer"
   | "imageTransform"
-  | "lineSorter";
+  | "lineSorter"
+  | "imageMetadata";
 
 export type ToolDefinition = {
   slug: string;
@@ -370,6 +371,15 @@ export const tools: ToolDefinition[] = [
     description: "Sort pasted lines, remove repeats, and retain only the cleanup choices you make in this tab.",
     kind: "lineSorter",
     accent: "sky",
+    tags: ["Local", "Private"],
+  },
+  {
+    slug: "image-metadata-remover",
+    name: "Image Metadata Remover",
+    category: "Create",
+    description: "Create a clean local re-export without carrying the chosen image file’s metadata into the new output.",
+    kind: "imageMetadata",
+    accent: "violet",
     tags: ["Local", "Private"],
   },
 ];

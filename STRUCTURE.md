@@ -66,3 +66,12 @@ Batch 2 extends the same typed registry and `dailyToolEngines.ts` with three add
 `client/src/lib/lineToolEngine.ts` owns framework-independent current-tab text limits, line-ending normalization, trim/blank/duplicate policy, deterministic original-index tie handling, alphabetical/descending/first-seen order, and summary counters. It receives a single in-memory string and returns only an output string/counts or a bounded-input error; it cannot call a network, storage API, file system, or server.
 
 `client/src/components/LineToolRunner.tsx` owns controlled textarea/options, rendered counters, explicit browser clipboard/download actions, reset feedback, and clear local limitation copy for the unique `lineSorter` runner kind. `ToolWorkspace.tsx` only supplies the `SEQUENCE CLEANUP` telemetry and route mapping. `scripts/verify-line-tool.ts` validates exact ordering, trim/case/blank behavior, bounds, and unique 36-entry registry. `scripts/playtest-line-tool.ts` uses real Chromium keyboard input and pointer control changes, observes explicit download/copy/reset behavior, and verifies no local-storage record or request is created.
+
+
+## Image Tools Batch 6 Structure
+
+`client/src/lib/localImageMetadata.ts` owns framework-independent supported-type checks, file/decoded-pixel bounds, native-dimension re-export rules, and honest clean-output metadata boundary. It has no canvas, FileReader, object-URL, storage, network, or server dependency.
+
+`client/src/components/ImageMetadataTool.tsx` owns the controlled current-tab file picker, source decoding, native-dimension canvas re-export, source/output object-URL cleanup, explicit clean-output action, download, Reset, unsupported/decode error state, and accessible privacy limitation copy for the unique `imageMetadata` runner kind. It provides no crop, rotation, resize, format, quality, upload, or source-file mutation flow. `ToolWorkspace.tsx` only maps the unique route and `CLEAN RE-EXPORT` telemetry.
+
+`verify-image-metadata.ts` validates supported formats, file/pixel bounds, native output dimensions, clean re-export assumptions, and 37-entry registry uniqueness. `playtest-image-metadata.ts` drives real Chromium local file selection, pointer clean re-export/download, keyboard clear, unsupported-file feedback, and unchanged local-storage/network state.

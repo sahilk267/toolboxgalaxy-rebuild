@@ -253,3 +253,11 @@
 - [x] Add one accessible browser-local Line Sorter & De-duplicator workspace with visible options, useful counts, copy/download/reset feedback, clear errors, and current-tab-only text handling.
 - [x] Add deterministic coverage and real-browser tests for pointer/keyboard options, ordering, case/trim matching, blank lines, bounds, copy/download/reset, mobile layout, and no persistence/network requests.
 - [x] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; run the complete static release gate before one milestone checkpoint.
+
+## Image Tools — Batch 6 (Duplicate-Proof)
+
+- [ ] Audit Image Resizer/Compressor, Favicon Generator, and Image Crop / Rotate / Convert to define a distinct Image Metadata Remover contract.
+- [ ] Define a privacy-safe visitor-selected-image re-export flow, including supported formats, current-tab decode/canvas output, file/pixel bounds, quality/output behavior, and clear metadata limitations.
+- [ ] Add one accessible browser-local Image Metadata Remover workspace with selected-image details, explicit clean re-export, download, reset, error, and no-persistence behavior.
+- [ ] Add deterministic coverage and real-browser tests for selected image input, clean re-export, output format/geometry, keyboard/pointer controls, download, reset, invalid input, mobile layout, and no persistence/network requests.
+- [ ] Update tool contracts, plan, architecture, privacy, Hostinger QA, research/roadmap, and deployment documentation; run the complete static release gate before one milestone checkpoint.

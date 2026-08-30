@@ -5,7 +5,7 @@ let failures = 0;
 function assert(condition: unknown, name: string) { if (condition) console.log(`PASS · ${name}`); else { failures += 1; console.error(`FAIL · ${name}`); } }
 const standard = { sort: "asc" as const, removeDuplicates: true, trimLines: true, keepBlankLines: false, caseSensitiveDuplicates: false };
 
-assert(tools.length === 36 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && tools.some((tool) => tool.slug === "line-sorter-deduplicator" && tool.kind === "lineSorter"), "Line Sorter & De-duplicator extends the unique 36-module registry without duplicate slug, name, or runner kind");
+assert(tools.length === 37 && new Set(tools.map((tool) => tool.slug)).size === tools.length && new Set(tools.map((tool) => tool.name)).size === tools.length && new Set(tools.map((tool) => tool.kind)).size === tools.length && tools.some((tool) => tool.slug === "line-sorter-deduplicator" && tool.kind === "lineSorter"), "Line Sorter & De-duplicator remains a unique 37-module registry without duplicate slug, name, or runner kind");
 const standardResult = processLines("Signal\nsignal\nAmber\n\n  Beacon \nSignal", standard);
 assert(standardResult.value?.output === "Amber\nBeacon\nSignal" && standardResult.value.removedDuplicates === 2 && standardResult.value.removedBlankLines === 1, "Default cleanup trims line edges, removes case-insensitive repetitions and blanks, then sorts locally A–Z");
 const originalOrder = processLines(" Zebra \nalpha\nZebra\nalpha", { ...standard, sort: "none", removeDuplicates: false });

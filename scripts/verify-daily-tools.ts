@@ -7,7 +7,7 @@ const valueOf = <T>(result: { value?: T; error?: string }) => result.value;
 const unique = (values: string[]) => new Set(values).size === values.length;
 
 const batchSlugs = ["business-days-calculator", "time-zone-meeting-planner", "timestamp-converter", "text-diff-checker", "find-replace-workspace", "split-bill-tip-calculator", "loan-emi-estimate", "work-shift-duration", "json-csv-converter", "csv-viewer-cleaner"];
-assert(tools.length === 36 && unique(tools.map((tool) => tool.slug)) && unique(tools.map((tool) => tool.name)) && unique(tools.map((tool) => tool.kind)) && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "Ten daily tools extend a unique 36-module registry without duplicate slug, name, or runner kind");
+assert(tools.length === 37 && unique(tools.map((tool) => tool.slug)) && unique(tools.map((tool) => tool.name)) && unique(tools.map((tool) => tool.kind)) && batchSlugs.every((slug) => tools.some((tool) => tool.slug === slug)), "Ten daily tools extend a unique 37-module registry without duplicate slug, name, or runner kind");
 
 const weekdays = businessDaysBetween("2026-08-24", "2026-08-30", true);
 assert(valueOf(weekdays)?.businessDays === 5 && valueOf(weekdays)?.calendarDays === 7, "Business Days counts Monday–Friday and retains the selected end date");
