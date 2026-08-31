@@ -17,7 +17,17 @@ export default function Home() {
         <div className="page-kicker"><span>00</span><span>YOUR BROWSER WORKBENCH</span></div>
         <h1 className="font-display mt-9 max-w-3xl text-5xl font-semibold leading-[0.93] tracking-[-0.075em] text-[#f4f2ea] sm:text-6xl lg:text-8xl">Make the small thing <em>easy.</em></h1>
         <p className="mt-7 max-w-xl text-lg leading-8 text-white/65">Verified browser tools for the work in front of you, plus a quick game when your brain needs to clear the board.</p>
-        <div className="mt-10 flex flex-wrap gap-3"><Link href="/tools" className="signal-button">Open verified tools <ArrowRight size={17} /></Link><Link href="/games" className="quiet-button">Explore games <Gamepad2 size={17} /></Link></div>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link href="/studio" className="signal-button bg-[#c7f36b] text-[#0b1020]">
+            Open PDF & Doc Studio <ArrowRight size={17} />
+          </Link>
+          <Link href="/tools" className="quiet-button">
+            All tools <Wrench size={17} />
+          </Link>
+          <Link href="/games" className="quiet-button">
+            Games <Gamepad2 size={17} />
+          </Link>
+        </div>
         <div className="hero-trust"><span><CheckCircle2 size={15} /> Local-first modules</span><span><ShieldCheck size={15} /> No legacy endpoints</span></div>
       </div>
       <div className="hero-visual"><img src={heroImage} alt="An orbital digital workbench with tools and game elements" /><div className="hero-caption"><span className="status-dot" /><span>Signal received · version 01</span></div></div>

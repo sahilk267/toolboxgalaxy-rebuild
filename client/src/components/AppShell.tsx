@@ -3,14 +3,15 @@ import { Link, useLocation } from "wouter";
 import InstallWorkbench from "@/components/InstallWorkbench";
 import ShortcutReference from "@/components/ShortcutReference";
 import CommandPalette from "@/components/CommandPalette";
-import { Gamepad2, Menu, Orbit, Wrench } from "lucide-react";
+import { FileText, Gamepad2, Menu, Orbit, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-const orbitMark = "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png";
+const orbitMark = "/orbit-mark.svg";
 
 const navItems = [
   { href: "/", label: "Overview", icon: Orbit },
+  { href: "/studio", label: "PDF & Doc Studio", icon: FileText },
   { href: "/tools", label: "Tools", icon: Wrench },
   { href: "/games", label: "Games", icon: Gamepad2 },
 ];

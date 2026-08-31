@@ -8,7 +8,7 @@ import { categories, tools } from "@/data/toolRegistry";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 
-const orbitMark = "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png";
+const orbitMark = "/orbit-mark.svg";
 
 export default function Tools() {
   const [query, setQuery] = useState("");

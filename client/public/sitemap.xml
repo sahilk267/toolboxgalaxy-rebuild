@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://toolboxgalaxy.com/</loc></url>
+  <url><loc>https://toolboxgalaxy.com/studio</loc></url>
   <url><loc>https://toolboxgalaxy.com/tools</loc></url>
   <url><loc>https://toolboxgalaxy.com/tools/basic-calculator</loc></url>
   <url><loc>https://toolboxgalaxy.com/tools/percentage-calculator</loc></url>
@@ -10,8 +11,44 @@
   <url><loc>https://toolboxgalaxy.com/tools/password-generator</loc></url>
   <url><loc>https://toolboxgalaxy.com/tools/text-statistics</loc></url>
   <url><loc>https://toolboxgalaxy.com/tools/color-signal</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/bmi-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/discount-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/age-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/date-difference</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/url-encoder-decoder</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/html-entity-coder</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/text-case-converter</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/uuid-generator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/css-gradient-generator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/qr-code-station</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/image-resizer</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/favicon-generator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/hash-generator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/password-strength-auditor</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/markdown-workspace</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/contrast-checker</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/business-days-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/timezone-planner</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/timestamp-converter</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/text-diff-checker</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/find-replace-station</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/bill-split-tip-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/loan-emi-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/work-shift-hours-calculator</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/json-csv-converter</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/csv-viewer-cleaner</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/image-transform-station</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/line-sorter-dedup</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/image-metadata-remover</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/pdf-visual-editor</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/pdf-merge-split</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/images-to-pdf</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/excel-spreadsheet-studio</loc></url>
+  <url><loc>https://toolboxgalaxy.com/tools/word-docx-converter</loc></url>
   <url><loc>https://toolboxgalaxy.com/games</loc></url>
   <url><loc>https://toolboxgalaxy.com/games/orbit-dash</loc></url>
+  <url><loc>https://toolboxgalaxy.com/games/signal-switch</loc></url>
+  <url><loc>https://toolboxgalaxy.com/games/circuit-shift</loc></url>
   <url><loc>https://toolboxgalaxy.com/contact</loc></url>
   <url><loc>https://toolboxgalaxy.com/privacy</loc></url>
   <url><loc>https://toolboxgalaxy.com/terms</loc></url>

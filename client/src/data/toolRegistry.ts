@@ -36,7 +36,12 @@ export type ToolKind =
   | "csvViewer"
   | "imageTransform"
   | "lineSorter"
-  | "imageMetadata";
+  | "imageMetadata"
+  | "pdfEditor"
+  | "pdfMergeSplit"
+  | "imagesToPdf"
+  | "excelStudio"
+  | "wordDocx";
 
 export type ToolDefinition = {
   slug: string;
@@ -381,6 +386,51 @@ export const tools: ToolDefinition[] = [
     kind: "imageMetadata",
     accent: "violet",
     tags: ["Local", "Private"],
+  },
+  {
+    slug: "pdf-visual-editor",
+    name: "PDF Studio & Visual Editor",
+    category: "Create",
+    description: "Fill forms, add text, whiteout/redact sensitive details, annotate, rotate pages, and add watermarks in pure browser memory.",
+    kind: "pdfEditor",
+    accent: "lime",
+    tags: ["Local", "Private", "PDF"],
+  },
+  {
+    slug: "pdf-merge-split",
+    name: "PDF Merge & Splitter",
+    category: "Convert",
+    description: "Combine multiple PDF documents into one or extract specific page ranges without server uploads.",
+    kind: "pdfMergeSplit",
+    accent: "sky",
+    tags: ["Local", "Private", "PDF"],
+  },
+  {
+    slug: "images-to-pdf",
+    name: "Images to PDF Converter",
+    category: "Convert",
+    description: "Combine multiple JPG, PNG, and WebP images into a standardized A4 or Letter PDF document.",
+    kind: "imagesToPdf",
+    accent: "ember",
+    tags: ["Local", "Private", "PDF"],
+  },
+  {
+    slug: "excel-spreadsheet-studio",
+    name: "Excel & Spreadsheet Studio",
+    category: "Convert",
+    description: "Inspect multi-sheet Excel (.xlsx, .xls) and CSV workbooks, remove duplicates, trim spaces, and convert to JSON/CSV/Table.",
+    kind: "excelStudio",
+    accent: "lime",
+    tags: ["Local", "Private", "Excel"],
+  },
+  {
+    slug: "word-docx-converter",
+    name: "Word (.docx) Converter & Inspector",
+    category: "Code & Text",
+    description: "Parse DOCX files into clean Markdown or HTML, analyze reading telemetry, and generate formatted Word documents locally.",
+    kind: "wordDocx",
+    accent: "violet",
+    tags: ["Local", "Private", "Word"],
   },
 ];
 

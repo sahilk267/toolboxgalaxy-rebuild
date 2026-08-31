@@ -12,6 +12,7 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Tools from "@/pages/Tools";
 import ToolWorkspace from "@/pages/ToolWorkspace";
+import DocumentStudio from "@/pages/DocumentStudio";
 import { Route, Switch } from "wouter";
 import { lazy, Suspense } from "react";
 
@@ -50,6 +51,9 @@ export default function App() {
           <PwaUpdateNotice />
           <Switch>
             <Route path="/" component={Home} />
+            <Route path="/studio" component={DocumentStudio} />
+            <Route path="/pdf-studio" component={DocumentStudio} />
+            <Route path="/document-studio" component={DocumentStudio} />
             <Route path="/tools" component={Tools} />
             <Route path="/tools/:slug" component={ToolWorkspace} />
             <Route path="/games" component={Games} />
