@@ -3,12 +3,9 @@ import AppShell from "@/components/AppShell";
 import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
 import { tools } from "@/data/toolRegistry";
+import { GameBayVisual, HeroWorkbenchVisual, StoryToolsVisual } from "@/components/HomeVisuals";
 import { ArrowRight, CheckCircle2, Gamepad2, ShieldCheck, Sparkles, Wrench } from "lucide-react";
 import { Link } from "wouter";
-
-const heroImage = "/manus-storage/toolbox-galaxy-hero-orbital-workbench_a8f00bb7.jpg";
-const toolsImage = "/manus-storage/toolbox-galaxy-tools-station_9cc02c77.jpg";
-const gamesImage = "/manus-storage/toolbox-galaxy-games-arcade_0b17d873.jpg";
 
 export default function Home() {
   return <AppShell>
@@ -30,7 +27,10 @@ export default function Home() {
         </div>
         <div className="hero-trust"><span><CheckCircle2 size={15} /> Local-first modules</span><span><ShieldCheck size={15} /> No legacy endpoints</span></div>
       </div>
-      <div className="hero-visual"><img src={heroImage} alt="An orbital digital workbench with tools and game elements" /><div className="hero-caption"><span className="status-dot" /><span>Signal received · version 01</span></div></div>
+      <div className="hero-visual">
+        <HeroWorkbenchVisual />
+        <div className="hero-caption"><span className="status-dot" /><span>Signal received · version 01</span></div>
+      </div>
     </section>
 
     <section className="page-section module-section">
@@ -40,12 +40,18 @@ export default function Home() {
     </section>
 
     <section className="page-section story-split">
-      <div className="story-image"><img src={toolsImage} alt="A graphic workstation of calculation and developer tool objects" /><p className="image-telemetry">EVIDENCE PANEL / LOCAL MODULE INSTRUMENTS</p></div>
+      <div className="story-image">
+        <StoryToolsVisual />
+        <p className="image-telemetry">EVIDENCE PANEL / LOCAL MODULE INSTRUMENTS</p>
+      </div>
       <div className="story-copy"><p className="mono-label text-[#c7f36b]">THE REBUILD RULE</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">If it isn’t verified, it isn’t in the launch bay.</h2><p>Every tool is local-first wherever possible. That keeps the Hostinger deployment lighter, avoids broken inherited endpoints, and makes the expected behavior easier to test.</p><div className="story-list"><span><Wrench size={17} /> Typed tool registry</span><span><ShieldCheck size={17} /> Explicit privacy behavior</span><span><Sparkles size={17} /> Consistent interaction patterns</span></div></div>
     </section>
 
     <section className="page-section game-callout">
-      <div className="game-art"><img src={gamesImage} alt="An abstract arcade spacecraft navigating orbit gates" /><p className="image-telemetry image-telemetry--ember">PLAYFIELD RECORD / 03 ARCADE MODULES</p></div>
+      <div className="game-art">
+        <GameBayVisual />
+        <p className="image-telemetry image-telemetry--ember">PLAYFIELD RECORD / 03 ARCADE MODULES</p>
+      </div>
       <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / READY NOW</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. Orbit Dash, Signal Switch, and Circuit Shift keep scores in the browser and sound under your control.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
     </section>
   </AppShell>;

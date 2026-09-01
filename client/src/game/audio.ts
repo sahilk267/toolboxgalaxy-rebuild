@@ -3,12 +3,12 @@ export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle" 
 
 const SOUND_STORAGE_KEY = "toolboxgalaxy:game-sound";
 const MUSIC_STORAGE_KEY = "toolboxgalaxy:logic-music";
-const logicMusicUrl = "/manus-storage/toolbox-galaxy-logic-lab-loop_ea48028d.mp3";
 const readPreference = (key: string) => typeof window !== "undefined" && window.localStorage.getItem(key) === "on";
 
 export class OrbitAudio {
   private context: AudioContext | null = null;
-  private music: HTMLAudioElement | null = null;
+  private musicOscillators: OscillatorNode[] = [];
+  private musicGain: GainNode | null = null;
   private enabled = readPreference(SOUND_STORAGE_KEY);
   private musicEnabled = readPreference(MUSIC_STORAGE_KEY);
 
@@ -67,11 +67,50 @@ export class OrbitAudio {
 
   private async startMusic() {
     if (!this.enabled || !this.musicEnabled) return;
-    this.music ??= Object.assign(new Audio(logicMusicUrl), { loop: true, volume: 0.16, preload: "none" });
-    try { await this.music.play(); } catch { /* The visible control remains available when a browser defers audible playback. */ }
+    const context = this.getContext();
+    if (context.state === "suspended") await context.resume();
+    if (this.musicGain) return; // Already running
+
+    // Procedural ambient harmonic drone
+    const gainNode = context.createGain();
+    gainNode.gain.setValueAtTime(0.0001, context.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.04, context.currentTime + 1.2);
+    gainNode.connect(context.destination);
+    this.musicGain = gainNode;
+
+    const baseFreqs = [110, 164.81, 220, 293.66]; // A2, E3, A3, D4 ambient chord
+    this.musicOscillators = baseFreqs.map((freq) => {
+      const osc = context.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, context.currentTime);
+      osc.connect(gainNode);
+      osc.start();
+      return osc;
+    });
   }
 
-  private pauseMusic() { this.music?.pause(); }
+  private pauseMusic() {
+    if (this.musicGain && this.context) {
+      try {
+        this.musicGain.gain.setValueAtTime(this.musicGain.gain.value, this.context.currentTime);
+        this.musicGain.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 0.3);
+      } catch {
+        // Safe fallback
+      }
+    }
+    setTimeout(() => {
+      this.musicOscillators.forEach((osc) => {
+        try { osc.stop(); osc.disconnect(); } catch { /* ignore */ }
+      });
+      this.musicOscillators = [];
+      this.musicGain?.disconnect();
+      this.musicGain = null;
+    }, 350);
+  }
 
-  dispose() { this.pauseMusic(); this.music = null; void this.context?.close(); this.context = null; }
+  dispose() {
+    this.pauseMusic();
+    void this.context?.close();
+    this.context = null;
+  }
 }

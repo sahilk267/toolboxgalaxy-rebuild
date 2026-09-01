@@ -14,10 +14,17 @@ import {
   ArrowLeft,
   ArrowRight,
   Stamp,
-  Eraser,
   Upload,
   Eye,
-  FileCheck
+  FileCheck,
+  Move,
+  Edit3,
+  Sparkles,
+  Calendar,
+  Layers,
+  ZoomIn,
+  ZoomOut,
+  Palette
 } from "lucide-react";
 
 // Configure pdfjs worker safely
@@ -29,7 +36,7 @@ if (typeof window !== "undefined") {
   }
 }
 
-interface TextAnnotation {
+export interface TextAnnotation {
   id: string;
   pageIndex: number;
   type: "text";
@@ -39,9 +46,10 @@ interface TextAnnotation {
   fontSize: number;
   color: string;
   isBold?: boolean;
+  bgColor?: string; // "transparent" | "#ffffff" | "#fef08a" | "#000000"
 }
 
-interface WhiteoutAnnotation {
+export interface WhiteoutAnnotation {
   id: string;
   pageIndex: number;
   type: "whiteout";
@@ -52,7 +60,7 @@ interface WhiteoutAnnotation {
   color: string;
 }
 
-interface DrawingPath {
+export interface DrawingPath {
   id: string;
   pageIndex: number;
   type: "draw";
@@ -61,7 +69,7 @@ interface DrawingPath {
   strokeWidth: number;
 }
 
-interface StampAnnotation {
+export interface StampAnnotation {
   id: string;
   pageIndex: number;
   type: "stamp";
@@ -71,7 +79,7 @@ interface StampAnnotation {
   color: string;
 }
 
-type Annotation = TextAnnotation | WhiteoutAnnotation | DrawingPath | StampAnnotation;
+export type Annotation = TextAnnotation | WhiteoutAnnotation | DrawingPath | StampAnnotation;
 
 export default function PdfEditorTool() {
   const [pdfBytes, setPdfBytes] = useState<Uint8Array | null>(null);
@@ -80,12 +88,21 @@ export default function PdfEditorTool() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageRotations, setPageRotations] = useState<number[]>([]);
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
-  const [activeTool, setActiveTool] = useState<"select" | "text" | "whiteout" | "draw" | "stamp">("select");
+  const [activeTool, setActiveTool] = useState<"select" | "text" | "whiteout" | "draw" | "stamp">("text");
   
-  // Tool options
+  // Active text tool configuration & draft text
+  const [inputText, setInputText] = useState<string>("Sample Note");
   const [textColor, setTextColor] = useState<string>("#1e293b");
   const [fontSize, setFontSize] = useState<number>(14);
   const [isBold, setIsBold] = useState<boolean>(false);
+  const [textBgColor, setTextBgColor] = useState<string>("transparent");
+
+  // Selected annotation for on-canvas editing / dragging
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isDraggingSelected, setIsDraggingSelected] = useState<boolean>(false);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Other tools options
   const [whiteoutColor, setWhiteoutColor] = useState<string>("#ffffff");
   const [drawColor, setDrawColor] = useState<string>("#ef4444");
   const [drawWidth, setDrawWidth] = useState<number>(3);
@@ -96,6 +113,9 @@ export default function PdfEditorTool() {
   const [watermarkText, setWatermarkText] = useState<string>("");
   const [includePageNumbers, setIncludePageNumbers] = useState<boolean>(false);
 
+  // Zoom scale for canvas viewport
+  const [zoomScale, setZoomScale] = useState<number>(1.0);
+
   // Canvas drawing state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -105,6 +125,12 @@ export default function PdfEditorTool() {
   const [whiteoutStart, setWhiteoutStart] = useState<{ x: number; y: number } | null>(null);
   const [tempWhiteout, setTempWhiteout] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [exportSuccess, setExportSuccess] = useState<boolean>(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setStatusMessage(msg);
+    setTimeout(() => setStatusMessage(null), 3500);
+  };
 
   // Load sample PDF for instant testing
   const loadSamplePdf = async () => {
@@ -123,7 +149,7 @@ export default function PdfEditorTool() {
         color: rgb(0.1, 0.15, 0.3),
       });
 
-      page.drawText("This is a local in-browser document ready for visual editing.", {
+      page.drawText("This is a local in-browser document ready for visual editing and text annotation.", {
         x: 50,
         y: 740,
         size: 12,
@@ -155,7 +181,7 @@ export default function PdfEditorTool() {
         color: rgb(0.2, 0.2, 0.2),
       });
 
-      page.drawText("Status: [ Pending Approval ]", {
+      page.drawText("Status: [ Pending Verification ]", {
         x: 50,
         y: 570,
         size: 12,
@@ -187,8 +213,11 @@ export default function PdfEditorTool() {
       setCurrentPage(0);
       setPageRotations([0, 0]);
       setAnnotations([]);
+      setSelectedId(null);
+      showToast("Interactive sample PDF loaded!");
     } catch (err) {
       console.error(err);
+      showToast("Failed to generate sample PDF");
     } finally {
       setIsProcessing(false);
     }
@@ -201,7 +230,7 @@ export default function PdfEditorTool() {
     try {
       const buffer = await file.arrayBuffer();
       const bytes = new Uint8Array(buffer);
-      const pdfDoc = await PDFDocument.load(bytes);
+      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
       const count = pdfDoc.getPageCount();
       setPdfBytes(bytes);
       setFileName(file.name);
@@ -209,8 +238,10 @@ export default function PdfEditorTool() {
       setCurrentPage(0);
       setPageRotations(new Array(count).fill(0));
       setAnnotations([]);
+      setSelectedId(null);
+      showToast(`Loaded ${file.name} (${count} pages)`);
     } catch (err) {
-      alert("Could not load this PDF. Please ensure it is a valid, unencrypted PDF file.");
+      showToast("Could not load PDF. Please ensure it is unencrypted.");
     } finally {
       setIsProcessing(false);
     }
@@ -229,7 +260,7 @@ export default function PdfEditorTool() {
         
         const page = await pdf.getPage(currentPage + 1);
         const rotation = pageRotations[currentPage] || 0;
-        const viewport = page.getViewport({ scale: 1.5, rotation });
+        const viewport = page.getViewport({ scale: 1.5 * zoomScale, rotation });
         
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -255,31 +286,33 @@ export default function PdfEditorTool() {
     return () => {
       isCancelled = true;
     };
-  }, [pdfBytes, currentPage, pageRotations]);
+  }, [pdfBytes, currentPage, pageRotations, zoomScale]);
 
   // Handle overlay click to add Text, Whiteout, Stamp
   const handleOverlayMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!overlayRef.current) return;
     const rect = overlayRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const x = Math.max(0, Math.min(98, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(98, ((e.clientY - rect.top) / rect.height) * 100));
 
     if (activeTool === "text") {
-      const textInput = prompt("Enter text to add to document:", "Sample Note");
-      if (textInput && textInput.trim()) {
-        const newAnnotation: TextAnnotation = {
-          id: `text-${Date.now()}`,
-          pageIndex: currentPage,
-          type: "text",
-          text: textInput,
-          x,
-          y,
-          fontSize,
-          color: textColor,
-          isBold,
-        };
-        setAnnotations((prev) => [...prev, newAnnotation]);
-      }
+      // Create new text annotation immediately using the current input text or default
+      const textToAdd = inputText.trim() || "Type here...";
+      const newAnnotation: TextAnnotation = {
+        id: `text-${Date.now()}`,
+        pageIndex: currentPage,
+        type: "text",
+        text: textToAdd,
+        x,
+        y,
+        fontSize,
+        color: textColor,
+        isBold,
+        bgColor: textBgColor,
+      };
+      setAnnotations((prev) => [...prev, newAnnotation]);
+      setSelectedId(newAnnotation.id);
+      showToast("Text placed! Click on it or use sidebar to edit");
     } else if (activeTool === "stamp") {
       const newStamp: StampAnnotation = {
         id: `stamp-${Date.now()}`,
@@ -291,12 +324,17 @@ export default function PdfEditorTool() {
         color: stampColor,
       };
       setAnnotations((prev) => [...prev, newStamp]);
+      setSelectedId(newStamp.id);
+      showToast(`Placed "${stampText}" stamp`);
     } else if (activeTool === "whiteout") {
       setWhiteoutStart({ x, y });
       setTempWhiteout({ x, y, w: 0, h: 0 });
     } else if (activeTool === "draw") {
       setIsDrawing(true);
       setCurrentPath([{ x, y }]);
+    } else if (activeTool === "select") {
+      // Clicked on empty space
+      setSelectedId(null);
     }
   };
 
@@ -306,7 +344,20 @@ export default function PdfEditorTool() {
     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
     const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
 
-    if (activeTool === "draw" && isDrawing) {
+    if (isDraggingSelected && selectedId) {
+      setAnnotations((prev) =>
+        prev.map((ann) => {
+          if (ann.id === selectedId) {
+            return {
+              ...ann,
+              x: Math.max(0, Math.min(95, x - dragOffset.x)),
+              y: Math.max(0, Math.min(95, y - dragOffset.y)),
+            };
+          }
+          return ann;
+        })
+      );
+    } else if (activeTool === "draw" && isDrawing) {
       setCurrentPath((prev) => [...prev, { x, y }]);
     } else if (activeTool === "whiteout" && whiteoutStart) {
       const startX = Math.min(whiteoutStart.x, x);
@@ -318,6 +369,9 @@ export default function PdfEditorTool() {
   };
 
   const handleOverlayMouseUp = () => {
+    if (isDraggingSelected) {
+      setIsDraggingSelected(false);
+    }
     if (activeTool === "draw" && isDrawing) {
       if (currentPath.length > 1) {
         const newDraw: DrawingPath = {
@@ -345,6 +399,7 @@ export default function PdfEditorTool() {
           color: whiteoutColor,
         };
         setAnnotations((prev) => [...prev, newWhiteout]);
+        setSelectedId(newWhiteout.id);
       }
       setWhiteoutStart(null);
       setTempWhiteout(null);
@@ -358,20 +413,21 @@ export default function PdfEditorTool() {
       updated[currentPage] = (updated[currentPage] + 90) % 360;
       return updated;
     });
+    showToast(`Rotated page ${currentPage + 1}`);
   };
 
   // Delete an annotation
   const deleteAnnotation = (id: string) => {
     setAnnotations((prev) => prev.filter((a) => a.id !== id));
+    if (selectedId === id) setSelectedId(null);
   };
 
   // Delete current page
   const deleteCurrentPage = async () => {
     if (numPages <= 1) {
-      alert("Document must have at least one page.");
+      showToast("Document must have at least one page.");
       return;
     }
-    if (!confirm(`Are you sure you want to delete Page ${currentPage + 1}?`)) return;
 
     try {
       const doc = await PDFDocument.load(pdfBytes!);
@@ -388,9 +444,43 @@ export default function PdfEditorTool() {
       setPageRotations(newPageRotations);
       setAnnotations(newAnnotations);
       setCurrentPage(Math.max(0, currentPage - 1));
+      setSelectedId(null);
+      showToast(`Deleted page ${currentPage + 1}`);
     } catch (e) {
       console.error(e);
+      showToast("Failed to delete page");
     }
+  };
+
+  // Update text of selected annotation
+  const updateSelectedAnnotationText = (newText: string) => {
+    if (!selectedId) return;
+    setAnnotations((prev) =>
+      prev.map((ann) => (ann.id === selectedId && ann.type === "text" ? { ...ann, text: newText } : ann))
+    );
+  };
+
+  // Update styling of selected annotation
+  const updateSelectedAnnotationStyle = (updates: Partial<TextAnnotation>) => {
+    if (!selectedId) return;
+    setAnnotations((prev) =>
+      prev.map((ann) => (ann.id === selectedId && ann.type === "text" ? { ...ann, ...updates } : ann))
+    );
+  };
+
+  // Helper to parse hex color safely
+  const parseHexColor = (hex: string, defaultVal = { r: 0, g: 0, b: 0 }) => {
+    if (!hex || hex === "transparent" || !hex.startsWith("#") || hex.length < 7) {
+      return defaultVal;
+    }
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    return {
+      r: isNaN(r) ? defaultVal.r : r,
+      g: isNaN(g) ? defaultVal.g : g,
+      b: isNaN(b) ? defaultVal.b : b,
+    };
   };
 
   // Export & Download Modified PDF
@@ -398,7 +488,7 @@ export default function PdfEditorTool() {
     if (!pdfBytes) return;
     setIsProcessing(true);
     try {
-      const doc = await PDFDocument.load(pdfBytes);
+      const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const helvetica = await doc.embedFont(StandardFonts.Helvetica);
       const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
       const pageCount = doc.getPageCount();
@@ -424,55 +514,58 @@ export default function PdfEditorTool() {
             const pdfX = (ann.x / 100) * width;
             const pdfY = height - (ann.y / 100) * height - ann.fontSize;
             
-            // parse hex color
-            const r = parseInt(ann.color.slice(1, 3), 16) / 255 || 0;
-            const g = parseInt(ann.color.slice(3, 5), 16) / 255 || 0;
-            const b = parseInt(ann.color.slice(5, 7), 16) / 255 || 0;
+            // Draw background rectangle if requested (e.g. Whiteout background or yellow highlight)
+            if (ann.bgColor && ann.bgColor !== "transparent") {
+              const bgRgb = parseHexColor(ann.bgColor, { r: 1, g: 1, b: 1 });
+              const textWidth = font.widthOfTextAtSize(ann.text, ann.fontSize);
+              const padding = 3;
+              page.drawRectangle({
+                x: pdfX - padding,
+                y: pdfY - padding,
+                width: textWidth + padding * 2,
+                height: ann.fontSize + padding * 2,
+                color: rgb(bgRgb.r, bgRgb.g, bgRgb.b),
+              });
+            }
 
+            // Draw Text
+            const textRgb = parseHexColor(ann.color, { r: 0.1, g: 0.1, b: 0.1 });
             page.drawText(ann.text, {
               x: pdfX,
               y: pdfY,
               size: ann.fontSize,
               font,
-              color: rgb(r, g, b),
+              color: rgb(textRgb.r, textRgb.g, textRgb.b),
             });
           } else if (ann.type === "whiteout") {
             const pdfX = (ann.x / 100) * width;
             const pdfW = (ann.width / 100) * width;
             const pdfH = (ann.height / 100) * height;
             const pdfY = height - (ann.y / 100) * height - pdfH;
-
-            const r = parseInt(ann.color.slice(1, 3), 16) / 255 || 1;
-            const g = parseInt(ann.color.slice(3, 5), 16) / 255 || 1;
-            const b = parseInt(ann.color.slice(5, 7), 16) / 255 || 1;
+            const rectRgb = parseHexColor(ann.color, { r: 1, g: 1, b: 1 });
 
             page.drawRectangle({
               x: pdfX,
               y: pdfY,
               width: pdfW,
               height: pdfH,
-              color: rgb(r, g, b),
+              color: rgb(rectRgb.r, rectRgb.g, rectRgb.b),
             });
           } else if (ann.type === "stamp") {
             const pdfX = (ann.x / 100) * width;
             const pdfY = height - (ann.y / 100) * height;
-            const r = parseInt(ann.color.slice(1, 3), 16) / 255 || 1;
-            const g = parseInt(ann.color.slice(3, 5), 16) / 255 || 0;
-            const b = parseInt(ann.color.slice(5, 7), 16) / 255 || 0;
+            const stampRgb = parseHexColor(ann.color, { r: 0.9, g: 0.2, b: 0.2 });
 
             page.drawText(ann.text, {
               x: pdfX,
               y: pdfY,
-              size: 22,
+              size: 20,
               font: helveticaBold,
-              color: rgb(r, g, b),
-              rotate: degrees(-15),
+              color: rgb(stampRgb.r, stampRgb.g, stampRgb.b),
+              rotate: degrees(-12),
             });
           } else if (ann.type === "draw" && ann.points.length > 1) {
-            // Draw connected lines
-            const r = parseInt(ann.color.slice(1, 3), 16) / 255 || 1;
-            const g = parseInt(ann.color.slice(3, 5), 16) / 255 || 0;
-            const b = parseInt(ann.color.slice(5, 7), 16) / 255 || 0;
+            const lineRgb = parseHexColor(ann.color, { r: 0.9, g: 0.2, b: 0.2 });
 
             for (let i = 0; i < ann.points.length - 1; i++) {
               const p1 = ann.points[i];
@@ -481,7 +574,7 @@ export default function PdfEditorTool() {
                 start: { x: (p1.x / 100) * width, y: height - (p1.y / 100) * height },
                 end: { x: (p2.x / 100) * width, y: height - (p2.y / 100) * height },
                 thickness: ann.strokeWidth,
-                color: rgb(r, g, b),
+                color: rgb(lineRgb.r, lineRgb.g, lineRgb.b),
               });
             }
           }
@@ -502,11 +595,11 @@ export default function PdfEditorTool() {
         // Apply watermark if specified
         if (watermarkText.trim()) {
           page.drawText(watermarkText.trim(), {
-            x: width * 0.2,
+            x: width * 0.18,
             y: height * 0.45,
-            size: 42,
+            size: 40,
             font: helveticaBold,
-            color: rgb(0.85, 0.85, 0.85),
+            color: rgb(0.82, 0.82, 0.82),
             rotate: degrees(35),
           });
         }
@@ -523,25 +616,35 @@ export default function PdfEditorTool() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       setExportSuccess(true);
+      showToast("PDF exported and downloaded successfully!");
       setTimeout(() => setExportSuccess(false), 3000);
     } catch (e) {
-      alert("Error compiling edited PDF: " + (e instanceof Error ? e.message : "Unknown error"));
+      showToast("Error compiling edited PDF: " + (e instanceof Error ? e.message : "Unknown error"));
     } finally {
       setIsProcessing(false);
     }
   };
 
   const currentAnnotations = annotations.filter((a) => a.pageIndex === currentPage);
+  const selectedAnnotation = annotations.find((a) => a.id === selectedId);
 
   return (
-    <div className="runner-stack space-y-6">
+    <div className="runner-stack space-y-5" id="pdf-visual-editor-container">
+      {/* Toast Notification */}
+      {statusMessage && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-lg bg-[#0e1628] border border-[#c7f36b]/40 px-4 py-2.5 text-xs text-white shadow-2xl animate-fade-in">
+          <Sparkles size={14} className="text-[#c7f36b]" />
+          <span>{statusMessage}</span>
+        </div>
+      )}
+
       {/* Upload Header / Quick Start */}
       {!pdfBytes ? (
         <div className="rounded-xl border border-dashed border-white/20 bg-white/[0.02] p-8 text-center">
           <FileText className="mx-auto h-12 w-12 text-[#c7f36b]" />
           <h3 className="mt-4 text-xl font-semibold text-white">Visual PDF Studio & Annotator</h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-white/60">
-            Fill forms, add text, whiteout/redact sensitive details, draw signatures, rotate pages, and add watermarks. 100% in-browser, zero server uploads.
+            Add text, whiteout/redact sensitive data, draw signatures, rotate pages, and stamp documents. 100% in-browser, zero server uploads.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <label className="signal-button inline-flex cursor-pointer items-center gap-2">
@@ -556,169 +659,379 @@ export default function PdfEditorTool() {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          {/* File summary & Top Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-3">
-            <div className="flex items-center gap-2">
-              <FileCheck className="text-[#c7f36b]" size={18} />
-              <span className="font-mono text-sm font-medium text-white">{fileName}</span>
-              <span className="rounded bg-white/10 px-2 py-0.5 text-xs text-white/70">
-                {numPages} {numPages === 1 ? "page" : "pages"}
-              </span>
+        <div className="space-y-4 w-full">
+          {/* Top Main Command Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 shadow-lg">
+            {/* Left: File Info & Zoom */}
+            <div className="flex items-center flex-wrap gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 pr-2 border-r border-white/10">
+                <FileCheck className="text-[#c7f36b]" size={18} />
+                <span className="font-mono text-xs sm:text-sm font-medium text-white truncate max-w-[180px] sm:max-w-[240px]">
+                  {fileName}
+                </span>
+                <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] text-white/70 font-mono">
+                  {numPages} {numPages === 1 ? "page" : "pages"}
+                </span>
+              </div>
+
+              {/* Page Navigator */}
+              <div className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/40 px-2 py-1">
+                <button
+                  type="button"
+                  disabled={currentPage === 0}
+                  onClick={() => { setCurrentPage((p) => Math.max(0, p - 1)); setSelectedId(null); }}
+                  className="p-1 text-white/80 hover:text-white disabled:opacity-30 transition-colors"
+                  title="Previous Page"
+                >
+                  <ArrowLeft size={14} />
+                </button>
+                <span className="text-xs font-mono text-white/90 px-1">
+                  {currentPage + 1} / {numPages}
+                </span>
+                <button
+                  type="button"
+                  disabled={currentPage >= numPages - 1}
+                  onClick={() => { setCurrentPage((p) => Math.min(numPages - 1, p + 1)); setSelectedId(null); }}
+                  className="p-1 text-white/80 hover:text-white disabled:opacity-30 transition-colors"
+                  title="Next Page"
+                >
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              {/* Zoom Controls */}
+              <div className="flex items-center rounded-lg border border-white/10 bg-black/40 p-1 text-xs">
+                <button
+                  onClick={() => setZoomScale((z) => Math.max(0.7, Number((z - 0.15).toFixed(2))))}
+                  className="p-1 hover:text-[#c7f36b] transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={13} />
+                </button>
+                <span className="px-2 font-mono text-[11px] text-white/70">{Math.round(zoomScale * 100)}%</span>
+                <button
+                  onClick={() => setZoomScale((z) => Math.min(1.6, Number((z + 0.15).toFixed(2))))}
+                  className="p-1 hover:text-[#c7f36b] transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn size={13} />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <label className="signal-button cursor-pointer py-1.5 px-3 text-xs">
-                Open Another PDF
+
+            {/* Right: Page Actions & Export Button */}
+            <div className="flex items-center flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={rotateCurrentPage}
+                className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+                title="Rotate current page 90 degrees"
+              >
+                <RotateCw size={13} /> Rotate
+              </button>
+              <button
+                type="button"
+                onClick={deleteCurrentPage}
+                className="flex items-center gap-1 rounded-lg border border-red-500/30 bg-red-500/10 px-2.5 py-1.5 text-xs text-red-300 hover:bg-red-500/20 transition-colors"
+                title="Delete current page"
+              >
+                <Trash2 size={13} /> Delete Page
+              </button>
+              <label className="cursor-pointer rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/10 transition-colors">
+                Change PDF
                 <input type="file" accept="application/pdf" onChange={handleFileUpload} className="hidden" />
               </label>
               <button
                 onClick={exportModifiedPdf}
                 disabled={isProcessing}
-                className="signal-button flex items-center gap-1.5 bg-[#c7f36b] text-[#0b1020] font-semibold hover:bg-[#b8eb55]"
+                className="signal-button flex items-center gap-1.5 bg-[#c7f36b] text-[#0b1020] font-semibold hover:bg-[#b8eb55] shadow-lg shadow-[#c7f36b]/10 py-1.5 px-4 text-xs"
               >
-                {exportSuccess ? <Check size={16} /> : <Download size={16} />}
+                {exportSuccess ? <Check size={15} /> : <Download size={15} />}
                 {exportSuccess ? "Exported!" : "Export & Download PDF"}
               </button>
             </div>
           </div>
 
-          {/* Editor Toolset */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-            {/* Left Controls / Tools */}
-            <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4 lg:col-span-1">
+          {/* Main 2-Column Editor Layout: Left Sticky Controls + Right Canvas */}
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 items-start">
+            {/* Left Column: Sticky Control Panel */}
+            <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-16 space-y-4 rounded-xl border border-white/10 bg-[#0e1628]/95 p-4 shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
               <div>
-                <p className="mono-label text-xs text-[#c7f36b]">01 · SELECT TOOL</p>
+                <p className="mono-label text-xs text-[#c7f36b]">01 · SELECT ACTIVE TOOL</p>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   <button
-                    onClick={() => setActiveTool("select")}
-                    className={`flex items-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
-                      activeTool === "select"
-                        ? "border-[#c7f36b] bg-[#c7f36b]/10 text-[#c7f36b]"
-                        : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
-                    }`}
-                  >
-                    <Eye size={14} /> Select / View
-                  </button>
-                  <button
-                    onClick={() => setActiveTool("text")}
+                    type="button"
+                    onClick={() => { setActiveTool("text"); setSelectedId(null); }}
                     className={`flex items-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
                       activeTool === "text"
-                        ? "border-[#c7f36b] bg-[#c7f36b]/10 text-[#c7f36b]"
+                        ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold shadow-sm"
                         : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
                     }`}
                   >
-                    <Type size={14} /> Add Text / Form
+                    <Type size={14} /> Add Text
                   </button>
                   <button
-                    onClick={() => setActiveTool("whiteout")}
+                    type="button"
+                    onClick={() => { setActiveTool("select"); }}
+                    className={`flex items-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
+                      activeTool === "select"
+                        ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold"
+                        : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
+                    }`}
+                  >
+                    <Move size={14} /> Select & Move
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTool("whiteout"); setSelectedId(null); }}
                     className={`flex items-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
                       activeTool === "whiteout"
-                        ? "border-[#c7f36b] bg-[#c7f36b]/10 text-[#c7f36b]"
+                        ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold"
                         : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
                     }`}
                   >
-                    <Square size={14} /> Whiteout / Redact
+                    <Square size={14} /> Whiteout Box
                   </button>
                   <button
-                    onClick={() => setActiveTool("draw")}
+                    type="button"
+                    onClick={() => { setActiveTool("draw"); setSelectedId(null); }}
                     className={`flex items-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
                       activeTool === "draw"
-                        ? "border-[#c7f36b] bg-[#c7f36b]/10 text-[#c7f36b]"
+                        ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold"
                         : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
                     }`}
                   >
-                    <PenTool size={14} /> Freehand Pen
+                    <PenTool size={14} /> Signature / Pen
                   </button>
                   <button
-                    onClick={() => setActiveTool("stamp")}
+                    type="button"
+                    onClick={() => { setActiveTool("stamp"); setSelectedId(null); }}
                     className={`col-span-2 flex items-center justify-center gap-2 rounded-lg border p-2 text-xs font-medium transition-colors ${
                       activeTool === "stamp"
-                        ? "border-[#c7f36b] bg-[#c7f36b]/10 text-[#c7f36b]"
+                        ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold"
                         : "border-white/10 bg-white/[0.02] text-white/80 hover:bg-white/5"
                     }`}
                   >
-                    <Stamp size={14} /> Stamp / Stamp Note
+                    <Stamp size={14} /> Stamp Badge
                   </button>
                 </div>
               </div>
 
-              {/* Active Tool Config */}
+              {/* Active Tool Config: Text Settings */}
               {activeTool === "text" && (
-                <div className="space-y-2 rounded-lg border border-white/10 bg-black/20 p-3">
-                  <span className="text-xs font-semibold text-white/90">Text Settings</span>
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span>Size: {fontSize}px</span>
+                <div className="space-y-3 rounded-lg border border-[#c7f36b]/30 bg-[#0b1322] p-3.5 shadow-inner">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-[#c7f36b] flex items-center gap-1.5">
+                      <Type size={14} /> Text Input & Format
+                    </span>
+                    <span className="text-[10px] font-mono text-[#c7f36b] bg-[#c7f36b]/10 px-1.5 py-0.5 rounded">READY</span>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-medium text-white/80 block mb-1">Text Content to Place:</label>
                     <input
-                      type="range"
-                      min={10}
-                      max={36}
-                      value={fontSize}
-                      onChange={(e) => setFontSize(Number(e.target.value))}
-                      className="w-24"
+                      type="text"
+                      value={inputText}
+                      onChange={(e) => {
+                        setInputText(e.target.value);
+                        if (selectedAnnotation && selectedAnnotation.type === "text") {
+                          updateSelectedAnnotationText(e.target.value);
+                        }
+                      }}
+                      placeholder="Enter text (e.g. John Doe, Approved, Notes)"
+                      className="w-full rounded border border-white/20 bg-black/60 px-2.5 py-1.5 text-xs text-white placeholder-white/30 focus:border-[#c7f36b] focus:outline-none"
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span>Color</span>
-                    <div className="flex gap-1.5">
-                      {["#1e293b", "#ef4444", "#2563eb", "#16a34a", "#ffffff"].map((c) => (
+
+                  {/* Quick Preset Buttons */}
+                  <div>
+                    <span className="text-[10px] font-mono text-white/60 block mb-1">QUICK PRESETS:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {["Approved", "Verified", new Date().toISOString().slice(0, 10), "Confidential"].map((preset) => (
                         <button
-                          key={c}
-                          onClick={() => setTextColor(c)}
-                          className={`h-5 w-5 rounded-full border border-white/40 ${textColor === c ? "ring-2 ring-[#c7f36b]" : ""}`}
-                          style={{ backgroundColor: c }}
-                        />
+                          key={preset}
+                          type="button"
+                          onClick={() => {
+                            setInputText(preset);
+                            if (selectedAnnotation && selectedAnnotation.type === "text") {
+                              updateSelectedAnnotationText(preset);
+                            }
+                          }}
+                          className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/80 hover:border-[#c7f36b]/40 hover:bg-[#c7f36b]/10 hover:text-[#c7f36b] transition-colors"
+                        >
+                          +{preset}
+                        </button>
                       ))}
                     </div>
                   </div>
-                  <label className="flex items-center gap-2 text-xs text-white/80">
-                    <input type="checkbox" checked={isBold} onChange={(e) => setIsBold(e.target.checked)} />
-                    Bold Font
-                  </label>
-                  <p className="text-[11px] text-white/50">Click on the document page to position your text.</p>
+
+                  {/* Font Size & Weight */}
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/10">
+                    <div>
+                      <div className="flex justify-between text-[11px] text-white/70 mb-1">
+                        <span>Font Size</span>
+                        <span className="font-mono text-[#c7f36b]">{fontSize}px</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={9}
+                        max={36}
+                        value={fontSize}
+                        onChange={(e) => {
+                          const size = Number(e.target.value);
+                          setFontSize(size);
+                          if (selectedAnnotation && selectedAnnotation.type === "text") {
+                            updateSelectedAnnotationStyle({ fontSize: size });
+                          }
+                        }}
+                        className="w-full h-1 bg-white/20 rounded-lg cursor-pointer accent-[#c7f36b]"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <label className="flex items-center gap-1.5 text-xs text-white/80 cursor-pointer p-1 rounded hover:bg-white/5 w-full">
+                        <input
+                          type="checkbox"
+                          checked={isBold}
+                          onChange={(e) => {
+                            const val = e.target.checked;
+                            setIsBold(val);
+                            if (selectedAnnotation && selectedAnnotation.type === "text") {
+                              updateSelectedAnnotationStyle({ isBold: val });
+                            }
+                          }}
+                          className="accent-[#c7f36b]"
+                        />
+                        <span className="font-bold">Bold Text</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Text Color Picker */}
+                  <div className="space-y-1 pt-1 border-t border-white/10">
+                    <span className="text-[11px] text-white/70 block">Text Color:</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {[
+                        { color: "#1e293b", name: "Dark" },
+                        { color: "#ffffff", name: "White" },
+                        { color: "#ef4444", name: "Red" },
+                        { color: "#2563eb", name: "Blue" },
+                        { color: "#16a34a", name: "Green" },
+                        { color: "#ff9b54", name: "Orange" },
+                      ].map((c) => (
+                        <button
+                          key={c.color}
+                          type="button"
+                          title={c.name}
+                          onClick={() => {
+                            setTextColor(c.color);
+                            if (selectedAnnotation && selectedAnnotation.type === "text") {
+                              updateSelectedAnnotationStyle({ color: c.color });
+                            }
+                          }}
+                          className={`h-6 w-6 rounded-md border flex items-center justify-center transition-all ${
+                            textColor === c.color ? "border-[#c7f36b] ring-2 ring-[#c7f36b]/40 scale-110" : "border-white/30"
+                          }`}
+                          style={{ backgroundColor: c.color }}
+                        >
+                          {textColor === c.color && (
+                            <span className={c.color === "#ffffff" ? "text-black text-[10px]" : "text-white text-[10px]"}>✓</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Background Highlight */}
+                  <div className="space-y-1 pt-1 border-t border-white/10">
+                    <span className="text-[11px] text-white/70 block">Text Background Pill:</span>
+                    <div className="grid grid-cols-4 gap-1 text-[10px] font-mono">
+                      {[
+                        { id: "transparent", label: "None" },
+                        { id: "#ffffff", label: "White" },
+                        { id: "#fef08a", label: "Yellow" },
+                        { id: "#000000", label: "Black" },
+                      ].map((bg) => (
+                        <button
+                          key={bg.id}
+                          type="button"
+                          onClick={() => {
+                            setTextBgColor(bg.id);
+                            if (selectedAnnotation && selectedAnnotation.type === "text") {
+                              updateSelectedAnnotationStyle({ bgColor: bg.id });
+                            }
+                          }}
+                          className={`rounded border py-1 text-center transition-colors ${
+                            textBgColor === bg.id
+                              ? "border-[#c7f36b] bg-[#c7f36b]/20 text-[#c7f36b] font-bold"
+                              : "border-white/10 bg-white/5 text-white/60 hover:text-white"
+                          }`}
+                        >
+                          {bg.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-[#c7f36b] bg-[#c7f36b]/10 p-2 rounded border border-[#c7f36b]/20">
+                    💡 <b>Click anywhere on the document</b> to place this text directly.
+                  </p>
                 </div>
               )}
 
+              {/* Whiteout Settings */}
               {activeTool === "whiteout" && (
                 <div className="space-y-2 rounded-lg border border-white/10 bg-black/20 p-3">
-                  <span className="text-xs font-semibold text-white/90">Blocker Color</span>
+                  <span className="text-xs font-semibold text-white/90">Blocker / Redaction Box</span>
                   <div className="flex gap-2">
                     <button
+                      type="button"
                       onClick={() => setWhiteoutColor("#ffffff")}
-                      className={`flex-1 rounded border py-1 text-xs ${whiteoutColor === "#ffffff" ? "border-[#c7f36b] bg-white text-black" : "border-white/20 bg-white/5"}`}
+                      className={`flex-1 rounded border py-1.5 text-xs font-medium transition-colors ${
+                        whiteoutColor === "#ffffff"
+                          ? "border-[#c7f36b] bg-white text-black font-bold"
+                          : "border-white/20 bg-white/5 text-white/70"
+                      }`}
                     >
                       White Box
                     </button>
                     <button
+                      type="button"
                       onClick={() => setWhiteoutColor("#000000")}
-                      className={`flex-1 rounded border py-1 text-xs ${whiteoutColor === "#000000" ? "border-[#c7f36b] bg-black text-white" : "border-white/20 bg-white/5"}`}
+                      className={`flex-1 rounded border py-1.5 text-xs font-medium transition-colors ${
+                        whiteoutColor === "#000000"
+                          ? "border-[#c7f36b] bg-black text-white font-bold"
+                          : "border-white/20 bg-white/5 text-white/70"
+                      }`}
                     >
-                      Black Redact
+                      Black Redaction
                     </button>
                   </div>
-                  <p className="text-[11px] text-white/50">Click and drag over any area on the page to hide it.</p>
+                  <p className="text-[11px] text-white/50">Click and drag directly on the page to hide or redact sensitive information.</p>
                 </div>
               )}
 
+              {/* Draw Settings */}
               {activeTool === "draw" && (
                 <div className="space-y-2 rounded-lg border border-white/10 bg-black/20 p-3">
-                  <span className="text-xs font-semibold text-white/90">Pen Settings</span>
+                  <span className="text-xs font-semibold text-white/90">Signature & Pen Settings</span>
                   <div className="flex items-center justify-between gap-2 text-xs">
-                    <span>Width: {drawWidth}px</span>
+                    <span>Stroke: {drawWidth}px</span>
                     <input
                       type="range"
                       min={1}
                       max={10}
                       value={drawWidth}
                       onChange={(e) => setDrawWidth(Number(e.target.value))}
-                      className="w-24"
+                      className="w-24 accent-[#c7f36b]"
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between text-xs pt-1">
                     <span>Ink Color</span>
                     <div className="flex gap-1.5">
                       {["#ef4444", "#2563eb", "#10b981", "#000000", "#c7f36b"].map((c) => (
                         <button
                           key={c}
+                          type="button"
                           onClick={() => setDrawColor(c)}
                           className={`h-5 w-5 rounded-full border border-white/40 ${drawColor === c ? "ring-2 ring-[#c7f36b]" : ""}`}
                           style={{ backgroundColor: c }}
@@ -726,10 +1039,11 @@ export default function PdfEditorTool() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-[11px] text-white/50">Click and drag directly on the page to draw or sign.</p>
+                  <p className="text-[11px] text-white/50">Click and drag directly on the page to sign or sketch.</p>
                 </div>
               )}
 
+              {/* Stamp Settings */}
               {activeTool === "stamp" && (
                 <div className="space-y-2 rounded-lg border border-white/10 bg-black/20 p-3">
                   <span className="text-xs font-semibold text-white/90">Stamp Content</span>
@@ -745,12 +1059,13 @@ export default function PdfEditorTool() {
                     <option value="VERIFIED">VERIFIED</option>
                     <option value="FINAL COPY">FINAL COPY</option>
                   </select>
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between text-xs pt-1">
                     <span>Color</span>
                     <div className="flex gap-1.5">
                       {["#ef4444", "#16a34a", "#2563eb", "#d97706"].map((c) => (
                         <button
                           key={c}
+                          type="button"
                           onClick={() => setStampColor(c)}
                           className={`h-5 w-5 rounded-full border border-white/40 ${stampColor === c ? "ring-2 ring-[#c7f36b]" : ""}`}
                           style={{ backgroundColor: c }}
@@ -758,28 +1073,30 @@ export default function PdfEditorTool() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-[11px] text-white/50">Click on the document page to place this stamp.</p>
+                  <p className="text-[11px] text-white/50">Click on the document page to place this stamp badge.</p>
                 </div>
               )}
 
-              {/* Page Controls */}
-              <div className="pt-2 border-t border-white/10 space-y-2">
-                <p className="mono-label text-xs text-white/60">PAGE OPERATIONS</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={rotateCurrentPage}
-                    className="flex-1 flex items-center justify-center gap-1.5 rounded border border-white/10 bg-white/5 py-1.5 text-xs text-white hover:bg-white/10"
-                  >
-                    <RotateCw size={14} /> Rotate Page
-                  </button>
-                  <button
-                    onClick={deleteCurrentPage}
-                    className="flex items-center justify-center gap-1.5 rounded border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-300 hover:bg-red-500/20"
-                  >
-                    <Trash2 size={14} /> Delete
-                  </button>
+              {/* Select Tool Config */}
+              {activeTool === "select" && (
+                <div className="space-y-2 rounded-lg border border-white/10 bg-black/20 p-3">
+                  <span className="text-xs font-semibold text-white/90">Select & Move Tool</span>
+                  <p className="text-xs text-white/70">
+                    {selectedAnnotation
+                      ? `Selected: ${selectedAnnotation.type.toUpperCase()}`
+                      : "Click any annotation on the page to drag and reposition it."}
+                  </p>
+                  {selectedId && (
+                    <button
+                      type="button"
+                      onClick={() => deleteAnnotation(selectedId)}
+                      className="w-full flex items-center justify-center gap-1 rounded bg-red-500/20 px-2 py-1 text-xs text-red-300 hover:bg-red-500/30 border border-red-500/40"
+                    >
+                      <Trash2 size={12} /> Delete Selected Item
+                    </button>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Document Additions */}
               <div className="pt-2 border-t border-white/10 space-y-2">
@@ -799,8 +1116,9 @@ export default function PdfEditorTool() {
                     type="checkbox"
                     checked={includePageNumbers}
                     onChange={(e) => setIncludePageNumbers(e.target.checked)}
+                    className="accent-[#c7f36b]"
                   />
-                  Add Page Numbers (Page X of Y)
+                  <span>Add Page Numbers (Page X of Y)</span>
                 </label>
               </div>
 
@@ -808,95 +1126,158 @@ export default function PdfEditorTool() {
               {currentAnnotations.length > 0 && (
                 <div className="pt-2 border-t border-white/10 space-y-1.5">
                   <p className="mono-label text-xs text-white/60">PAGE {currentPage + 1} EDITS ({currentAnnotations.length})</p>
-                  <div className="max-h-32 space-y-1 overflow-y-auto pr-1">
-                    {currentAnnotations.map((ann) => (
-                      <div
-                        key={ann.id}
-                        className="flex items-center justify-between rounded bg-white/5 px-2 py-1 text-xs text-white/80"
-                      >
-                        <span className="truncate max-w-[120px]">
-                          {ann.type === "text" ? `Text: "${ann.text}"` : ann.type === "stamp" ? `Stamp: ${ann.text}` : ann.type === "whiteout" ? "Whiteout Box" : "Pen Drawing"}
-                        </span>
-                        <button
-                          onClick={() => deleteAnnotation(ann.id)}
-                          className="text-red-400 hover:text-red-300 ml-2"
+                  <div className="max-h-36 space-y-1 overflow-y-auto pr-1">
+                    {currentAnnotations.map((ann) => {
+                      const isSelected = ann.id === selectedId;
+                      return (
+                        <div
+                          key={ann.id}
+                          onClick={() => {
+                            setSelectedId(ann.id);
+                            if (ann.type === "text") {
+                              setInputText(ann.text);
+                              setTextColor(ann.color);
+                              setFontSize(ann.fontSize);
+                              setIsBold(!!ann.isBold);
+                              if (ann.bgColor) setTextBgColor(ann.bgColor);
+                            }
+                          }}
+                          className={`flex items-center justify-between rounded px-2 py-1 text-xs cursor-pointer transition-colors ${
+                            isSelected
+                              ? "border border-[#c7f36b] bg-[#c7f36b]/10 text-white font-medium"
+                              : "border border-white/5 bg-white/5 text-white/80 hover:bg-white/10"
+                          }`}
                         >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    ))}
+                          <span className="truncate max-w-[150px]">
+                            {ann.type === "text" ? `Text: "${ann.text}"` : ann.type === "stamp" ? `Stamp: ${ann.text}` : ann.type === "whiteout" ? "Whiteout Box" : "Pen Stroke"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteAnnotation(ann.id);
+                            }}
+                            className="text-red-400 hover:text-red-300 ml-2 p-0.5"
+                            title="Delete edit"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Main Interactive PDF Page Canvas */}
-            <div className="space-y-3 lg:col-span-3">
-              {/* Pagination controls */}
-              <div className="flex items-center justify-between rounded-lg bg-black/30 px-4 py-2 border border-white/10">
-                <button
-                  disabled={currentPage === 0}
-                  onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                  className="flex items-center gap-1 text-xs text-white/80 disabled:opacity-30 hover:text-white"
-                >
-                  <ArrowLeft size={14} /> Previous
-                </button>
-                <div className="flex items-center gap-2 text-xs font-mono text-white/90">
-                  <span>Page {currentPage + 1} of {numPages}</span>
-                  {pageRotations[currentPage] ? (
-                    <span className="text-[10px] text-[#c7f36b] font-sans">({pageRotations[currentPage]}° rotated)</span>
-                  ) : null}
-                </div>
-                <button
-                  disabled={currentPage >= numPages - 1}
-                  onClick={() => setCurrentPage((p) => Math.min(numPages - 1, p + 1))}
-                  className="flex items-center gap-1 text-xs text-white/80 disabled:opacity-30 hover:text-white"
-                >
-                  Next <ArrowRight size={14} />
-                </button>
+            {/* Right Column: PDF Canvas Workspace */}
+            <div className="lg:col-span-8 xl:col-span-9 rounded-2xl border border-white/15 bg-[#141a29] p-4 sm:p-6 flex flex-col items-center shadow-2xl min-h-[650px] overflow-auto">
+            {/* Floating Top Status Bar */}
+            <div className="mb-4 flex items-center justify-between w-full max-w-4xl px-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-white/70">
+                  Page {currentPage + 1} of {numPages}
+                </span>
+                {pageRotations[currentPage] ? (
+                  <span className="rounded bg-[#c7f36b]/15 px-2 py-0.5 text-[10px] font-mono text-[#c7f36b] border border-[#c7f36b]/30">
+                    {pageRotations[currentPage]}° Rotated
+                  </span>
+                ) : null}
               </div>
 
-              {/* Viewport & Interactive Layer */}
-              <div className="relative mx-auto max-w-full overflow-auto rounded-xl border border-white/15 bg-[#1e2230] p-4 flex justify-center shadow-2xl">
-                <div className="relative inline-block select-none shadow-xl">
-                  {/* Rendered PDF Page Canvas */}
-                  <canvas ref={canvasRef} className="block rounded bg-white" />
+              {currentAnnotations.length > 0 && (
+                <div className="flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1 text-xs font-mono text-white/80 border border-white/10 shadow-sm">
+                  <span className="h-2 w-2 rounded-full bg-[#c7f36b]" />
+                  <span>{currentAnnotations.length} annotations on Page {currentPage + 1}</span>
+                </div>
+              )}
+            </div>
 
-                  {/* Interactive Drawing & Annotation Layer */}
-                  <div
-                    ref={overlayRef}
-                    onMouseDown={handleOverlayMouseDown}
-                    onMouseMove={handleOverlayMouseMove}
-                    onMouseUp={handleOverlayMouseUp}
-                    className={`absolute inset-0 cursor-${
-                      activeTool === "text"
-                        ? "text"
-                        : activeTool === "draw" || activeTool === "whiteout"
-                        ? "crosshair"
-                        : activeTool === "stamp"
-                        ? "cell"
-                        : "default"
-                    }`}
-                  >
+            {/* Rendered Document Page */}
+            <div className="relative inline-block select-none shadow-2xl transition-all">
+              {/* PDF Canvas */}
+              <canvas ref={canvasRef} className="block rounded bg-white shadow-2xl" />
+
+              {/* Interactive Drawing & Annotation Layer */}
+              <div
+                ref={overlayRef}
+                onMouseDown={handleOverlayMouseDown}
+                onMouseMove={handleOverlayMouseMove}
+                onMouseUp={handleOverlayMouseUp}
+                className={`absolute inset-0 ${
+                  activeTool === "text"
+                    ? "cursor-crosshair"
+                    : activeTool === "draw" || activeTool === "whiteout"
+                    ? "cursor-crosshair"
+                    : activeTool === "stamp"
+                    ? "cursor-cell"
+                    : "cursor-default"
+                }`}
+              >
                     {/* Render active page annotations */}
                     {currentAnnotations.map((ann) => {
+                      const isSelected = ann.id === selectedId;
+
                       if (ann.type === "text") {
+                        const isWhiteText = ann.color.toLowerCase() === "#ffffff";
                         return (
                           <div
                             key={ann.id}
+                            onMouseDown={(e) => {
+                              e.stopPropagation();
+                              setSelectedId(ann.id);
+                              setInputText(ann.text);
+                              setTextColor(ann.color);
+                              setFontSize(ann.fontSize);
+                              setIsBold(!!ann.isBold);
+                              if (ann.bgColor) setTextBgColor(ann.bgColor);
+                              
+                              // Start dragging
+                              if (overlayRef.current) {
+                                const rect = overlayRef.current.getBoundingClientRect();
+                                const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+                                const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
+                                setDragOffset({ x: mouseX - ann.x, y: mouseY - ann.y });
+                                setIsDraggingSelected(true);
+                              }
+                            }}
                             style={{
                               position: "absolute",
                               left: `${ann.x}%`,
                               top: `${ann.y}%`,
                               color: ann.color,
-                              fontSize: `${ann.fontSize * 1.5}px`,
+                              fontSize: `${ann.fontSize * 1.5 * zoomScale}px`,
                               fontWeight: ann.isBold ? "bold" : "normal",
-                              transform: "translate(-0%, -0%)",
-                              pointerEvents: "none",
-                              textShadow: "0 0 2px rgba(255,255,255,0.8)",
+                              backgroundColor: ann.bgColor && ann.bgColor !== "transparent" ? ann.bgColor : "transparent",
+                              padding: "1px 4px",
+                              borderRadius: "2px",
+                              cursor: "move",
+                              userSelect: "none",
+                              textShadow: isWhiteText ? "0 0 3px rgba(0,0,0,0.8), 0 0 1px #000000" : "0 0 2px rgba(255,255,255,0.8)",
+                              boxShadow: isSelected ? "0 0 0 2px #c7f36b, 0 0 8px rgba(199,243,107,0.5)" : "none",
                             }}
+                            className="group transition-shadow inline-block max-w-[90%]"
                           >
-                            {ann.text}
+                            {isSelected ? (
+                              <input
+                                type="text"
+                                value={ann.text}
+                                autoFocus
+                                onChange={(e) => updateSelectedAnnotationText(e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
+                                style={{
+                                  color: ann.color,
+                                  fontSize: "inherit",
+                                  fontWeight: "inherit",
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  outline: "none",
+                                  minWidth: "60px",
+                                }}
+                              />
+                            ) : (
+                              <span>{ann.text}</span>
+                            )}
                           </div>
                         );
                       }
@@ -904,6 +1285,17 @@ export default function PdfEditorTool() {
                         return (
                           <div
                             key={ann.id}
+                            onMouseDown={(e) => {
+                              e.stopPropagation();
+                              setSelectedId(ann.id);
+                              if (overlayRef.current) {
+                                const rect = overlayRef.current.getBoundingClientRect();
+                                const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+                                const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
+                                setDragOffset({ x: mouseX - ann.x, y: mouseY - ann.y });
+                                setIsDraggingSelected(true);
+                              }
+                            }}
                             style={{
                               position: "absolute",
                               left: `${ann.x}%`,
@@ -911,8 +1303,8 @@ export default function PdfEditorTool() {
                               width: `${ann.width}%`,
                               height: `${ann.height}%`,
                               backgroundColor: ann.color,
-                              border: "1px dashed rgba(0,0,0,0.2)",
-                              pointerEvents: "none",
+                              border: isSelected ? "2px solid #c7f36b" : "1px dashed rgba(0,0,0,0.25)",
+                              cursor: "move",
                             }}
                           />
                         );
@@ -921,6 +1313,17 @@ export default function PdfEditorTool() {
                         return (
                           <div
                             key={ann.id}
+                            onMouseDown={(e) => {
+                              e.stopPropagation();
+                              setSelectedId(ann.id);
+                              if (overlayRef.current) {
+                                const rect = overlayRef.current.getBoundingClientRect();
+                                const mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+                                const mouseY = ((e.clientY - rect.top) / rect.height) * 100;
+                                setDragOffset({ x: mouseX - ann.x, y: mouseY - ann.y });
+                                setIsDraggingSelected(true);
+                              }
+                            }}
                             style={{
                               position: "absolute",
                               left: `${ann.x}%`,
@@ -928,12 +1331,13 @@ export default function PdfEditorTool() {
                               color: ann.color,
                               border: `2px solid ${ann.color}`,
                               padding: "2px 8px",
-                              fontSize: "18px",
+                              fontSize: `${16 * zoomScale}px`,
                               fontWeight: "bold",
                               borderRadius: "4px",
-                              transform: "rotate(-15deg)",
-                              pointerEvents: "none",
-                              backgroundColor: "rgba(255,255,255,0.7)",
+                              transform: "rotate(-12deg)",
+                              cursor: "move",
+                              backgroundColor: "rgba(255,255,255,0.85)",
+                              boxShadow: isSelected ? "0 0 0 2px #c7f36b" : "none",
                             }}
                           >
                             {ann.text}
@@ -1007,8 +1411,7 @@ export default function PdfEditorTool() {
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        )}
+      </div>
+    );
+  }

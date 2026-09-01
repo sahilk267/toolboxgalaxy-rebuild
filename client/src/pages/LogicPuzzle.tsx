@@ -19,7 +19,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { MutableRefObject, ReactNode } from "react";
 import { Link, useRoute } from "wouter";
 
-const orbitMark = "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png";
+const orbitMark = "/orbit-mark.svg";
 const demoMode = () => new URLSearchParams(window.location.search).has("demo");
 const cellKey = (row: number, col: number) => `${row}:${col}`;
 const emptyQueens = () => Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => "empty" as QueenState));

@@ -11,9 +11,9 @@
   "theme_color": "#0b1020",
   "icons": [
     {
-      "src": "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png",
+      "src": "/orbit-mark.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]

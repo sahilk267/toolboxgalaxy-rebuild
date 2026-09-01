@@ -10,7 +10,7 @@ import { ArrowLeft, CalendarDays, CircuitBoard, Clipboard, Download, Flame, Rota
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
 
-const orbitMark = "/manus-storage/toolbox-galaxy-orbit-mark_c8160386.png";
+const orbitMark = "/orbit-mark.svg";
 const difficultyOptions: { id: CircuitDifficulty; label: string; detail: string }[] = [{ id: "calm", label: "Calm", detail: "Light scramble · 1× score" }, { id: "standard", label: "Standard", detail: "Full board · 1.35× score" }, { id: "dense", label: "Dense", detail: "Heavy scramble · 1.75× score" }];
 const initialMode = (): CircuitMode => new URLSearchParams(window.location.search).has("daily") ? "daily" : "practice";
 
