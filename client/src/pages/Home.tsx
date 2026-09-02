@@ -43,6 +43,20 @@ export default function Home() {
       <DailyDuaCard />
     </section>
 
+    {/* Regional & Daily High-Demand Essentials */}
+    <section className="page-section module-section pt-2">
+      <SectionHeading 
+        eyebrow="HIGH UTILITY / DAILY ESSENTIALS" 
+        title="Most used everyday tools in your region." 
+        copy="High-traffic utilities crafted for instant daily tasks: direct WhatsApp messaging without saving numbers, GST tax invoices, Sarkari exam photo resizers, regional land units, and banking cheque words." 
+      />
+      <div className="tool-grid tool-grid--featured">
+        {tools.filter(t => t.tags.includes("Popular")).map((tool) => (
+          <ToolCard key={tool.slug} tool={tool} compact />
+        ))}
+      </div>
+    </section>
+
     <section className="page-section module-section">
       <SectionHeading eyebrow="TOOLS / READY NOW" title="A smaller set, built to hold up." copy="No mystery status. These first modules run entirely in your browser and are being rebuilt with consistent validation, accessibility, and clear privacy signals." />
       <div className="tool-grid tool-grid--featured">{tools.slice(0, 4).map((tool) => <ToolCard key={tool.slug} tool={tool} compact />)}</div>

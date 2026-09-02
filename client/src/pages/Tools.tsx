@@ -14,10 +14,11 @@ export default function Tools() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("All");
   const visibleTools = useMemo(() => tools.filter((tool) => {
-    const matchesQuery = `${tool.name} ${tool.description} ${tool.category}`.toLowerCase().includes(query.toLowerCase());
-    return matchesQuery && (activeCategory === "All" || tool.category === activeCategory);
+    const matchesQuery = `${tool.name} ${tool.description} ${tool.category} ${tool.tags.join(" ")}`.toLowerCase().includes(query.toLowerCase());
+    const matchesCategory = activeCategory === "All" || (activeCategory === "Popular" ? tool.tags.includes("Popular") : tool.category === activeCategory);
+    return matchesQuery && matchesCategory;
   }), [activeCategory, query]);
-  const categoryGroups = useMemo(() => categories.filter((category) => category !== "All").map((category) => ({ category, items: visibleTools.filter((tool) => tool.category === category) })).filter((group) => group.items.length > 0), [visibleTools]);
+  const categoryGroups = useMemo(() => categories.filter((category) => category !== "All" && category !== "Popular").map((category) => ({ category, items: visibleTools.filter((tool) => tool.category === category) })).filter((group) => group.items.length > 0), [visibleTools]);
 
   return (
     <AppShell>

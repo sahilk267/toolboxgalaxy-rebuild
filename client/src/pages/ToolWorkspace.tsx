@@ -13,6 +13,13 @@ import PdfEditorTool from "@/components/PdfEditorTool";
 import { ImagesToPdfTool, PdfMergeSplitTool } from "@/components/PdfToolsRunner";
 import ExcelStudioTool from "@/components/ExcelStudioTool";
 import WordDocxTool from "@/components/WordDocxTool";
+import { 
+  GstCalculatorTool, 
+  LandAreaConverterTool, 
+  NumberToWordsTool, 
+  PassportPhotoResizerTool, 
+  WhatsappDirectTool 
+} from "@/components/RegionalHighDemandTools";
 import FavoriteToolButton from "@/components/FavoriteToolButton";
 import { getTool } from "@/data/toolRegistry";
 import { recordToolVisit } from "@/lib/recentToolHistory";
@@ -22,6 +29,7 @@ import { useEffect, useMemo, useState } from "react";
 
 const toolTelemetry = {
   splitBill: ["ALLOCATION MATRIX", "GROUP INPUT / LIVE"], loanEmi: ["PAYMENT PROJECTION", "FIXED-RATE ESTIMATE"], workShift: ["TIME LEDGER", "SHIFT WINDOW / LIVE"], imageTransform: ["FRAME CUTTER", "PIXELS / LOCAL"], lineSorter: ["SEQUENCE CLEANUP", "TEXT / LOCAL"], imageMetadata: ["PRIVACY RELAY", "PIXELS / LOCAL"],
+  whatsappDirect: ["COMMUNICATION RELAY", "DIRECT LINK / LOCAL"], gstTax: ["TAX ENGINE", "INVOICE BREAKDOWN"], passportPhoto: ["EXAM PORTAL SPEC", "COMPRESSION / MEMORY"], landArea: ["REGIONAL MATRIX", "PLOT CONVERTER"], numberToWords: ["BANKING PROTOCOL", "CHEQUE FORMATTER"],
 } as const;
 
 function WorkspaceFrame({ children, tool }: { children: React.ReactNode; tool: NonNullable<ReturnType<typeof getTool>> }) {
@@ -59,6 +67,6 @@ function TextStats() { const [input, setInput] = useState("Write something usefu
 
 function ColorSignal() { const [value, setValue] = useState("#c7f36b"); const parsed = useMemo(() => /^#?[0-9a-fA-F]{6}$/.test(value) ? `#${value.replace("#", "").toUpperCase()}` : "", [value]); const rgb = parsed ? `${parseInt(parsed.slice(1, 3), 16)}, ${parseInt(parsed.slice(3, 5), 16)}, ${parseInt(parsed.slice(5, 7), 16)}` : ""; return <div className="runner-stack"><div className="color-layout"><div className="color-preview" style={{ background: parsed || "#1f2937" }} /><label>HEX color<input value={value} onChange={(e) => setValue(e.target.value)} /></label></div><Result value={parsed ? `HEX ${parsed}\nRGB ${rgb}` : "Use a six-digit HEX colour, e.g. #C7F36B."} /></div>; }
 
-const runnerByKind = { calculator: Calculator, percentage: Percentage, unit: UnitConverter, base64: Base64, json: JsonStation, password: Password, textStats: TextStats, color: ColorSignal, bmi: BmiTool, discount: DiscountTool, age: AgeTool, dateDiff: DateDifferenceTool, url: UrlTool, html: HtmlTool, textCase: TextCaseTool, uuid: UuidTool, gradient: GradientTool, qr: QrTool, imageResize: ImageResizerTool, imageTransform: ImageTransformTool, imageMetadata: ImageMetadataTool, favicon: FaviconGeneratorTool, hash: HashGeneratorTool, passwordAudit: PasswordStrengthTool, markdown: MarkdownWorkspaceTool, contrast: ContrastCheckerTool, businessDays: BusinessDaysTool, timeZone: TimeZonePlannerTool, timestamp: TimestampConverterTool, textDiff: TextDiffTool, findReplace: FindReplaceTool, splitBill: SplitBillTool, loanEmi: LoanEmiTool, workShift: WorkShiftTool, jsonCsv: JsonCsvConverterTool, csvViewer: CsvViewerCleanerTool, lineSorter: LineSorterTool, pdfEditor: PdfEditorTool, pdfMergeSplit: PdfMergeSplitTool, imagesToPdf: ImagesToPdfTool, excelStudio: ExcelStudioTool, wordDocx: WordDocxTool };
+const runnerByKind = { calculator: Calculator, percentage: Percentage, unit: UnitConverter, base64: Base64, json: JsonStation, password: Password, textStats: TextStats, color: ColorSignal, bmi: BmiTool, discount: DiscountTool, age: AgeTool, dateDiff: DateDifferenceTool, url: UrlTool, html: HtmlTool, textCase: TextCaseTool, uuid: UuidTool, gradient: GradientTool, qr: QrTool, imageResize: ImageResizerTool, imageTransform: ImageTransformTool, imageMetadata: ImageMetadataTool, favicon: FaviconGeneratorTool, hash: HashGeneratorTool, passwordAudit: PasswordStrengthTool, markdown: MarkdownWorkspaceTool, contrast: ContrastCheckerTool, businessDays: BusinessDaysTool, timeZone: TimeZonePlannerTool, timestamp: TimestampConverterTool, textDiff: TextDiffTool, findReplace: FindReplaceTool, splitBill: SplitBillTool, loanEmi: LoanEmiTool, workShift: WorkShiftTool, jsonCsv: JsonCsvConverterTool, csvViewer: CsvViewerCleanerTool, lineSorter: LineSorterTool, pdfEditor: PdfEditorTool, pdfMergeSplit: PdfMergeSplitTool, imagesToPdf: ImagesToPdfTool, excelStudio: ExcelStudioTool, wordDocx: WordDocxTool, whatsappDirect: WhatsappDirectTool, gstTax: GstCalculatorTool, passportPhoto: PassportPhotoResizerTool, landArea: LandAreaConverterTool, numberToWords: NumberToWordsTool };
 
 export default function ToolWorkspace() { const [, params] = useRoute("/tools/:slug"); const tool = getTool(params?.slug || ""); useEffect(() => { if (tool) recordToolVisit(tool); }, [tool]); if (!tool) return <AppShell><section className="page-section"><p className="mono-label">MODULE NOT FOUND</p><Link href="/tools" className="signal-button mt-5 inline-flex">Return to tools</Link></section></AppShell>; const Runner = runnerByKind[tool.kind]; return <WorkspaceFrame tool={tool}><Runner /></WorkspaceFrame>; }

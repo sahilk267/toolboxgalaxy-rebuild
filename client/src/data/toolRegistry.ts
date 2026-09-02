@@ -41,7 +41,12 @@ export type ToolKind =
   | "pdfMergeSplit"
   | "imagesToPdf"
   | "excelStudio"
-  | "wordDocx";
+  | "wordDocx"
+  | "whatsappDirect"
+  | "gstTax"
+  | "passportPhoto"
+  | "landArea"
+  | "numberToWords";
 
 export type ToolDefinition = {
   slug: string;
@@ -432,8 +437,53 @@ export const tools: ToolDefinition[] = [
     accent: "violet",
     tags: ["Local", "Private", "Word"],
   },
+  {
+    slug: "whatsapp-direct-chat",
+    name: "WhatsApp Direct (No Save)",
+    category: "Create",
+    description: "Send WhatsApp messages without saving numbers to contacts. Pick country code, quick templates, and instant QR link.",
+    kind: "whatsappDirect",
+    accent: "ember",
+    tags: ["Local", "Private", "Popular", "WhatsApp"],
+  },
+  {
+    slug: "gst-tax-calculator",
+    name: "GST & Business Tax Calculator",
+    category: "Calculate",
+    description: "Calculate GST (3%, 5%, 12%, 18%, 28%), CGST/SGST/IGST breakdown, Inclusive vs Exclusive, and print ready invoice receipt.",
+    kind: "gstTax",
+    accent: "lime",
+    tags: ["Local", "Verified", "Popular", "Business"],
+  },
+  {
+    slug: "passport-photo-resizer",
+    name: "Govt Job & Passport Photo Resizer",
+    category: "Create",
+    description: "Resize & compress photos to exact KB limits (20KB–50KB photo, 10KB–20KB signature) for UPSC, SSC, Railways, and Govt forms.",
+    kind: "passportPhoto",
+    accent: "sky",
+    tags: ["Local", "Private", "Popular", "Exams"],
+  },
+  {
+    slug: "land-area-converter",
+    name: "Land & Plot Area Converter",
+    category: "Convert",
+    description: "Convert plot and land measurements across Bigha, Marla, Kanal, Guntha, Square Gaj, Cent, Acre, and Sq Ft.",
+    kind: "landArea",
+    accent: "ember",
+    tags: ["Local", "Verified", "Popular", "Property"],
+  },
+  {
+    slug: "number-to-words-rupees",
+    name: "Rupees to Words & Cheque Slip",
+    category: "Convert",
+    description: "Convert numbers to Indian numbering format (Lakhs & Crores) in words for bank cheques, slips, and invoices.",
+    kind: "numberToWords",
+    accent: "violet",
+    tags: ["Local", "Verified", "Popular", "Banking"],
+  },
 ];
 
-export const categories = ["All", "Calculate", "Convert", "Code & Text", "Create"] as const;
+export const categories = ["All", "Popular", "Calculate", "Convert", "Code & Text", "Create"] as const;
 
 export const getTool = (slug: string) => tools.find((tool) => tool.slug === slug);

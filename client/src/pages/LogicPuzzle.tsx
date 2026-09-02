@@ -102,10 +102,10 @@ function PuzzleFrame({
     return `${m}:${s}`;
   };
 
-  // Real URL sharing with fallback
+  // Real URL sharing with fallback & sleek Wordle-style puzzle score
   const shareScore = () => {
     const shareUrl = typeof window !== "undefined" ? window.location.href : "https://toolboxgalaxy.com/games";
-    const text = `🎉 I just solved ${title} on Toolbox Galaxy!\n⏱️ Time: ${formatTime(seconds)}\n📅 Daily: ${daily.id}\n✨ ${progress.label}: ${progress.value}/${progress.total}\n\n👉 Play now: ${shareUrl}`;
+    const text = `🧠 ${title} #${daily.id}\n⏱️ Time: ${formatTime(seconds)}\n✨ ${progress.label}: ${progress.value}/${progress.total}\n🟩🟩🟩🟩 100% Verified\n\nPlay today's daily puzzle:\n${shareUrl}`;
     
     if (navigator.share) {
       navigator.share({

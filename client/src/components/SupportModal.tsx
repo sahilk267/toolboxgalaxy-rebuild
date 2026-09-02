@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Coffee, Heart, Check, Copy, Shield, Sparkles, ExternalLink, X } from "lucide-react";
+import { Coffee, Check, Copy, Shield, X } from "lucide-react";
 
 export default function SupportModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [copied, setCopied] = useState(false);
@@ -65,7 +65,7 @@ export default function SupportModal({ open, onClose }: { open: boolean; onClose
           <div className="mt-5 space-y-3">
             <div className="grid grid-cols-3 gap-2">
               <a
-                href="https://buymeacoffee.com"
+                href="https://www.buymeacoffee.com/MohdAziz"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-white/5 hover:border-[#c7f36b]/50 hover:bg-[#c7f36b]/10 transition-all text-center group"
@@ -74,7 +74,7 @@ export default function SupportModal({ open, onClose }: { open: boolean; onClose
                 <span className="text-[11px] text-white/60 group-hover:text-white">Espresso</span>
               </a>
               <a
-                href="https://buymeacoffee.com"
+                href="https://www.buymeacoffee.com/MohdAziz"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-col items-center justify-center p-3 rounded-xl border border-[#c7f36b]/30 bg-[#c7f36b]/5 hover:border-[#c7f36b] hover:bg-[#c7f36b]/15 transition-all text-center group"
@@ -83,7 +83,7 @@ export default function SupportModal({ open, onClose }: { open: boolean; onClose
                 <span className="text-[11px] text-white/60 group-hover:text-white">Coffee + Donut</span>
               </a>
               <a
-                href="https://buymeacoffee.com"
+                href="https://www.buymeacoffee.com/MohdAziz"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-white/5 hover:border-[#c7f36b]/50 hover:bg-[#c7f36b]/10 transition-all text-center group"
@@ -93,16 +93,21 @@ export default function SupportModal({ open, onClose }: { open: boolean; onClose
               </a>
             </div>
 
-            <a
-              href="https://buymeacoffee.com"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#c7f36b] py-3 text-sm font-semibold text-[#0b1020] hover:bg-[#d6f685] transition-colors"
-            >
-              <Coffee size={16} />
-              <span>Donate via Buy Me a Coffee / Card</span>
-              <ExternalLink size={14} />
-            </a>
+            <div className="flex justify-center pt-2">
+              <a 
+                href="https://www.buymeacoffee.com/MohdAziz" 
+                target="_blank" 
+                rel="noreferrer"
+                className="inline-block transition-transform hover:scale-105 active:scale-95"
+              >
+                <img 
+                  src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+                  alt="Buy Me a Coffee" 
+                  style={{ height: "60px", width: "217px" }}
+                  className="rounded-xl shadow-lg"
+                />
+              </a>
+            </div>
           </div>
         ) : (
           <div className="mt-5 space-y-3">

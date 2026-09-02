@@ -5,10 +5,30 @@ import { Sparkles, Heart, Share2, Check, Quote } from "lucide-react";
 export default function DailyDuaCard() {
   const quote = getDailyQuote();
   const [copied, setCopied] = useState(false);
-  const [lang, setLang] = useState<"urdu" | "hindi" | "english">("urdu");
+  const [lang, setLang] = useState<"english" | "urdu" | "hindi">(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("tg_daily_dua_lang");
+      if (saved === "urdu" || saved === "hindi" || saved === "english") {
+        return saved;
+      }
+    }
+    return "english";
+  });
+
+  const handleSelectLang = (selected: "english" | "urdu" | "hindi") => {
+    setLang(selected);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tg_daily_dua_lang", selected);
+    }
+  };
+
+  const currentBlessing = 
+    lang === "english" ? (quote.blessingEnglish || quote.blessing) :
+    lang === "urdu" ? (quote.blessingUrdu || quote.blessing) :
+    (quote.blessingHindi || quote.blessing);
 
   const handleShare = () => {
-    const text = `${quote.blessing}\n\n"${quote[lang]}"\n\n🕊️ Have a blessed and joyful day! Shared via Toolbox Galaxy:\n${window.location.origin}`;
+    const text = `${currentBlessing}\n\n"${quote[lang]}"\n\n🕊️ Have a blessed and joyful day! Shared via Toolbox Galaxy:\n${window.location.origin}`;
     if (navigator.share) {
       navigator.share({
         title: "Daily Dua & Blessing",
@@ -49,22 +69,22 @@ export default function DailyDuaCard() {
         {/* Language Toggles */}
         <div className="flex items-center bg-black/40 p-0.5 rounded-lg border border-white/10 text-xs font-semibold">
           <button
-            onClick={() => setLang("urdu")}
+            onClick={() => handleSelectLang("english")}
+            className={`px-2.5 py-1 rounded-md transition-all ${lang === "english" ? "bg-emerald-500 text-slate-950 font-bold shadow" : "text-white/60 hover:text-white"}`}
+          >
+            Eng
+          </button>
+          <button
+            onClick={() => handleSelectLang("urdu")}
             className={`px-2.5 py-1 rounded-md transition-all ${lang === "urdu" ? "bg-emerald-500 text-slate-950 font-bold shadow" : "text-white/60 hover:text-white"}`}
           >
             اردو
           </button>
           <button
-            onClick={() => setLang("hindi")}
+            onClick={() => handleSelectLang("hindi")}
             className={`px-2.5 py-1 rounded-md transition-all ${lang === "hindi" ? "bg-emerald-500 text-slate-950 font-bold shadow" : "text-white/60 hover:text-white"}`}
           >
             हिंदी
-          </button>
-          <button
-            onClick={() => setLang("english")}
-            className={`px-2.5 py-1 rounded-md transition-all ${lang === "english" ? "bg-emerald-500 text-slate-950 font-bold shadow" : "text-white/60 hover:text-white"}`}
-          >
-            Eng
           </button>
         </div>
       </div>
@@ -86,13 +106,15 @@ export default function DailyDuaCard() {
         {/* Heartfelt blessing */}
         <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs sm:text-sm text-emerald-300 flex items-start gap-2">
           <Sparkles size={16} className="text-amber-300 shrink-0 mt-0.5" />
-          <span>{quote.blessing}</span>
+          <span>{currentBlessing}</span>
         </div>
       </div>
 
       {/* Share / Copy Action */}
       <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-        <span className="text-white/40 text-[11px] font-mono">🕊️ Dil se Dua, Har Roz</span>
+        <span className="text-white/40 text-[11px] font-mono">
+          {lang === "english" ? "🕊️ Daily Prayer & Blessings" : "🕊️ Dil se Dua, Har Roz"}
+        </span>
         <button
           onClick={handleShare}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 border border-emerald-500/40 font-semibold text-xs transition-all active:scale-95"
@@ -101,12 +123,12 @@ export default function DailyDuaCard() {
           {copied ? (
             <>
               <Check size={13} />
-              <span>Dua Copied with Link!</span>
+              <span>{lang === "english" ? "Dua Copied with Link!" : "دعا کاپی ہو گئی!"}</span>
             </>
           ) : (
             <>
               <Share2 size={13} />
-              <span>Dua Share Karein</span>
+              <span>{lang === "english" ? "Share Dua" : "Dua Share Karein"}</span>
             </>
           )}
         </button>
