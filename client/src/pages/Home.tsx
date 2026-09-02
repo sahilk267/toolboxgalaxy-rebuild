@@ -4,14 +4,14 @@ import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
 import { tools } from "@/data/toolRegistry";
 import { GameBayVisual, HeroWorkbenchVisual, StoryToolsVisual } from "@/components/HomeVisuals";
-import { ArrowRight, CheckCircle2, Gamepad2, ShieldCheck, Sparkles, Wrench } from "lucide-react";
+import { ArrowRight, CheckCircle2, Gamepad2, ShieldCheck, Sparkles, Wrench, Globe, Lock, Cpu } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
   return <AppShell>
     <section className="hero-section">
       <div className="hero-copy">
-        <div className="page-kicker"><span>00</span><span>YOUR BROWSER WORKBENCH</span></div>
+        <div className="page-kicker"><span>00</span><span>BY AADITECH SOLUTION · PRIVACY FIRST</span></div>
         <h1 className="font-display mt-9 max-w-3xl text-5xl font-semibold leading-[0.93] tracking-[-0.075em] text-[#f4f2ea] sm:text-6xl lg:text-8xl">Make the small thing <em>easy.</em></h1>
         <p className="mt-7 max-w-xl text-lg leading-8 text-white/65">Verified browser tools for the work in front of you, plus a quick game when your brain needs to clear the board.</p>
         <div className="mt-10 flex flex-wrap gap-3">
@@ -25,7 +25,11 @@ export default function Home() {
             Games <Gamepad2 size={17} />
           </Link>
         </div>
-        <div className="hero-trust"><span><CheckCircle2 size={15} /> Local-first modules</span><span><ShieldCheck size={15} /> No legacy endpoints</span></div>
+        <div className="hero-trust">
+          <span><Globe size={15} className="text-[#c7f36b]" /> Global Edge Ready</span>
+          <span><Lock size={15} className="text-[#6fd5ff]" /> 100% In-Browser Memory</span>
+          <span><Cpu size={15} className="text-[#ff9b54]" /> Zero Server Uploads</span>
+        </div>
       </div>
       <div className="hero-visual">
         <HeroWorkbenchVisual />
@@ -50,9 +54,9 @@ export default function Home() {
     <section className="page-section game-callout">
       <div className="game-art">
         <GameBayVisual />
-        <p className="image-telemetry image-telemetry--ember">PLAYFIELD RECORD / 03 ARCADE MODULES</p>
+        <p className="image-telemetry image-telemetry--ember">PLAYFIELD RECORD / ARCADE & LOGIC MODULES</p>
       </div>
-      <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / READY NOW</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. Orbit Dash, Signal Switch, and Circuit Shift keep scores in the browser and sound under your control.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
+      <div className="game-copy"><p className="mono-label text-[#ff9b54]">GAMES / READY NOW</p><h2 className="font-display mt-4 text-4xl font-semibold tracking-[-0.055em] md:text-5xl">A useful pause is part of the workbench.</h2><p>Games are intentionally separate from tools: lightweight, lazy-loaded, and designed for short browser breaks. Enjoy Orbit Dash along with daily logic puzzles including Mini Sudoku, Tango, and Queens.</p><Link href="/games" className="ember-button">Enter games bay <ArrowRight size={17} /></Link></div>
     </section>
   </AppShell>;
 }

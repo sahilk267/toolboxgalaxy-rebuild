@@ -40,7 +40,7 @@ export default function Games() {
               <p className="text-xs uppercase tracking-widest font-mono text-white/50">ARCADE BAY ACTIVE</p>
               <div className="flex items-center justify-center gap-2 text-xs text-lime-400 font-mono">
                 <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
-                <span>3 ARCADE · 6 LOGIC MODULES</span>
+                <span>1 ARCADE · 6 LOGIC PUZZLES</span>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function Games() {
           </div>
           <div className="flex-1">
             <div className="telemetry-strip">
-              <span>ARCADE MODULE 01</span>
+              <span>ARCADE RUNNER 01</span>
               <span>LOCAL SCORE</span>
             </div>
             <h2 className="font-display mt-5 text-3xl font-semibold tracking-[-0.045em]">Orbit Dash</h2>
@@ -68,58 +68,6 @@ export default function Games() {
             </div>
           </div>
           <Link href="/games/orbit-dash" className="ember-button">
-            Launch game <ArrowRight size={17} />
-          </Link>
-        </div>
-
-        {/* Signal Switch */}
-        <div className="game-launch-card game-launch-card--switch">
-          <div className="game-icon">
-            <Radio size={30} />
-          </div>
-          <div className="flex-1">
-            <div className="telemetry-strip">
-              <span>ARCADE MODULE 02</span>
-              <span>LOCAL SCORE</span>
-            </div>
-            <h2 className="font-display mt-5 text-3xl font-semibold tracking-[-0.045em]">Signal Switch</h2>
-            <p className="mt-3 max-w-xl text-white/62">
-              Route the ember packet to the lime relay pad before the link drops. A crisp reaction loop designed for keyboard, touch, and short breaks.
-            </p>
-            <div className="game-meta">
-              <span><Clock3 size={15} /> 30–90 second runs</span>
-              <span><Gauge size={15} /> Keys + tap targets</span>
-              <span><Volume2 size={15} /> Shared sound setting</span>
-              <span><Trophy size={15} /> Browser high score</span>
-            </div>
-          </div>
-          <Link href="/games/signal-switch" className="ember-button">
-            Launch game <ArrowRight size={17} />
-          </Link>
-        </div>
-
-        {/* Circuit Shift */}
-        <div className="game-launch-card game-launch-card--circuit">
-          <div className="game-icon">
-            <CircuitBoard size={30} />
-          </div>
-          <div className="flex-1">
-            <div className="telemetry-strip">
-              <span>ARCADE MODULE 03</span>
-              <span>LOCAL SCORE</span>
-            </div>
-            <h2 className="font-display mt-5 text-3xl font-semibold tracking-[-0.045em]">Circuit Shift</h2>
-            <p className="mt-3 max-w-xl text-white/62">
-              Rotate relay tiles until the lime line reaches the output. A compact logic loop for keyboard, tap targets, and a short reset between tasks.
-            </p>
-            <div className="game-meta">
-              <span><Clock3 size={15} /> 1–3 minute puzzles</span>
-              <span><Gauge size={15} /> Keys + tile taps</span>
-              <span><Volume2 size={15} /> Shared sound setting</span>
-              <span><Trophy size={15} /> Browser high score</span>
-            </div>
-          </div>
-          <Link href="/games/circuit-shift" className="ember-button">
             Launch game <ArrowRight size={17} />
           </Link>
         </div>

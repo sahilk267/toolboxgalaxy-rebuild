@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import InstallWorkbench from "@/components/InstallWorkbench";
 import ShortcutReference from "@/components/ShortcutReference";
 import CommandPalette from "@/components/CommandPalette";
+import SupportModal from "@/components/SupportModal";
 import {
   FileText,
   Gamepad2,
@@ -11,7 +12,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Coffee,
+  Sparkles
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
@@ -28,6 +31,7 @@ const navItems = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
@@ -86,6 +90,17 @@ export default function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="rail-bottom">
+          <button
+            type="button"
+            onClick={() => setSupportOpen(true)}
+            className="flex w-full items-center justify-between rounded-xl border border-[#c7f36b]/30 bg-[#c7f36b]/10 px-3 py-2 text-xs font-semibold text-[#c7f36b] hover:bg-[#c7f36b]/20 hover:border-[#c7f36b]/60 transition-all group"
+          >
+            <span className="flex items-center gap-2">
+              <Coffee size={15} className="group-hover:scale-110 transition-transform" />
+              <span>Support Galaxy</span>
+            </span>
+            <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#c7f36b]/20 text-white">Free</span>
+          </button>
           <CommandPalette />
           <ShortcutReference />
           <InstallWorkbench />
@@ -102,6 +117,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="rail-legal">
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
+          </div>
+          <div className="pt-2 border-t border-white/5 text-[11px] font-mono text-white/40 text-center">
+            By <span className="text-white/70 font-semibold">Aaditech Solution</span>
           </div>
         </div>
       </aside>
@@ -143,6 +161,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
         {children}
       </main>
+
+      <SupportModal open={supportOpen} onClose={() => setSupportOpen(false)} />
 
       {open && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setOpen(false)} />}
     </div>

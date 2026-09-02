@@ -14,7 +14,7 @@ import { patchesEditionBank, patchesEditionForDate } from "@/game/logicPuzzles/p
 import { solvedZip, validZipPath, zipEditionBank, zipEditionForDate } from "@/game/logicPuzzles/zip";
 import { matchesWendWord, solvedWend, validWendPath, wendGrid, wendWords, wordFromPath } from "@/game/logicPuzzles/wend";
 import { wendEditionBank, wendEditionForDate } from "@/game/logicPuzzles/wendBank";
-import { ArrowLeft, CalendarDays, Check, Crown, Lightbulb, Moon, RotateCcw, Sparkles, Sun, X } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, Crown, Lightbulb, Moon, RotateCcw, Sparkles, Sun, X, Timer, Share2, Trophy } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MutableRefObject, ReactNode } from "react";
 import { Link, useRoute } from "wouter";
@@ -36,7 +36,116 @@ function usePuzzleCompletion(slug: string, daily: LogicDaily, solved: boolean, d
 
 function PuzzleFrame({ eyebrow, title, rules, children, solved, onReset, onHint, audio, daily, feedback, progress, completedOnDevice }: { eyebrow: string; title: string; rules: string; children: ReactNode; solved: boolean; onReset: () => void; onHint: () => void; audio: MutableRefObject<OrbitAudio>; daily: LogicDaily; feedback: string; progress: { label: string; value: number; total: number }; completedOnDevice: boolean }) {
   const progressComplete = progress.value === progress.total;
-  return <section className={`logic-game-page logic-game-page--${daily.difficulty}`}><header className="logic-game-hud"><Link href="/games" className="game-back"><ArrowLeft size={16} /> Games bay</Link><div className="logic-game-brand"><img src={orbitMark} alt="" /><span><b>TOOLBOX / GALAXY</b><small>{eyebrow}</small></span></div><div className="logic-game-actions"><GameAudioControls audio={audio} music /><button type="button" className="logic-action" onClick={onHint}><Lightbulb size={15} /> Hint</button><button type="button" className="logic-action" onClick={onReset}><RotateCcw size={15} /> Reset</button></div></header><main className="logic-game-stage"><div className="logic-game-intro"><div><p className="mono-label text-[#c7f36b]">DAILY FIELD / {daily.id}</p><h1 className="font-display">{title}</h1><p>{rules}</p></div><div className="logic-daily-card"><CalendarDays size={17} /><span><b>{daily.label}</b><small>{difficultyDetail[daily.difficulty]}</small></span><i>{daily.difficulty.toUpperCase()}</i></div></div><div className="logic-game-console"><div className="logic-console-head"><span>CONSTRAINT FIELD / LIVE</span><i /><span>LOCAL ONLY / NO NETWORK</span></div><div className={`logic-progress ${progressComplete ? "logic-progress--complete" : ""}`} aria-live="polite"><span>{progress.label}</span><strong>{progress.value} / {progress.total}</strong><i>{solved ? "SOLVED NOW" : completedOnDevice ? "COMPLETED ON THIS DEVICE" : "IN PROGRESS"}</i></div>{solved && <aside className="logic-game-solved" role="status"><Check size={19} /><span><b>Constraint system complete.</b> Every local rule passes. {completedOnDevice ? "This daily field is saved as completed on this device." : "Demo verification is visible only and does not save progress."}</span><button type="button" onClick={onReset}>Play again</button></aside>}{children}<div className="logic-console-foot"><span>HINT / REVEALS ONE VERIFIED NEXT MOVE</span><span>{feedback}</span></div></div></main><footer className="logic-game-footer"><span>POINTER + KEYBOARD / READY</span><span>DATE-LOCAL EDITION / {daily.id}</span></footer></section>;
+  const [seconds, setSeconds] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  // Stopwatch timer
+  useEffect(() => {
+    if (solved) return;
+    const interval = window.setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => window.clearInterval(interval);
+  }, [solved]);
+
+  const formatTime = (sec: number) => {
+    const m = Math.floor(sec / 60).toString().padStart(2, "0");
+    const s = (sec % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
+  const shareScore = () => {
+    const text = `Toolbox Galaxy • ${title} (${daily.id})\n⏱️ Time: ${formatTime(seconds)}\n🧩 Solved 100% In-Browser\nPlay at: https://toolboxgalaxy.com/games`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  return (
+    <section className={`logic-game-page logic-game-page--${daily.difficulty}`}>
+      <header className="logic-game-hud">
+        <Link href="/games" className="game-back"><ArrowLeft size={16} /> Games bay</Link>
+        <div className="logic-game-brand">
+          <img src={orbitMark} alt="" />
+          <span><b>TOOLBOX / GALAXY</b><small>{eyebrow}</small></span>
+        </div>
+        <div className="logic-game-actions">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-white/10 bg-white/5 font-mono text-xs text-[#c7f36b]">
+            <Timer size={13} />
+            <span>{formatTime(seconds)}</span>
+          </div>
+          <GameAudioControls audio={audio} music />
+          <button type="button" className="logic-action" onClick={onHint}><Lightbulb size={15} /> Hint</button>
+          <button type="button" className="logic-action" onClick={onReset}><RotateCcw size={15} /> Reset</button>
+        </div>
+      </header>
+      <main className="logic-game-stage">
+        <div className="logic-game-intro">
+          <div>
+            <p className="mono-label text-[#c7f36b]">DAILY FIELD / {daily.id}</p>
+            <h1 className="font-display">{title}</h1>
+            <p>{rules}</p>
+          </div>
+          <div className="logic-daily-card">
+            <CalendarDays size={17} />
+            <span><b>{daily.label}</b><small>{difficultyDetail[daily.difficulty]}</small></span>
+            <i>{daily.difficulty.toUpperCase()}</i>
+          </div>
+        </div>
+        <div className="logic-game-console">
+          <div className="logic-console-head">
+            <span>CONSTRAINT FIELD / LIVE</span>
+            <span className="font-mono text-xs text-[#c7f36b] flex items-center gap-1">
+              <Timer size={12} /> {formatTime(seconds)}
+            </span>
+            <span>LOCAL ONLY / NO NETWORK</span>
+          </div>
+          <div className={`logic-progress ${progressComplete ? "logic-progress--complete" : ""}`} aria-live="polite">
+            <span>{progress.label}</span>
+            <strong>{progress.value} / {progress.total}</strong>
+            <i>{solved ? `SOLVED IN ${formatTime(seconds)}` : completedOnDevice ? "COMPLETED ON THIS DEVICE" : "IN PROGRESS"}</i>
+          </div>
+          {solved && (
+            <aside className="logic-game-solved flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-xl border border-[#c7f36b]/40 bg-[#c7f36b]/10" role="status">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-[#c7f36b] text-[#0b1020]">
+                  <Trophy size={20} />
+                </div>
+                <div>
+                  <b className="text-white text-base block">Solved in {formatTime(seconds)}! 🎉</b>
+                  <span className="text-xs text-white/70">Constraint system satisfied. 100% on-device local completion.</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <button
+                  type="button"
+                  onClick={shareScore}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#c7f36b] text-[#0b1020] text-xs font-bold hover:bg-[#d6f685] transition-all"
+                >
+                  <Share2 size={14} />
+                  <span>{copied ? "Score Copied!" : "Share Score"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onReset}
+                  className="flex-1 md:flex-none px-3 py-2 rounded-lg border border-white/20 bg-white/5 text-xs text-white hover:bg-white/10"
+                >
+                  Play again
+                </button>
+              </div>
+            </aside>
+          )}
+          {children}
+          <div className="logic-console-foot">
+            <span>HINT / REVEALS ONE VERIFIED NEXT MOVE</span>
+            <span>{feedback}</span>
+          </div>
+        </div>
+      </main>
+      <footer className="logic-game-footer">
+        <span>POINTER + KEYBOARD / READY</span>
+        <span>DATE-LOCAL EDITION / {daily.id}</span>
+      </footer>
+    </section>
+  );
 }
 
 function MiniSudokuPuzzle() {

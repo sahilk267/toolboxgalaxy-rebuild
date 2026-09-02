@@ -9,9 +9,17 @@ const routes = [
   { label: "Workbench overview", href: "/", detail: "Overview", icon: Orbit },
   { label: "PDF & Doc Studio", href: "/studio", detail: "Interactive PDF, Excel & Word Workstation", icon: FileText },
   { label: "Tool foundry", href: "/tools", detail: `${tools.length} verified modules`, icon: Wrench },
-  { label: "Games bay", href: "/games", detail: "3 local games", icon: Gamepad2 }
+  { label: "Games bay", href: "/games", detail: "Daily Logic & Arcade", icon: Gamepad2 }
 ];
-const games = [{ label: "Orbit Dash", href: "/games/orbit-dash" }, { label: "Signal Switch", href: "/games/signal-switch" }, { label: "Circuit Shift", href: "/games/circuit-shift" }];
+const games = [
+  { label: "Orbit Dash", href: "/games/orbit-dash" },
+  { label: "Mini Sudoku", href: "/games/mini-sudoku" },
+  { label: "Tango", href: "/games/tango" },
+  { label: "Queens", href: "/games/queens" },
+  { label: "Patches", href: "/games/patches" },
+  { label: "Zip", href: "/games/zip" },
+  { label: "Wend", href: "/games/wend" },
+];
 const editable = (target: EventTarget | null) => target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
 export default function CommandPalette() { const [location, navigate] = useLocation(); const [open, setOpen] = useState(() => new URLSearchParams(window.location.search).has("command")); const go = (href: string) => { if (href !== location) navigate(href); setOpen(false); }; useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { const commandKey = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"; if (commandKey && !editable(event.target) && !document.querySelector('[data-slot="dialog-content"]')) { event.preventDefault(); setOpen(true); } }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, []); return <><button type="button" className="command-palette-trigger" onClick={() => setOpen(true)}><Search size={15} /><span>Quick open</span><kbd>{navigator.platform.includes("Mac") ? "⌘ K" : "Ctrl K"}</kbd></button><CommandDialog open={open} onOpenChange={setOpen} title="Quick open" description="Search Toolbox Galaxy navigation and verified local modules." className="command-palette-dialog"><div className="command-palette-heading"><span>COMMAND CONSOLE / NAVIGATION ONLY</span><b>Quick open</b><small>Routes and local modules · no workspace data</small></div><CommandInput placeholder="Search tools, games, or routes…" /><CommandList><CommandEmpty>No matching route or module.</CommandEmpty><CommandGroup heading="Workbench">{routes.map((route) => { const Icon = route.icon; return <CommandItem key={route.href} value={`${route.label} ${route.detail}`} onSelect={() => go(route.href)}><Icon /><span>{route.label}</span><small>{route.detail}</small></CommandItem>; })}</CommandGroup><CommandSeparator /><CommandGroup heading="Games Bay">{games.map((game) => <CommandItem key={game.href} value={game.label} onSelect={() => go(game.href)}><Gamepad2 /><span>{game.label}</span><small>Play module</small></CommandItem>)}</CommandGroup><CommandSeparator /><CommandGroup heading="Verified tool modules">{tools.map((tool) => <CommandItem key={tool.slug} value={`${tool.name} ${tool.category} ${tool.tags.join(" ")}`} onSelect={() => go(`/tools/${tool.slug}`)}><Calculator /><span>{tool.name}</span><small>{tool.category}</small></CommandItem>)}</CommandGroup></CommandList><div className="command-palette-foot"><span><Keyboard size={13} /> Arrow keys navigate · Enter opens</span><CommandShortcut>ESC closes</CommandShortcut></div></CommandDialog></>; }
