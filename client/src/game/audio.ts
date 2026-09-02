@@ -1,4 +1,4 @@
-// Orbital Workbench: shared browser-local game-audio preference; audible output still starts only from a visitor gesture.
+// Orbital Workbench: Relaxing, melodic, lofi ambient synthesizer & soothing gamified SFX
 export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle" | "relayCorrect" | "relayFail" | "rotate" | "puzzleSolve";
 
 const SOUND_STORAGE_KEY = "toolboxgalaxy:game-sound";
@@ -7,8 +7,13 @@ const readPreference = (key: string) => typeof window !== "undefined" && window.
 
 export class OrbitAudio {
   private context: AudioContext | null = null;
-  private musicOscillators: OscillatorNode[] = [];
-  private musicGain: GainNode | null = null;
+  private musicNodes: {
+    oscillators: OscillatorNode[];
+    gain: GainNode | null;
+    filter: BiquadFilterNode | null;
+    intervalId?: number;
+  } = { oscillators: [], gain: null, filter: null };
+  
   private enabled = readPreference(SOUND_STORAGE_KEY);
   private musicEnabled = readPreference(MUSIC_STORAGE_KEY);
 
@@ -16,14 +21,21 @@ export class OrbitAudio {
   isMusicEnabled() { return this.musicEnabled; }
 
   private getContext() {
-    this.context ??= new AudioContext();
+    if (!this.context) {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      this.context = new AudioCtx();
+    }
     return this.context;
   }
 
   async setEnabled(next: boolean) {
     this.enabled = next;
     window.localStorage.setItem(SOUND_STORAGE_KEY, next ? "on" : "off");
-    if (!next) { this.pauseMusic(); await this.context?.suspend(); return false; }
+    if (!next) { 
+      this.pauseMusic(); 
+      await this.context?.suspend(); 
+      return false; 
+    }
     const context = this.getContext();
     if (context.state === "suspended") await context.resume();
     this.play("toggle");
@@ -33,84 +45,165 @@ export class OrbitAudio {
   async setMusicEnabled(next: boolean) {
     this.musicEnabled = next;
     window.localStorage.setItem(MUSIC_STORAGE_KEY, next ? "on" : "off");
-    if (!next) { this.pauseMusic(); return false; }
+    if (!next) { 
+      this.pauseMusic(); 
+      return false; 
+    }
     if (!this.enabled) await this.setEnabled(true);
     await this.startMusic();
     return true;
   }
 
+  // Soft, warm, soothing game sounds (no harsh frequencies)
   play(event: SoundEvent) {
     if (!this.enabled) return;
     if (this.musicEnabled) void this.startMusic();
     const context = this.getContext();
+    
+    // Musical pentatonic chime frequencies
     const tones: Record<SoundEvent, Array<[number, number, OscillatorType, number]>> = {
-      start: [[310, 0.08, "triangle", 0], [470, 0.1, "triangle", 0.09]],
-      fragment: [[720, 0.09, "sine", 0], [1040, 0.08, "sine", 0.06]],
-      gate: [[290, 0.045, "triangle", 0]],
-      collision: [[180, 0.18, "sawtooth", 0], [110, 0.24, "sawtooth", 0.07]],
-      toggle: [[540, 0.06, "sine", 0]],
-      relayCorrect: [[640, 0.065, "sine", 0], [880, 0.09, "triangle", 0.055]],
-      relayFail: [[210, 0.15, "sawtooth", 0], [145, 0.18, "sawtooth", 0.06]],
-      rotate: [[420, 0.045, "triangle", 0], [510, 0.05, "sine", 0.03]],
-      puzzleSolve: [[520, 0.07, "sine", 0], [780, 0.08, "triangle", 0.06], [1040, 0.12, "sine", 0.13]],
+      start: [[261.63, 0.15, "sine", 0], [329.63, 0.18, "sine", 0.08], [392.00, 0.25, "sine", 0.16]], // C-E-G major chord
+      fragment: [[523.25, 0.12, "sine", 0], [659.25, 0.18, "sine", 0.06]], // Soft twinkle C5, E5
+      gate: [[349.23, 0.1, "sine", 0]], // F4 soft note
+      collision: [[146.83, 0.2, "sine", 0]], // Gentle low tone
+      toggle: [[440, 0.06, "sine", 0]], // A4 gentle blip
+      relayCorrect: [[440, 0.09, "sine", 0], [554.37, 0.12, "sine", 0.06], [659.25, 0.18, "sine", 0.12]], // A major arpeggio
+      relayFail: [[293.66, 0.12, "sine", 0], [277.18, 0.18, "sine", 0.08]], // Gentle down tone
+      rotate: [[329.63, 0.06, "sine", 0], [392.00, 0.08, "sine", 0.03]], // Quick soft wooden marimba chime
+      puzzleSolve: [
+        [329.63, 0.2, "sine", 0],
+        [392.00, 0.2, "sine", 0.1],
+        [523.25, 0.25, "sine", 0.2],
+        [659.25, 0.35, "sine", 0.3],
+        [783.99, 0.45, "sine", 0.4]
+      ], // Victory pentatonic bloom
     };
-    tones[event].forEach(([frequency, duration, type, delay]) => this.tone(context, frequency, duration, type, delay));
+
+    tones[event]?.forEach(([frequency, duration, type, delay]) => {
+      this.softTone(context, frequency, duration, type, delay);
+    });
   }
 
-  private tone(context: AudioContext, frequency: number, duration: number, type: OscillatorType, delay: number) {
-    const now = context.currentTime + delay;
-    const oscillator = context.createOscillator(); const gain = context.createGain();
-    oscillator.type = type; oscillator.frequency.setValueAtTime(frequency, now);
-    gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(0.11, now + 0.012); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    oscillator.connect(gain); gain.connect(context.destination); oscillator.start(now); oscillator.stop(now + duration + 0.02);
+  private softTone(context: AudioContext, frequency: number, duration: number, type: OscillatorType, delay: number) {
+    try {
+      const now = context.currentTime + delay;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const filter = context.createBiquadFilter();
+
+      // Low-pass filter to remove harsh sharp buzzes, creating a warm mellow sound
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1200, now);
+
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, now);
+
+      // Smooth attack and gentle exponential decay
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      oscillator.connect(filter);
+      filter.connect(gain);
+      gain.connect(context.destination);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration + 0.05);
+    } catch {
+      // Audio safety
+    }
   }
 
+  // Soothing, calm meditation ambient music (soft E-minor9 / G-major lofi chord pad with subtle slow movement)
   private async startMusic() {
     if (!this.enabled || !this.musicEnabled) return;
     const context = this.getContext();
     if (context.state === "suspended") await context.resume();
-    if (this.musicGain) return; // Already running
+    if (this.musicNodes.gain) return; // Already running
 
-    // Procedural ambient harmonic drone
-    const gainNode = context.createGain();
-    gainNode.gain.setValueAtTime(0.0001, context.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.04, context.currentTime + 1.2);
-    gainNode.connect(context.destination);
-    this.musicGain = gainNode;
+    try {
+      // Master music gain node with soft fade-in
+      const masterGain = context.createGain();
+      masterGain.gain.setValueAtTime(0.0001, context.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0.035, context.currentTime + 2.0); // Very gentle volume
 
-    const baseFreqs = [110, 164.81, 220, 293.66]; // A2, E3, A3, D4 ambient chord
-    this.musicOscillators = baseFreqs.map((freq) => {
-      const osc = context.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, context.currentTime);
-      osc.connect(gainNode);
-      osc.start();
-      return osc;
-    });
+      // Warm low-pass filter (cuts all squeaky high tones completely)
+      const filter = context.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(450, context.currentTime);
+      filter.Q.setValueAtTime(1.0, context.currentTime);
+
+      masterGain.connect(filter);
+      filter.connect(context.destination);
+
+      this.musicNodes.gain = masterGain;
+      this.musicNodes.filter = filter;
+
+      // Deep calming chord frequencies (C major 9 warm ambient pad: C3, G3, B3, D4, E4)
+      const chordFreqs = [130.81, 196.00, 246.94, 293.66, 329.63];
+
+      this.musicNodes.oscillators = chordFreqs.map((freq, i) => {
+        const osc = context.createOscillator();
+        osc.type = "sine"; // Pure smooth sine wave with zero distortion
+        // Slightly detune to create a lush, natural analog chorus vibe
+        const detune = (i - 2) * 3.5;
+        osc.frequency.setValueAtTime(freq, context.currentTime);
+        osc.detune.setValueAtTime(detune, context.currentTime);
+        osc.connect(masterGain);
+        osc.start();
+        return osc;
+      });
+
+      // Subtle slow breathing filter modulation for relaxation
+      let up = true;
+      this.musicNodes.intervalId = window.setInterval(() => {
+        if (!this.musicNodes.filter || !this.context) return;
+        const now = this.context.currentTime;
+        const targetFreq = up ? 520 : 380;
+        this.musicNodes.filter.frequency.linearRampToValueAtTime(targetFreq, now + 4);
+        up = !up;
+      }, 4000);
+
+    } catch {
+      // Audio safety
+    }
   }
 
   private pauseMusic() {
-    if (this.musicGain && this.context) {
+    if (this.musicNodes.intervalId) {
+      window.clearInterval(this.musicNodes.intervalId);
+      this.musicNodes.intervalId = undefined;
+    }
+
+    if (this.musicNodes.gain && this.context) {
       try {
-        this.musicGain.gain.setValueAtTime(this.musicGain.gain.value, this.context.currentTime);
-        this.musicGain.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 0.3);
+        this.musicNodes.gain.gain.setValueAtTime(this.musicNodes.gain.gain.value, this.context.currentTime);
+        this.musicNodes.gain.gain.linearRampToValueAtTime(0.0001, this.context.currentTime + 0.4);
       } catch {
         // Safe fallback
       }
     }
+
     setTimeout(() => {
-      this.musicOscillators.forEach((osc) => {
-        try { osc.stop(); osc.disconnect(); } catch { /* ignore */ }
+      this.musicNodes.oscillators.forEach((osc) => {
+        try { 
+          osc.stop(); 
+          osc.disconnect(); 
+        } catch { /* ignore */ }
       });
-      this.musicOscillators = [];
-      this.musicGain?.disconnect();
-      this.musicGain = null;
-    }, 350);
+      this.musicNodes.oscillators = [];
+      this.musicNodes.gain?.disconnect();
+      this.musicNodes.filter?.disconnect();
+      this.musicNodes.gain = null;
+      this.musicNodes.filter = null;
+    }, 450);
   }
 
   dispose() {
     this.pauseMusic();
-    void this.context?.close();
+    try {
+      void this.context?.close();
+    } catch { /* ignore */ }
     this.context = null;
   }
 }

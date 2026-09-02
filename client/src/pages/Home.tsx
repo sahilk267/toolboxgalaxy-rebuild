@@ -2,6 +2,7 @@
 import AppShell from "@/components/AppShell";
 import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
+import DailyDuaCard from "@/components/DailyDuaCard";
 import { tools } from "@/data/toolRegistry";
 import { GameBayVisual, HeroWorkbenchVisual, StoryToolsVisual } from "@/components/HomeVisuals";
 import { ArrowRight, CheckCircle2, Gamepad2, ShieldCheck, Sparkles, Wrench, Globe, Lock, Cpu } from "lucide-react";
@@ -35,6 +36,11 @@ export default function Home() {
         <HeroWorkbenchVisual />
         <div className="hero-caption"><span className="status-dot" /><span>Signal received · version 01</span></div>
       </div>
+    </section>
+
+    {/* Soulful Daily Dua & Quote Card for Positivity & Blessings */}
+    <section className="my-8 max-w-4xl mx-auto px-4">
+      <DailyDuaCard />
     </section>
 
     <section className="page-section module-section">

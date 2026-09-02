@@ -1,5 +1,6 @@
 // Orbital Workbench: games route introduces the separate lightweight-games product lane.
 import AppShell from "@/components/AppShell";
+import DailyDuaCard from "@/components/DailyDuaCard";
 import LogicPersonalBestSummary from "@/components/LogicPersonalBestSummary";
 import WeeklyLogicCalendar from "@/components/WeeklyLogicCalendar";
 import { ArrowRight, CircuitBoard, Clock3, Crown, Gamepad2, Gauge, Grid3X3, Moon, Radio, Route, Sparkles, Trophy, Volume2, Zap } from "lucide-react";
@@ -44,6 +45,11 @@ export default function Games() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Daily Blessing & Dua Card */}
+        <div className="my-6">
+          <DailyDuaCard />
         </div>
 
         {/* Orbit Dash */}
