@@ -15,6 +15,9 @@ import { patchesEditionBank, patchesEditionForDate } from "@/game/logicPuzzles/p
 import { solvedZip, validZipPath, zipEditionBank, zipEditionForDate } from "@/game/logicPuzzles/zip";
 import { matchesWendWord, solvedWend, validWendPath, wordFromPath } from "@/game/logicPuzzles/wend";
 import { wendEditionBank, wendEditionForDate } from "@/game/logicPuzzles/wendBank";
+import ConnectionsPuzzle from "@/components/puzzles/ConnectionsPuzzle";
+import WordlePuzzle from "@/components/puzzles/WordlePuzzle";
+import MiniCrosswordPuzzle from "@/components/puzzles/MiniCrosswordPuzzle";
 import { 
   ArrowLeft, 
   CalendarDays, 
@@ -1140,6 +1143,9 @@ export default function LogicPuzzle() {
   const [, direct] = useRoute("/games/:slug");
   const slug = legacy?.slug ?? direct?.slug;
 
+  if (slug === "connections") return <ConnectionsPuzzle />;
+  if (slug === "wordle") return <WordlePuzzle />;
+  if (slug === "mini-crossword") return <MiniCrosswordPuzzle />;
   if (slug === "mini-sudoku") return <MiniSudokuPuzzle />;
   if (slug === "tango") return <TangoEditionPuzzle />;
   if (slug === "queens") return <QueensEditionPuzzle />;

@@ -1,11 +1,32 @@
 // Orbital Workbench: a Games Bay personal-record rack reads existing genuine edition flags only; it communicates completion-derived counts, never speed/score claims or unverified progress.
 import { logicPersonalBests } from "@/lib/logicPersonalBest";
-import { CalendarCheck, ChevronRight, Flame, Grid3X3, Moon, Crown, Sparkles, Route } from "lucide-react";
+import { CalendarCheck, ChevronRight, Flame, Grid3X3, Moon, Crown, Sparkles, Route, Layers, SpellCheck, FileSpreadsheet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 
-const iconFor = { "mini-sudoku": Grid3X3, tango: Moon, queens: Crown, patches: Sparkles, zip: Route, wend: Grid3X3 };
-const codeFor = { "mini-sudoku": "S", tango: "T", queens: "Q", patches: "P", zip: "Z", wend: "W" };
+const iconFor = {
+  connections: Layers,
+  wordle: SpellCheck,
+  "mini-crossword": FileSpreadsheet,
+  "mini-sudoku": Grid3X3,
+  tango: Moon,
+  queens: Crown,
+  patches: Sparkles,
+  zip: Route,
+  wend: Grid3X3
+};
+
+const codeFor = {
+  connections: "C",
+  wordle: "WD",
+  "mini-crossword": "X",
+  "mini-sudoku": "S",
+  tango: "T",
+  queens: "Q",
+  patches: "P",
+  zip: "Z",
+  wend: "W"
+};
 
 export default function LogicPersonalBestSummary() {
   const [revision, setRevision] = useState(0);

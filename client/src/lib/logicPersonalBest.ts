@@ -5,9 +5,12 @@ import { queensEditionBank } from "@/game/logicPuzzles/queensBank";
 import { tangoEditionBank } from "@/game/logicPuzzles/tangoBank";
 import { wendEditionBank } from "@/game/logicPuzzles/wendBank";
 import { zipEditionBank } from "@/game/logicPuzzles/zipBank";
+import { connectionsEditionBank } from "@/game/logicPuzzles/connectionsBank";
+import { DAILY_WORDLE_BANK } from "@/game/logicPuzzles/wordleBank";
+import { MINI_CROSSWORD_BANK } from "@/game/logicPuzzles/miniCrosswordBank";
 import { readPuzzleCompletionMap, type PuzzleCompletionMap } from "@/lib/puzzleCompletion";
 
-export type LogicPersonalBestSlug = "mini-sudoku" | "tango" | "queens" | "patches" | "zip" | "wend";
+export type LogicPersonalBestSlug = "mini-sudoku" | "tango" | "queens" | "patches" | "zip" | "wend" | "connections" | "wordle" | "mini-crossword";
 export type LogicPersonalBest = { slug: LogicPersonalBestSlug; label: string; completedEditions: number; availableEditions: number; currentStreak: number; longestStreak: number };
 
 const oneDay = 86_400_000;
@@ -18,9 +21,12 @@ const run = (dateIds: string[]) => { let longest = 0; let current = 0; let previ
 const currentRun = (today: Date, dates: Set<string>) => { let count = 0; let cursor = new Date(today.getFullYear(), today.getMonth(), today.getDate()); while (dates.has(formatId(cursor))) { count += 1; cursor = addDays(cursor, -1); } return count; };
 
 const definitions: { slug: LogicPersonalBestSlug; label: string; prefix: string; editionIds: readonly string[] }[] = [
+  { slug: "connections", label: "Connections", prefix: "connections-", editionIds: connectionsEditionBank.map((edition) => edition.id) },
+  { slug: "wordle", label: "Wordle Plus", prefix: "wordle-", editionIds: DAILY_WORDLE_BANK.map((edition) => edition.id) },
+  { slug: "mini-crossword", label: "Mini Crossword", prefix: "mini-crossword-", editionIds: MINI_CROSSWORD_BANK.map((edition) => edition.id) },
+  { slug: "queens", label: "Queens", prefix: "queens-", editionIds: queensEditionBank.map((edition) => edition.id) },
   { slug: "mini-sudoku", label: "Mini Sudoku", prefix: "mini-sudoku-", editionIds: miniSudokuEditionBank.map((edition) => edition.id) },
   { slug: "tango", label: "Tango", prefix: "tango-", editionIds: tangoEditionBank.map((edition) => edition.id) },
-  { slug: "queens", label: "Queens", prefix: "queens-", editionIds: queensEditionBank.map((edition) => edition.id) },
   { slug: "patches", label: "Patches", prefix: "patches-", editionIds: patchesEditionBank.map((edition) => edition.id) },
   { slug: "zip", label: "Zip", prefix: "zip-", editionIds: zipEditionBank.map((edition) => edition.id) },
   { slug: "wend", label: "Wend", prefix: "wend-", editionIds: wendEditionBank.map((edition) => edition.id) },

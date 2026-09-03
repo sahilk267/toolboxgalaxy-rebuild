@@ -3,13 +3,16 @@ import AppShell from "@/components/AppShell";
 import DailyDuaCard from "@/components/DailyDuaCard";
 import LogicPersonalBestSummary from "@/components/LogicPersonalBestSummary";
 import WeeklyLogicCalendar from "@/components/WeeklyLogicCalendar";
-import { ArrowRight, CircuitBoard, Clock3, Crown, Gamepad2, Gauge, Grid3X3, Moon, Radio, Route, Sparkles, Trophy, Volume2, Zap } from "lucide-react";
+import { ArrowRight, CircuitBoard, Clock3, Crown, Gamepad2, Gauge, Grid3X3, Moon, Radio, Route, Sparkles, Trophy, Volume2, Zap, Layers, SpellCheck, FileSpreadsheet } from "lucide-react";
 import { Link } from "wouter";
 
 const logicGames = [
+  { slug: "connections", name: "Connections", detail: "4×4 word association · 4 difficulty tiers", icon: Layers, tag: "NYT STYLE #1 HIT" },
+  { slug: "wordle", name: "Wordle Plus", detail: "5-letter daily mystery word · 6 attempts", icon: SpellCheck, tag: "GLOBAL HIT" },
+  { slug: "mini-crossword", name: "Mini Crossword", detail: "5×5 daily speed puzzle · Across & Down", icon: FileSpreadsheet, tag: "WESTERN DAILY" },
+  { slug: "queens", name: "Queens", detail: "region crowns · no touching", icon: Crown },
   { slug: "mini-sudoku", name: "Mini Sudoku", detail: "6×6 number field · daily clue density", icon: Grid3X3 },
   { slug: "tango", name: "Tango", detail: "binary links · visible = / × rules", icon: Moon },
-  { slug: "queens", name: "Queens", detail: "region crowns · no touching", icon: Crown },
   { slug: "patches", name: "Patches", detail: "6×6 rectangle exact cover", icon: Sparkles },
   { slug: "zip", name: "Zip", detail: "5×5 ordered wall path", icon: Route },
   { slug: "wend", name: "Wend", detail: "orthogonal word exact cover", icon: Grid3X3 },
@@ -41,7 +44,7 @@ export default function Games() {
               <p className="text-xs uppercase tracking-widest font-mono text-white/50">ARCADE BAY ACTIVE</p>
               <div className="flex items-center justify-center gap-2 text-xs text-lime-400 font-mono">
                 <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
-                <span>1 ARCADE · 6 LOGIC PUZZLES</span>
+                <span>1 ARCADE · 9 LOGIC PUZZLES</span>
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 // Orbital Workbench: derive a transparent weekly activity view from existing local completion flags only; no game opens, demos, accounts, or network data count.
 import { readPuzzleCompletionMap, type PuzzleCompletionMap } from "@/lib/puzzleCompletion";
 
-export const genuineDailyLogicSlugs = ["mini-sudoku", "tango", "queens", "patches", "zip", "wend"] as const;
+export const genuineDailyLogicSlugs = ["connections", "wordle", "mini-crossword", "queens", "mini-sudoku", "tango", "patches", "zip", "wend"] as const;
 export type GenuineDailyLogicSlug = typeof genuineDailyLogicSlugs[number];
 export type WeeklyLogicFilter = "all" | GenuineDailyLogicSlug;
 export type WeeklyLogicDay = { id: string; shortLabel: string; dayNumber: number; isToday: boolean; isFuture: boolean; completedFields: GenuineDailyLogicSlug[] };
@@ -12,7 +12,17 @@ const formatId = (date: Date) => `${date.getFullYear()}-${String(date.getMonth()
 const fromId = (id: string) => { const [year, month, day] = id.split("-").map(Number); return new Date(year, month - 1, day); };
 const addDays = (date: Date, amount: number) => { const next = new Date(date); next.setDate(next.getDate() + amount); return next; };
 const monday = (date: Date) => addDays(new Date(date.getFullYear(), date.getMonth(), date.getDate()), -((date.getDay() + 6) % 7));
-const completionPrefixes: Record<GenuineDailyLogicSlug, string> = { "mini-sudoku": "mini-sudoku-sudoku-", tango: "tango-tango-", queens: "queens-queens-", patches: "patches-patches-", zip: "zip-zip-", wend: "wend-wend-" };
+const completionPrefixes: Record<GenuineDailyLogicSlug, string> = {
+  connections: "connections-connections-",
+  wordle: "wordle-wordle-",
+  "mini-crossword": "mini-crossword-crossword-",
+  "mini-sudoku": "mini-sudoku-sudoku-",
+  tango: "tango-tango-",
+  queens: "queens-queens-",
+  patches: "patches-patches-",
+  zip: "zip-zip-",
+  wend: "wend-wend-"
+};
 const completionSlugFor = (slug: GenuineDailyLogicSlug) => completionPrefixes[slug];
 const genuineGameForCompletionSlug = (slug: string): GenuineDailyLogicSlug | null => genuineDailyLogicSlugs.find((game) => slug.startsWith(completionSlugFor(game))) ?? null;
 const includesFilter = (game: GenuineDailyLogicSlug, filter: WeeklyLogicFilter) => filter === "all" || game === filter;

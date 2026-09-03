@@ -24,6 +24,21 @@
 
   <!-- Verified Logic Puzzles -->
   <url>
+    <loc>https://toolboxgalaxy.com/games/connections</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://toolboxgalaxy.com/games/wordle</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://toolboxgalaxy.com/games/mini-crossword</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://toolboxgalaxy.com/games/mini-sudoku</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
