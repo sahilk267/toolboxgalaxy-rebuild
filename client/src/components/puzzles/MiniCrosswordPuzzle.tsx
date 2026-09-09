@@ -16,7 +16,9 @@ import {
   Timer, 
   Trophy, 
   X, 
-  ChevronRight 
+  ChevronRight,
+  Swords,
+  Send
 } from "lucide-react";
 
 const orbitMark = "/orbit-mark.svg";
@@ -68,6 +70,18 @@ export default function MiniCrosswordPuzzle() {
     const interval = window.setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => window.clearInterval(interval);
   }, [isSolved]);
+
+  // Peer-to-Peer Automated Challenge System
+  const challengeInfo = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const by = params.get("by");
+    const targetSecs = Number(params.get("time")) || 0;
+    if (by || targetSecs > 0) {
+      return { by: by || "A Friend", targetSecs };
+    }
+    return null;
+  }, []);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
@@ -201,22 +215,48 @@ export default function MiniCrosswordPuzzle() {
     }
   };
 
+  const getChallengeUrl = () => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://toolboxgalaxy.com";
+    return `${origin}/games/mini-crossword?by=Friend&time=${seconds}`;
+  };
+
+  const getViralShareText = () => {
+    const challengeUrl = getChallengeUrl();
+    return `📰 Mini Crossword #${edition.date} 👑 100% SOLVED!\n` +
+      `⏱️ Time: ${formatTime(seconds)}\n` +
+      `🟩 5×5 Daily Speed Crossword\n\n` +
+      `⚔️ Can you solve it faster? Tap here:\n` +
+      `${challengeUrl}`;
+  };
+
+  const handleWhatsAppShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleTwitterShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
   const handleShare = () => {
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "https://toolboxgalaxy.com/games/mini-crossword";
-    const text = `📰 Mini Crossword #${edition.date}\n⏱️ Time: ${formatTime(seconds)}\n🟩 Completed 100%\nPlay in Toolbox Galaxy:\n${shareUrl}`;
+    const shareText = getViralShareText();
+    const challengeUrl = getChallengeUrl();
 
     if (navigator.share) {
       navigator.share({
-        title: `Toolbox Galaxy Mini Crossword`,
-        text: text,
-        url: shareUrl,
+        title: `Toolbox Galaxy Mini Crossword Challenge`,
+        text: shareText,
+        url: challengeUrl,
       }).catch(() => {
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(shareText);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       });
     } else {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(shareText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
@@ -295,6 +335,36 @@ export default function MiniCrosswordPuzzle() {
       <main className="flex-1 overflow-y-auto px-4 py-4 max-w-4xl mx-auto w-full flex flex-col lg:flex-row gap-6 items-center justify-center">
         {/* Left Column: Active Clue + 5x5 Grid */}
         <div className="flex flex-col items-center max-w-sm w-full">
+          {/* Automated Peer-to-Peer Challenge Inbound Banner */}
+          {challengeInfo && (
+            <div className="w-full mb-3 p-2.5 bg-gradient-to-r from-blue-500/15 via-cyan-500/10 to-blue-500/15 border border-blue-500/40 rounded-2xl flex items-center justify-between text-xs animate-in fade-in shadow-md">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold shrink-0">
+                  <Swords size={15} />
+                </div>
+                <div>
+                  <span className="text-blue-300 font-bold block">
+                    Challenge from {challengeInfo.by}!
+                  </span>
+                  <span className="text-[11px] text-slate-400">
+                    Target: <strong className="text-white font-mono">{challengeInfo.targetSecs > 0 ? formatTime(challengeInfo.targetSecs) : "Beat the clock"}</strong>
+                  </span>
+                </div>
+              </div>
+              {challengeInfo.targetSecs > 0 && (
+                <span
+                  className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    seconds < challengeInfo.targetSecs
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                      : "bg-rose-500/20 text-rose-400 border border-rose-500/40"
+                  }`}
+                >
+                  {seconds < challengeInfo.targetSecs ? "On Pace ⚡" : "Over Target"}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Active Highlighted Clue Banner */}
           <div className="w-full mb-3 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/15 min-h-[44px] flex items-center gap-2 text-xs">
             <span className="font-bold text-[#c7f36b] uppercase shrink-0">
@@ -422,18 +492,70 @@ export default function MiniCrosswordPuzzle() {
 
           {/* Solved Banner */}
           {isSolved && (
-            <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-center space-y-2 shadow-xl animate-in zoom-in-95">
+            <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-center space-y-3 shadow-xl animate-in zoom-in-95">
               <div className="w-10 h-10 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
                 <Trophy size={20} />
               </div>
-              <h3 className="text-base font-bold text-white">Crossword Solved!</h3>
-              <p className="text-xs text-slate-300">Finished in {formatTime(seconds)}.</p>
+              <div>
+                <h3 className="text-base font-bold text-white">Crossword Solved!</h3>
+                <p className="text-xs text-slate-300">Finished in {formatTime(seconds)}.</p>
+              </div>
+
+              {/* Inbound Challenge Result */}
+              {challengeInfo && challengeInfo.targetSecs > 0 && (
+                <div
+                  className={`p-2.5 rounded-xl border text-xs flex items-center justify-between shadow-inner ${
+                    seconds <= challengeInfo.targetSecs
+                      ? "bg-emerald-950/70 border-emerald-500/50 text-emerald-200"
+                      : "bg-amber-950/50 border-amber-500/40 text-amber-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span>{seconds <= challengeInfo.targetSecs ? "🏆" : "⏱️"}</span>
+                    <span className="font-bold">
+                      {seconds < challengeInfo.targetSecs
+                        ? `You beat ${challengeInfo.by}!`
+                        : seconds === challengeInfo.targetSecs
+                        ? `Tied with ${challengeInfo.by}!`
+                        : `${challengeInfo.by} was faster!`}
+                    </span>
+                  </div>
+                  <span className="font-mono font-bold">
+                    {seconds <= challengeInfo.targetSecs
+                      ? `-${challengeInfo.targetSecs - seconds}s ⚡`
+                      : `+${seconds - challengeInfo.targetSecs}s`}
+                  </span>
+                </div>
+              )}
+
+              {/* 1-Click Viral Distribution */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleWhatsAppShare}
+                  className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-[0.98]"
+                >
+                  <Send size={13} className="rotate-45" />
+                  <span>WhatsApp Challenge</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleTwitterShare}
+                  className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs border border-white/20 flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+                >
+                  <span className="font-mono font-black text-sm">𝕏</span>
+                  <span>Share on X</span>
+                </button>
+              </div>
+
               <button
                 type="button"
                 onClick={handleShare}
-                className="w-full py-2 rounded-xl bg-[#c7f36b] text-[#090d16] font-bold text-xs hover:bg-[#d6f685] transition-all"
+                className="w-full py-2.5 rounded-xl bg-[#c7f36b] text-[#090d16] font-extrabold text-xs hover:bg-[#d6f685] transition-all flex items-center justify-center gap-1.5"
               >
-                {copied ? "Copied to Clipboard!" : "Share Results"}
+                <Share2 size={14} />
+                <span>{copied ? "Copied Challenge Link!" : "Copy Challenge Link"}</span>
               </button>
             </div>
           )}

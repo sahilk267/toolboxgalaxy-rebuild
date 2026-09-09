@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 const dateRange = (start: string, end: string) => { const begin = new Date(`${start}T12:00:00`); const finish = new Date(`${end}T12:00:00`); const sameMonth = begin.getMonth() === finish.getMonth(); const label = new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }); return sameMonth ? `${new Intl.DateTimeFormat("en", { month: "long" }).format(begin)} ${begin.getDate()}–${finish.getDate()}` : `${label.format(begin)} – ${label.format(finish)}`; };
 const filterLabels: Record<WeeklyLogicFilter, { label: string; code: string }> = {
   all: { label: "All fields", code: "ALL" },
+  hive: { label: "The Hive", code: "H" },
   connections: { label: "Connections", code: "C" },
   wordle: { label: "Wordle Plus", code: "WD" },
   "mini-crossword": { label: "Crossword", code: "X" },

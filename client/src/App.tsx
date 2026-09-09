@@ -21,15 +21,33 @@ const LogicLab = lazy(() => import("@/pages/LogicLab"));
 const LogicPuzzle = lazy(() => import("@/pages/LogicPuzzle"));
 
 function GameRoute() {
-  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Orbit Dash…</div>}><OrbitDash /></Suspense>;
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Orbit Dash…</div>}>
+        <OrbitDash />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }
 
 function LogicLabRoute() {
-  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Logic Lab…</div>}><LogicLab /></Suspense>;
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading Logic Lab…</div>}>
+        <LogicLab />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }
 
 function LogicPuzzleRoute() {
-  return <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading puzzle module…</div>}><LogicPuzzle /></Suspense>;
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div className="game-route-loading"><span className="status-dot" /> Loading puzzle module…</div>}>
+        <LogicPuzzle />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }
 
 export default function App() {

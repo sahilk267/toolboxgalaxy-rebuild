@@ -18,6 +18,8 @@ import { wendEditionBank, wendEditionForDate } from "@/game/logicPuzzles/wendBan
 import ConnectionsPuzzle from "@/components/puzzles/ConnectionsPuzzle";
 import WordlePuzzle from "@/components/puzzles/WordlePuzzle";
 import MiniCrosswordPuzzle from "@/components/puzzles/MiniCrosswordPuzzle";
+import HivePuzzle from "@/components/puzzles/HivePuzzle";
+import StrandsPuzzle from "@/components/puzzles/StrandsPuzzle";
 import { 
   ArrowLeft, 
   CalendarDays, 
@@ -34,7 +36,9 @@ import {
   Timer, 
   Trophy, 
   X,
-  Volume2
+  Volume2,
+  Swords,
+  Send
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MutableRefObject, ReactNode } from "react";
@@ -99,29 +103,68 @@ function PuzzleFrame({
     return () => window.clearInterval(interval);
   }, [solved]);
 
+  // Peer-to-Peer Automated Challenge System
+  const challengeInfo = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const by = params.get("by");
+    const targetSecs = Number(params.get("time")) || 0;
+    if (by || targetSecs > 0) {
+      return { by: by || "A Friend", targetSecs };
+    }
+    return null;
+  }, []);
+
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
     const s = (sec % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
-  // Real URL sharing with fallback & sleek Wordle-style puzzle score
+  const getChallengeUrl = () => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://toolboxgalaxy.com";
+    const path = typeof window !== "undefined" ? window.location.pathname : "/games";
+    return `${origin}${path}?by=Friend&time=${seconds}`;
+  };
+
+  const getViralShareText = () => {
+    const challengeUrl = getChallengeUrl();
+    return `🧠 ${title} #${daily.id} 👑 100% SOLVED!\n` +
+      `⏱️ Time: ${formatTime(seconds)}\n` +
+      `✨ ${progress.label}: ${progress.value}/${progress.total}\n\n` +
+      `⚔️ Can you beat my time? Tap here:\n` +
+      `${challengeUrl}`;
+  };
+
+  const handleWhatsAppShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleTwitterShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  // Real URL sharing with fallback & viral challenge link
   const shareScore = () => {
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "https://toolboxgalaxy.com/games";
-    const text = `🧠 ${title} #${daily.id}\n⏱️ Time: ${formatTime(seconds)}\n✨ ${progress.label}: ${progress.value}/${progress.total}\n🟩🟩🟩🟩 100% Verified\n\nPlay today's daily puzzle:\n${shareUrl}`;
+    const shareText = getViralShareText();
+    const challengeUrl = getChallengeUrl();
     
     if (navigator.share) {
       navigator.share({
-        title: `Toolbox Galaxy • ${title}`,
-        text: text,
-        url: shareUrl
+        title: `Toolbox Galaxy • ${title} Challenge`,
+        text: shareText,
+        url: challengeUrl
       }).catch(() => {
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(shareText);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       });
     } else {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(shareText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
@@ -198,6 +241,36 @@ function PuzzleFrame({
 
       {/* Main Single-Screen Playfield Container */}
       <main className="flex-1 flex flex-col items-center justify-between p-2 sm:p-4 max-w-4xl w-full mx-auto overflow-hidden relative">
+        {/* Automated Peer-to-Peer Challenge Inbound Banner */}
+        {challengeInfo && (
+          <div className="w-full mb-1.5 p-2 px-3 bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-amber-500/15 border border-amber-500/40 rounded-xl flex items-center justify-between text-xs animate-in fade-in shrink-0 shadow-md">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold shrink-0">
+                <Swords size={13} />
+              </div>
+              <div>
+                <span className="text-amber-300 font-bold">Challenge from {challengeInfo.by}!</span>
+                {challengeInfo.targetSecs > 0 && (
+                  <span className="text-[11px] text-slate-400 ml-1.5">
+                    Target: <strong className="text-white font-mono">{formatTime(challengeInfo.targetSecs)}</strong>
+                  </span>
+                )}
+              </div>
+            </div>
+            {challengeInfo.targetSecs > 0 && (
+              <span
+                className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  seconds < challengeInfo.targetSecs
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                    : "bg-rose-500/20 text-rose-400 border border-rose-500/40"
+                }`}
+              >
+                {seconds < challengeInfo.targetSecs ? "On Pace ⚡" : "Over Target"}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Subtle subheader with status pill and stats */}
         <div className="w-full flex items-center justify-between px-2 text-xs shrink-0 mb-1">
           <div className="flex items-center gap-2">
@@ -248,21 +321,70 @@ function PuzzleFrame({
         {/* Victory Celebration Banner (compact & floating) */}
         {solved && (
           <div className="absolute inset-x-4 top-2 z-40 p-4 rounded-2xl bg-gradient-to-r from-emerald-950/95 via-slate-900/95 to-emerald-950/95 border-2 border-emerald-500/80 shadow-2xl backdrop-blur-xl text-center animate-in zoom-in-95 duration-300">
-            <div className="w-10 h-10 mx-auto mb-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shadow-lg">
-              <Trophy size={22} />
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shadow-lg">
+              <Trophy size={20} />
             </div>
-            <h2 className="text-lg font-bold text-white">Puzzle Solved in {formatTime(seconds)}! 🎉</h2>
+            <h2 className="text-base font-bold text-white">Puzzle Solved in {formatTime(seconds)}! 🎉</h2>
             <p className="text-[11px] text-emerald-300/90 mt-0.5">
               Verified 100% in-browser. Outstanding logic mastery!
             </p>
-            <div className="flex items-center justify-center gap-3 mt-3">
+
+            {/* Inbound Challenge Result */}
+            {challengeInfo && challengeInfo.targetSecs > 0 && (
+              <div
+                className={`p-2.5 rounded-xl border text-xs flex items-center justify-between shadow-inner my-2 ${
+                  seconds <= challengeInfo.targetSecs
+                    ? "bg-emerald-950/70 border-emerald-500/50 text-emerald-200"
+                    : "bg-amber-950/50 border-amber-500/40 text-amber-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span>{seconds <= challengeInfo.targetSecs ? "🏆" : "⏱️"}</span>
+                  <span className="font-bold">
+                    {seconds < challengeInfo.targetSecs
+                      ? `You beat ${challengeInfo.by}!`
+                      : seconds === challengeInfo.targetSecs
+                      ? `Tied with ${challengeInfo.by}!`
+                      : `${challengeInfo.by} was faster!`}
+                  </span>
+                </div>
+                <span className="font-mono font-bold">
+                  {seconds <= challengeInfo.targetSecs
+                    ? `-${challengeInfo.targetSecs - seconds}s ⚡`
+                    : `+${seconds - challengeInfo.targetSecs}s`}
+                </span>
+              </div>
+            )}
+
+            {/* 1-Click Viral Distribution */}
+            <div className="grid grid-cols-2 gap-2 mt-2.5">
+              <button
+                type="button"
+                onClick={handleWhatsAppShare}
+                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-[0.98]"
+              >
+                <Send size={13} className="rotate-45" />
+                <span>WhatsApp Challenge</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleTwitterShare}
+                className="py-2 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs border border-white/20 flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+              >
+                <span className="font-mono font-black text-sm">𝕏</span>
+                <span>Share on X</span>
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 mt-2">
               <button
                 type="button"
                 onClick={shareScore}
-                className="logic-action logic-action--primary text-xs py-1.5 px-4"
+                className="flex-1 logic-action logic-action--primary text-xs py-1.5 px-3"
               >
                 <Share2 size={13} />
-                <span>{copied ? "Link Copied!" : "Share Victory Link"}</span>
+                <span>{copied ? "Link Copied!" : "Copy Challenge Link"}</span>
               </button>
               <button
                 type="button"
@@ -1146,6 +1268,8 @@ export default function LogicPuzzle() {
   if (slug === "connections") return <ConnectionsPuzzle />;
   if (slug === "wordle") return <WordlePuzzle />;
   if (slug === "mini-crossword") return <MiniCrosswordPuzzle />;
+  if (slug === "hive" || slug === "spelling-bee") return <HivePuzzle />;
+  if (slug === "strands" || slug === "theme-threads") return <StrandsPuzzle />;
   if (slug === "mini-sudoku") return <MiniSudokuPuzzle />;
   if (slug === "tango") return <TangoEditionPuzzle />;
   if (slug === "queens") return <QueensEditionPuzzle />;

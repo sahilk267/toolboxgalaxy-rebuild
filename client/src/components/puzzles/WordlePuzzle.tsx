@@ -17,7 +17,9 @@ import {
   Trophy, 
   X, 
   Delete, 
-  AlertCircle 
+  AlertCircle,
+  Swords,
+  Send
 } from "lucide-react";
 
 const orbitMark = "/orbit-mark.svg";
@@ -70,6 +72,19 @@ export default function WordlePuzzle() {
     const interval = window.setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => window.clearInterval(interval);
   }, [isSolved, isGameOver]);
+
+  // Peer-to-Peer Automated Challenge System
+  const challengeInfo = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const by = params.get("by");
+    const targetGuesses = Number(params.get("guesses")) || 0;
+    const targetSecs = Number(params.get("time")) || 0;
+    if (by || targetGuesses > 0) {
+      return { by: by || "A Friend", targetGuesses, targetSecs };
+    }
+    return null;
+  }, []);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
@@ -201,28 +216,54 @@ export default function WordlePuzzle() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyPress]);
 
-  const handleShare = () => {
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "https://toolboxgalaxy.com/games/wordle";
+  const getChallengeUrl = () => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://toolboxgalaxy.com";
+    return `${origin}/games/wordle?by=Friend&guesses=${guesses.length}&time=${seconds}`;
+  };
+
+  const getViralShareText = () => {
     let grid = "";
     guesses.forEach((guess) => {
       const evaluation = evaluateWordleGuess(guess, edition.solution);
       grid += evaluation.map((e) => (e.status === "correct" ? "🟩" : e.status === "present" ? "🟨" : "⬛")).join("") + "\n";
     });
 
-    const text = `🟩 Wordle Plus #${edition.date} ${isSolved ? guesses.length : "X"}/6\n⏱️ Time: ${formatTime(seconds)}\n${grid}\nPlay in Toolbox Galaxy:\n${shareUrl}`;
+    const challengeUrl = getChallengeUrl();
+    return `🟩 Wordle Plus #${edition.date} ${isSolved ? guesses.length : "X"}/6\n` +
+      `⏱️ Time: ${formatTime(seconds)}\n` +
+      `${grid}\n` +
+      `⚔️ Can you beat my score? Tap here:\n` +
+      `${challengeUrl}`;
+  };
+
+  const handleWhatsAppShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleTwitterShare = () => {
+    audio.current.play("relayCorrect");
+    const text = getViralShareText();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleShare = () => {
+    const shareText = getViralShareText();
+    const challengeUrl = getChallengeUrl();
 
     if (navigator.share) {
       navigator.share({
-        title: `Toolbox Galaxy Wordle Plus`,
-        text: text,
-        url: shareUrl,
+        title: `Toolbox Galaxy Wordle Plus Challenge`,
+        text: shareText,
+        url: challengeUrl,
       }).catch(() => {
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(shareText);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       });
     } else {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(shareText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
@@ -299,6 +340,37 @@ export default function WordlePuzzle() {
 
       {/* Main Board */}
       <main className="flex-1 overflow-y-auto px-4 py-4 flex flex-col items-center justify-between max-w-lg mx-auto w-full">
+        {/* Automated Peer-to-Peer Challenge Inbound Banner */}
+        {challengeInfo && (
+          <div className="w-full max-w-md mb-2 p-2.5 bg-gradient-to-r from-emerald-500/15 via-lime-500/10 to-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center justify-between text-xs animate-in fade-in shadow-md">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold shrink-0">
+                <Swords size={15} />
+              </div>
+              <div>
+                <span className="text-emerald-300 font-bold block">
+                  Challenge from {challengeInfo.by}!
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Target: <strong className="text-white font-mono">{challengeInfo.targetGuesses > 0 ? `${challengeInfo.targetGuesses}/6 tries` : "Solve it!"}</strong>
+                  {challengeInfo.targetSecs > 0 && ` in ${formatTime(challengeInfo.targetSecs)}`}
+                </span>
+              </div>
+            </div>
+            {challengeInfo.targetGuesses > 0 && (
+              <span
+                className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  guesses.length < challengeInfo.targetGuesses
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                    : "bg-amber-500/20 text-amber-400 border border-amber-500/40"
+                }`}
+              >
+                {guesses.length < challengeInfo.targetGuesses ? "Leading ⚡" : "Tied/Trailing"}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Theme & Clue Prompt */}
         <div className="text-center text-xs text-slate-400 font-medium">
           Theme: <span className="text-[#c7f36b] font-semibold">{edition.theme}</span>
@@ -359,16 +431,69 @@ export default function WordlePuzzle() {
           </div>
         )}
 
-        {/* Solved Banner */}
-        {isSolved && (
-          <div className="my-2 w-full p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-center space-y-2 shadow-lg animate-in zoom-in-95">
-            <h4 className="font-bold text-sm text-emerald-300">Splendid! You found {edition.solution}!</h4>
+        {/* Solved / Game Over Banner */}
+        {(isSolved || isGameOver) && (
+          <div className="my-2 w-full p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/40 text-center space-y-3 shadow-xl animate-in zoom-in-95">
+            {challengeInfo && challengeInfo.targetGuesses > 0 && isSolved && (
+              <div
+                className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
+                  guesses.length <= challengeInfo.targetGuesses
+                    ? "bg-emerald-950/70 border-emerald-500/50 text-emerald-200"
+                    : "bg-amber-950/50 border-amber-500/40 text-amber-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span>{guesses.length <= challengeInfo.targetGuesses ? "🏆" : "⏱️"}</span>
+                  <span className="font-bold">
+                    {guesses.length < challengeInfo.targetGuesses
+                      ? `You beat ${challengeInfo.by}!`
+                      : guesses.length === challengeInfo.targetGuesses
+                      ? `Tied with ${challengeInfo.by}!`
+                      : `${challengeInfo.by} won this round!`}
+                  </span>
+                </div>
+                <span className="font-mono font-bold">
+                  {guesses.length}/6 vs {challengeInfo.targetGuesses}/6
+                </span>
+              </div>
+            )}
+
+            <div>
+              <h4 className="font-bold text-sm text-emerald-300">
+                {isSolved ? `Splendid! You found ${edition.solution} in ${guesses.length}/6 tries!` : `The word was ${edition.solution}`}
+              </h4>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                ⏱️ Completed in {formatTime(seconds)} · Challenge your friends to beat your guesses!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleWhatsAppShare}
+                className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-[0.98]"
+              >
+                <Send size={13} className="rotate-45" />
+                <span>WhatsApp Challenge</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleTwitterShare}
+                className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs border border-white/20 flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+              >
+                <span className="font-mono font-black text-sm">𝕏</span>
+                <span>Share on X</span>
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={handleShare}
-              className="px-4 py-2 rounded-xl bg-[#c7f36b] text-[#090d16] font-bold text-xs hover:bg-[#d6f685] transition-all"
+              className="w-full py-2.5 rounded-xl bg-[#c7f36b] text-[#090d16] font-extrabold text-xs hover:bg-[#d6f685] transition-all flex items-center justify-center gap-1.5"
             >
-              {copied ? "Copied to Clipboard!" : "Share Results"}
+              <Share2 size={14} />
+              <span>{copied ? "Copied Challenge Link!" : "Copy Challenge Link"}</span>
             </button>
           </div>
         )}

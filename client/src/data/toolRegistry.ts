@@ -46,7 +46,13 @@ export type ToolKind =
   | "gstTax"
   | "passportPhoto"
   | "landArea"
-  | "numberToWords";
+  | "numberToWords"
+  | "jsonToZod"
+  | "cleanUrl"
+  | "jwtDebugger"
+  | "cronSchedule"
+  | "regexTester"
+  | "curlToCode";
 
 export type ToolDefinition = {
   slug: string;
@@ -385,12 +391,12 @@ export const tools: ToolDefinition[] = [
   },
   {
     slug: "image-metadata-remover",
-    name: "Image Metadata Remover",
+    name: "EXIF & GPS Metadata Remover",
     category: "Create",
-    description: "Create a clean local re-export without carrying the chosen image file’s metadata into the new output.",
+    description: "Audit camera settings, capture timestamps, and GPS coordinates, and create a 100% stripped, clean local image.",
     kind: "imageMetadata",
     accent: "violet",
-    tags: ["Local", "Private"],
+    tags: ["Local", "Private", "Popular", "Privacy"],
   },
   {
     slug: "pdf-visual-editor",
@@ -481,6 +487,60 @@ export const tools: ToolDefinition[] = [
     kind: "numberToWords",
     accent: "violet",
     tags: ["Local", "Verified", "Popular", "Banking"],
+  },
+  {
+    slug: "json-to-zod-schema",
+    name: "JSON to Zod & TypeScript Studio",
+    category: "Code & Text",
+    description: "Convert JSON into strongly-typed TypeScript interfaces and runtime Zod validation schemas with type inference.",
+    kind: "jsonToZod",
+    accent: "lime",
+    tags: ["Local", "Verified", "Popular", "Developer"],
+  },
+  {
+    slug: "tracking-url-cleaner",
+    name: "Tracking URL & UTM Cleaner",
+    category: "Convert",
+    description: "Strip surveillance trackers, UTM campaign tags, fbclid, and referral tokens to generate clean, private direct URLs.",
+    kind: "cleanUrl",
+    accent: "sky",
+    tags: ["Local", "Private", "Popular", "Privacy"],
+  },
+  {
+    slug: "jwt-debugger",
+    name: "JWT Debugger & Token Inspector",
+    category: "Code & Text",
+    description: "Decode and inspect JSON Web Tokens client-side. Audit headers, claims, expiration countdowns, and signatures with zero server exposure.",
+    kind: "jwtDebugger",
+    accent: "lime",
+    tags: ["Local", "Private", "Popular", "Developer", "Security"],
+  },
+  {
+    slug: "cron-schedule-expression",
+    name: "Cron Schedule Visualizer & Humanizer",
+    category: "Code & Text",
+    description: "Translate 5-part cron expressions into natural English, calculate the next 8 execution timestamps, and configure schedules interactively.",
+    kind: "cronSchedule",
+    accent: "sky",
+    tags: ["Local", "Verified", "Popular", "Developer"],
+  },
+  {
+    slug: "regex-tester",
+    name: "Regex Live Tester & Cheat Sheet",
+    category: "Code & Text",
+    description: "Real-time regular expression tester with live match highlights, capture groups breakdown, flag toggles, and substitution preview.",
+    kind: "regexTester",
+    accent: "ember",
+    tags: ["Local", "Verified", "Popular", "Developer"],
+  },
+  {
+    slug: "curl-to-code",
+    name: "cURL to Code Converter",
+    category: "Code & Text",
+    description: "Convert terminal cURL commands into clean JavaScript Fetch, Axios, Python Requests, Go net/http, Node.js, and PHP cURL code client-side.",
+    kind: "curlToCode",
+    accent: "lime",
+    tags: ["Local", "Verified", "Popular", "Developer"],
   },
 ];
 

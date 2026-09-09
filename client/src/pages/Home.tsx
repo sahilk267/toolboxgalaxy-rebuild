@@ -3,6 +3,7 @@ import AppShell from "@/components/AppShell";
 import SectionHeading from "@/components/SectionHeading";
 import ToolCard from "@/components/ToolCard";
 import DailyDuaCard from "@/components/DailyDuaCard";
+import { PinnedQuickDock } from "@/components/PinnedQuickDock";
 import { tools } from "@/data/toolRegistry";
 import { GameBayVisual, HeroWorkbenchVisual, StoryToolsVisual } from "@/components/HomeVisuals";
 import { ArrowRight, CheckCircle2, Gamepad2, ShieldCheck, Sparkles, Wrench, Globe, Lock, Cpu } from "lucide-react";
@@ -36,6 +37,11 @@ export default function Home() {
         <HeroWorkbenchVisual />
         <div className="hero-caption"><span className="status-dot" /><span>Signal received · version 01</span></div>
       </div>
+    </section>
+
+    {/* Pinned Quick Dock for Personalized 1-Click Access */}
+    <section className="my-6 max-w-6xl mx-auto px-4">
+      <PinnedQuickDock />
     </section>
 
     {/* Soulful Daily Dua & Quote Card for Positivity & Blessings */}

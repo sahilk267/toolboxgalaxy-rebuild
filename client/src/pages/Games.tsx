@@ -3,19 +3,40 @@ import AppShell from "@/components/AppShell";
 import DailyDuaCard from "@/components/DailyDuaCard";
 import LogicPersonalBestSummary from "@/components/LogicPersonalBestSummary";
 import WeeklyLogicCalendar from "@/components/WeeklyLogicCalendar";
-import { ArrowRight, CircuitBoard, Clock3, Crown, Gamepad2, Gauge, Grid3X3, Moon, Radio, Route, Sparkles, Trophy, Volume2, Zap, Layers, SpellCheck, FileSpreadsheet } from "lucide-react";
+import {
+  ArrowRight,
+  Clock3,
+  Crown,
+  Gamepad2,
+  Gauge,
+  Grid3X3,
+  Moon,
+  Route,
+  Sparkles,
+  Trophy,
+  Volume2,
+  Zap,
+  Layers,
+  SpellCheck,
+  FileSpreadsheet,
+  Hexagon,
+  Waypoints,
+} from "lucide-react";
 import { Link } from "wouter";
 
 const logicGames = [
+  { slug: "strands", name: "Strands (Theme Threads)", detail: "8×6 word grid · Theme Words & Spangram · Hint meter", icon: Waypoints, tag: "NYT #1 NEW SENSATION" },
+  { slug: "the-hive", name: "The Hive (Spelling Bee)", detail: "7-letter honeycomb word builder · Pangrams & Ranks", icon: Hexagon, tag: "NYT VIRAL PHENOMENON" },
   { slug: "connections", name: "Connections", detail: "4×4 word association · 4 difficulty tiers", icon: Layers, tag: "NYT STYLE #1 HIT" },
-  { slug: "wordle", name: "Wordle Plus", detail: "5-letter daily mystery word · 6 attempts", icon: SpellCheck, tag: "GLOBAL HIT" },
-  { slug: "mini-crossword", name: "Mini Crossword", detail: "5×5 daily speed puzzle · Across & Down", icon: FileSpreadsheet, tag: "WESTERN DAILY" },
+  { slug: "orbit-lexicon", name: "Wordle (Lexicon)", detail: "5-letter daily mystery word · 6 attempts", icon: SpellCheck, tag: "GLOBAL HIT" },
   { slug: "queens", name: "Queens", detail: "region crowns · no touching", icon: Crown },
   { slug: "mini-sudoku", name: "Mini Sudoku", detail: "6×6 number field · daily clue density", icon: Grid3X3 },
   { slug: "tango", name: "Tango", detail: "binary links · visible = / × rules", icon: Moon },
   { slug: "patches", name: "Patches", detail: "6×6 rectangle exact cover", icon: Sparkles },
   { slug: "zip", name: "Zip", detail: "5×5 ordered wall path", icon: Route },
   { slug: "wend", name: "Wend", detail: "orthogonal word exact cover", icon: Grid3X3 },
+  { slug: "chess-puzzles", name: "Chess Puzzles", detail: "Tactical positions · best move deduction", icon: Trophy },
+  { slug: "nonogram", name: "Nonogram Griddlers", detail: "Picross numerical picture logic", icon: Grid3X3 },
 ];
 
 export default function Games() {
@@ -26,6 +47,7 @@ export default function Games() {
           <span>02</span>
           <span>LIGHTWEIGHT GAMES BAY</span>
         </div>
+
         <div className="games-hero">
           <div>
             <p className="mono-label text-[#ff9b54]">SHORT SESSIONS / LOCAL SCORE</p>
@@ -36,6 +58,7 @@ export default function Games() {
               The games lane is a separate, lazy-loaded layer so everyday tools stay focused and fast.
             </p>
           </div>
+
           <div className="games-hero-visual hidden md:flex items-center justify-center p-8 bg-[#0e1628]/80 border border-white/10 rounded-2xl">
             <div className="text-center space-y-3">
               <div className="w-20 h-20 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/5">
@@ -44,7 +67,7 @@ export default function Games() {
               <p className="text-xs uppercase tracking-widest font-mono text-white/50">ARCADE BAY ACTIVE</p>
               <div className="flex items-center justify-center gap-2 text-xs text-lime-400 font-mono">
                 <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
-                <span>1 ARCADE · 9 LOGIC PUZZLES</span>
+                <span>1 ARCADE · 12 LOGIC PUZZLES</span>
               </div>
             </div>
           </div>
@@ -70,10 +93,18 @@ export default function Games() {
               Dodge orbital gates, collect signal fragments, and keep a single clean run alive. No login and no multiplayer server required.
             </p>
             <div className="game-meta">
-              <span><Clock3 size={15} /> 2–5 minute sessions</span>
-              <span><Gauge size={15} /> Keyboard + touch</span>
-              <span><Volume2 size={15} /> Shared sound setting</span>
-              <span><Trophy size={15} /> Browser high score</span>
+              <span>
+                <Clock3 size={15} /> 2–5 minute sessions
+              </span>
+              <span>
+                <Gauge size={15} /> Keyboard + touch
+              </span>
+              <span>
+                <Volume2 size={15} /> Shared sound setting
+              </span>
+              <span>
+                <Trophy size={15} /> Browser high score
+              </span>
             </div>
           </div>
           <Link href="/games/orbit-dash" className="ember-button">
@@ -96,10 +127,13 @@ export default function Games() {
               <span>100% OFFLINE LOCAL LOGIC</span>
             </div>
           </header>
+
           <div className="logic-direct-grid">
             {logicGames.map(({ slug, name, detail, icon: Icon }, index) => (
               <Link key={slug} href={`/games/${slug}`} className="logic-direct-card">
-                <span className="logic-direct-card__index">0{index + 1}</span>
+                <span className="logic-direct-card__index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <Icon size={25} />
                 <div>
                   <b>{name}</b>

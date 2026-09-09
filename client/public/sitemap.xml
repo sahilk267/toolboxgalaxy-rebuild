@@ -34,6 +34,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://toolboxgalaxy.com/games/hive</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://toolboxgalaxy.com/games/mini-crossword</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
