@@ -4,6 +4,7 @@ import { OfflineIndicator } from "@/components/OfflineIndicator";
 import ShortcutReference from "@/components/ShortcutReference";
 import CommandPalette from "@/components/CommandPalette";
 import SupportModal from "@/components/SupportModal";
+import { useTheme } from "@/contexts/ThemeContext";
 import {
   FileText,
   Gamepad2,
@@ -13,6 +14,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Coffee,
+  Sun,
+  Moon,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -30,11 +33,16 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("tg_sidebar_collapsed");
-      if (saved !== null) return saved === "true";
+      try {
+        const saved = localStorage.getItem("tg_sidebar_collapsed");
+        if (saved !== null) return saved === "true";
+      } catch {
+        // Storage access restricted
+      }
     }
     return false;
   });
@@ -43,7 +51,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
     setCollapsed((prev) => {
       const next = !prev;
       if (typeof window !== "undefined") {
-        localStorage.setItem("tg_sidebar_collapsed", String(next));
+        try {
+          localStorage.setItem("tg_sidebar_collapsed", String(next));
+        } catch {
+          // Storage write restricted
+        }
       }
       return next;
     });
@@ -117,6 +129,21 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <ShortcutReference />
           <PWAInstallButton variant="rail" />
 
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/80 hover:bg-white/[0.08] hover:text-white transition-all"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+          >
+            <span className="flex items-center gap-2">
+              {theme === "dark" ? <Sun size={15} className="text-[#c7f36b]" /> : <Moon size={15} className="text-amber-400" />}
+              <span>Theme: {theme === "dark" ? "Dark" : "Light"}</span>
+            </span>
+            <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/70">
+              {theme === "dark" ? "Dark" : "Light"}
+            </span>
+          </button>
+
           <div className="rail-status">
             <span className="status-dot" aria-hidden="true" />
             <div>
@@ -159,15 +186,25 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <img src={orbitMark} alt="" className="h-10 w-10" />
           <span className="font-display font-bold tracking-tight">TOOLBOX GALAXY</span>
         </Link>
-        <button
-          type="button"
-          className="icon-button"
-          onClick={() => setOpen((value) => !value)}
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-        >
-          <Menu size={21} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="icon-button"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+          >
+            {theme === "dark" ? <Sun size={18} className="text-[#c7f36b]" /> : <Moon size={18} className="text-amber-400" />}
+          </button>
+          <button
+            type="button"
+            className="icon-button"
+            onClick={() => setOpen((value) => !value)}
+            aria-label="Toggle navigation"
+            aria-expanded={open}
+          >
+            <Menu size={21} />
+          </button>
+        </div>
       </header>
 
       {/* Main Content Area */}

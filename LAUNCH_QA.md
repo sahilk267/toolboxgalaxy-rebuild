@@ -27,4 +27,4 @@ The historical development log still retains an earlier transient module-resolut
 
 ## Host-managed handoff remaining
 
-Before public publication, upload the contents of `dist/public` to Hostinger `public_html` as described in `DEPLOY_HOSTINGER.md`. The user may keep the visible email relay or deliberately configure and test the same-origin PHP contact endpoint; neither choice requires a backend in this static project. Final domain/DNS, analytics, advertising, and support configuration remain host-owner decisions and must be reviewed in Hostinger before publishing.
+Before public publication, upload the contents of `dist` to Hostinger `public_html` as described in `DEPLOY_HOSTINGER.md`. The user may keep the visible email relay or deliberately configure and test the same-origin PHP contact endpoint; neither choice requires a backend in this static project. Final domain/DNS, analytics, advertising, and support configuration remain host-owner decisions and must be reviewed in Hostinger before publishing.

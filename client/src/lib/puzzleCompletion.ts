@@ -19,5 +19,7 @@ export function isPuzzleFieldComplete(slug: string, fieldId: string) {
 export function markPuzzleFieldComplete(slug: string, fieldId: string) {
   if (typeof window === "undefined") return;
   const next = read(); next[keyFor(slug, fieldId)] = true;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {}
 }

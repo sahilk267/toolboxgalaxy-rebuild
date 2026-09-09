@@ -18,7 +18,15 @@ export class SignalSwitchWorld {
   private readonly pads: RelayPad[] = [];
   private readonly demo: boolean;
   private readonly packet = MeshBuilder.CreatePolyhedron("signal-packet", { type: 1, size: .38 }, this.scene);
-  private score = 0; private best = Number(window.localStorage.getItem("toolbox-galaxy-signal-switch-best") || 0); private status: "ready" | "playing" | "over" = "ready"; private active: RelayDirection = "up"; private timer = 2.4; private demoClock = 0; private turn = 0;
+  private score = 0;
+  private best = (() => {
+    try {
+      return Number(window.localStorage.getItem("toolbox-galaxy-signal-switch-best") || 0);
+    } catch {
+      return 0;
+    }
+  })();
+  private status: "ready" | "playing" | "over" = "ready"; private active: RelayDirection = "up"; private timer = 2.4; private demoClock = 0; private turn = 0;
   private readonly onKeyDown: (event: KeyboardEvent) => void;
   private readonly onPointer: (event: PointerEvent) => void;
 
@@ -47,7 +55,22 @@ export class SignalSwitchWorld {
   private setActive(direction: RelayDirection) { this.active = direction; this.pads.forEach((pad) => { const chosen = pad.direction === direction; pad.material.diffuseColor = chosen ? new Color3(.66, .9, .20) : new Color3(.09, .16, .24); pad.material.emissiveColor = chosen ? new Color3(.17, .34, .04) : new Color3(.008, .02, .035); pad.root.scaling = chosen ? new Vector3(1.08, 1.08, 1.08) : Vector3.One(); }); this.packet.position = positions[direction].add(new Vector3(0, 0, .55)); }
   private start() { this.status = "playing"; this.callbacks.onStatus(this.status); this.callbacks.onSound("start"); this.nextRelay(); }
   private nextRelay() { this.active = this.demo ? directions[(this.turn * 3 + 1) % directions.length] : directions[Math.floor(Math.random() * directions.length)]; this.turn += 1; this.timer = Math.max(.82, 2.4 - this.score * .05); this.setActive(this.active); this.callbacks.onTimer(this.timer); }
-  private select(direction: RelayDirection) { if (this.status === "ready") this.start(); if (this.status !== "playing") return; if (direction === this.active) { this.score += 1; if (this.score > this.best) { this.best = this.score; window.localStorage.setItem("toolbox-galaxy-signal-switch-best", String(this.best)); } this.callbacks.onScore(this.score, this.best); this.callbacks.onSound("relayCorrect"); this.nextRelay(); } else this.endRun(); }
+  private select(direction: RelayDirection) {
+    if (this.status === "ready") this.start();
+    if (this.status !== "playing") return;
+    if (direction === this.active) {
+      this.score += 1;
+      if (this.score > this.best) {
+        this.best = this.score;
+        try {
+          window.localStorage.setItem("toolbox-galaxy-signal-switch-best", String(this.best));
+        } catch {}
+      }
+      this.callbacks.onScore(this.score, this.best);
+      this.callbacks.onSound("relayCorrect");
+      this.nextRelay();
+    } else this.endRun();
+  }
   private endRun() { this.status = "over"; this.callbacks.onStatus(this.status); this.callbacks.onSound("relayFail"); }
   reset() { this.score = 0; this.turn = 0; this.demoClock = 0; this.callbacks.onScore(this.score, this.best); this.start(); }
   update(delta: number) { this.packet.rotation.z += delta * 2.7; if (this.status !== "playing") return; if (this.demo) { this.demoClock += delta; if (this.demoClock > .52) { this.demoClock = 0; this.select(this.active); } return; } this.timer -= delta; this.callbacks.onTimer(Math.max(0, this.timer)); if (this.timer <= 0) this.endRun(); }

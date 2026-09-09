@@ -53,7 +53,7 @@ function LogicPuzzleRoute() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider defaultTheme="dark" switchable={true}>
         <TooltipProvider>
           <Toaster theme="dark" position="bottom-right" />
           <PwaUpdateNotice />

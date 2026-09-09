@@ -20,7 +20,13 @@ export class GameWorld {
   private readonly pressed = new Set<string>();
   private readonly demo: boolean;
   private score = 0;
-  private best = Number(window.localStorage.getItem("toolbox-galaxy-orbit-dash-best") || 0);
+  private best = (() => {
+    try {
+      return Number(window.localStorage.getItem("toolbox-galaxy-orbit-dash-best") || 0);
+    } catch {
+      return 0;
+    }
+  })();
   private status: "ready" | "playing" | "over" = "ready";
   private spawnClock = 0;
   private elapsed = 0;
@@ -132,7 +138,16 @@ export class GameWorld {
     this.gates.push({ root, x: 8.2, gapY, scored: false, fragmentCollected: false, fragment });
   }
 
-  private addScore(amount: number) { this.score += amount; if (this.score > this.best) { this.best = this.score; window.localStorage.setItem("toolbox-galaxy-orbit-dash-best", String(this.best)); } this.callbacks.onScore(this.score, this.best); }
+  private addScore(amount: number) {
+    this.score += amount;
+    if (this.score > this.best) {
+      this.best = this.score;
+      try {
+        window.localStorage.setItem("toolbox-galaxy-orbit-dash-best", String(this.best));
+      } catch {}
+    }
+    this.callbacks.onScore(this.score, this.best);
+  }
   private endRun() { this.status = "over"; this.callbacks.onStatus(this.status); this.callbacks.onSound("collision"); }
   dispose() { window.removeEventListener("keydown", this.onKeyDown); window.removeEventListener("keyup", this.onKeyUp); this.canvas.removeEventListener("pointermove", this.onPointer); this.canvas.removeEventListener("pointerdown", this.onPointer); this.gates.forEach((gate) => gate.root.dispose()); this.player.dispose(); }
 }

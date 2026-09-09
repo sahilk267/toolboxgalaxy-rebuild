@@ -39,6 +39,24 @@ function findValidDistPath(): string | null {
   return null;
 }
 
+// HTML entity escaping for XSS prevention in server-rendered templates and meta tags
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Strict whitelist sanitizer for user-provided query parameters (e.g., challenge author)
+function sanitizeUserParam(raw: unknown): string {
+  if (typeof raw !== "string") return "";
+  // Strip out any characters except standard alphanumeric, space, dot, underscore, and dash
+  const cleaned = raw.replace(/[^a-zA-Z0-9 _.-]/g, "").trim().slice(0, 30);
+  return escapeHtml(cleaned);
+}
+
 function getFallbackHtml(): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -155,22 +173,55 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // Robust static dist path resolution with fallback search
-  let staticPath = findValidDistPath() || path.resolve(process.cwd(), "dist");
+  // In-memory cache for production assets to avoid per-request synchronous filesystem I/O
+  let cachedDistPath: string | null = findValidDistPath();
+  let cachedIndexHtml: string | null = null;
+  let staticMiddleware: express.Handler | null = null;
 
-  // Mount express.static handler dynamically checking the resolved path
+  if (cachedDistPath) {
+    try {
+      const indexPath = path.join(cachedDistPath, "index.html");
+      cachedIndexHtml = fs.readFileSync(indexPath, "utf-8");
+      // Set up a non-blocking watcher so if dist/index.html is re-generated, cache updates automatically
+      try {
+        fs.watch(indexPath, () => {
+          try {
+            if (cachedDistPath) {
+              cachedIndexHtml = fs.readFileSync(indexPath, "utf-8");
+            }
+          } catch {}
+        });
+      } catch {}
+    } catch {}
+    staticMiddleware = express.static(cachedDistPath, { maxAge: "1h", index: false });
+  }
+
+  // Pre-compiled singleton static middleware - zero per-request disk scanning
   app.use((req, res, next) => {
-    const valid = findValidDistPath();
-    if (valid) staticPath = valid;
-    express.static(staticPath)(req, res, next);
+    if (staticMiddleware) {
+      return staticMiddleware(req, res, next);
+    }
+    // Lazy discovery only if server started before production bundle was completed
+    if (!cachedDistPath) {
+      const discovered = findValidDistPath();
+      if (discovered) {
+        cachedDistPath = discovered;
+        try {
+          cachedIndexHtml = fs.readFileSync(path.join(discovered, "index.html"), "utf-8");
+        } catch {}
+        staticMiddleware = express.static(discovered, { maxAge: "1h", index: false });
+        return staticMiddleware(req, res, next);
+      }
+    }
+    next();
   });
 
   app.get("/api/health", (_req, res) => {
     res.json({
       status: "ok",
       timestamp: new Date().toISOString(),
-      staticPath,
-      hasIndex: fs.existsSync(path.join(staticPath, "index.html")),
+      staticPath: cachedDistPath || "unresolved",
+      hasIndex: Boolean(cachedIndexHtml),
     });
   });
 
@@ -183,76 +234,100 @@ async function startServer() {
       return res.status(404).type("text/plain").send("Asset not found");
     }
 
-    // Refresh valid path if needed
-    const verifiedPath = findValidDistPath() || staticPath;
-    const indexPath = path.join(verifiedPath, "index.html");
+    // Serve directly from in-memory cache without any synchronous disk I/O
+    let html = cachedIndexHtml;
 
-    if (!fs.existsSync(indexPath)) {
+    // If not cached yet (e.g. cold start race condition), attempt single resolution
+    if (!html) {
+      if (!cachedDistPath) {
+        cachedDistPath = findValidDistPath();
+        if (cachedDistPath) {
+          staticMiddleware = express.static(cachedDistPath, { maxAge: "1h", index: false });
+        }
+      }
+      if (cachedDistPath) {
+        try {
+          cachedIndexHtml = fs.readFileSync(path.join(cachedDistPath, "index.html"), "utf-8");
+          html = cachedIndexHtml;
+        } catch {}
+      }
+    }
+
+    if (!html) {
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       return res.status(200).send(getFallbackHtml());
     }
 
-    let html: string;
-    try {
-      html = fs.readFileSync(indexPath, "utf-8");
-    } catch {
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      return res.status(200).send(getFallbackHtml());
-    }
-
-    const query = req.query as Record<string, string>;
+    const safeBy = sanitizeUserParam(req.query.by);
 
     let pageTitle = "Toolbox Galaxy – Private In-Browser Tools & Daily Logic Hub";
     let ogTitle = "Toolbox Galaxy – Free In-Browser Tools & Daily Logic Puzzles";
     let ogDesc = "100% client-side privacy-first workbench: PDF & Doc Studio, 120+ utilities, and daily logic puzzles (The Hive, Wordle, Connections).";
 
-    if (pathname.startsWith("/games/hive")) {
-      if (query.by) {
-        pageTitle = `⚔️ Challenge from ${query.by} – The Hive | Toolbox Galaxy`;
-        ogTitle = `⚔️ ${query.by} challenged you in The Hive!`;
-        ogDesc = `Can you beat ${query.by}'s time in today's hexagonal word puzzle? Play now with zero install!`;
+    const isHive = pathname.startsWith("/games/the-hive") || pathname.startsWith("/games/hive") || pathname.startsWith("/games/spelling-bee");
+    const isWordle = pathname.startsWith("/games/wordle") || pathname.startsWith("/games/orbit-lexicon");
+    const isConnections = pathname.startsWith("/games/connections");
+    const isCrossword = pathname.startsWith("/games/mini-crossword") || pathname.startsWith("/games/crossword");
+    const isStrands = pathname.startsWith("/games/strands") || pathname.startsWith("/games/theme-threads");
+
+    if (isHive) {
+      if (safeBy) {
+        pageTitle = `⚔️ Challenge from ${safeBy} – The Hive | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you in The Hive!`;
+        ogDesc = `Can you beat ${safeBy}'s time in today's hexagonal word puzzle? Play now with zero install!`;
       } else {
         pageTitle = "The Hive – Daily Spelling Logic Puzzle | Toolbox Galaxy";
         ogTitle = "🐝 The Hive – Daily Hex Word Puzzle";
         ogDesc = "Find words, discover the secret pangram, and reach Queen Bee rank! 100% free with daily curated puzzles.";
       }
-    } else if (pathname.startsWith("/games/wordle")) {
-      if (query.by) {
-        pageTitle = `⚔️ Wordle Challenge from ${query.by} | Toolbox Galaxy`;
-        ogTitle = `⚔️ ${query.by} challenged you to Wordle Plus!`;
-        ogDesc = `Can you guess the 5-letter word faster than ${query.by}? Step up to the challenge!`;
+    } else if (isWordle) {
+      if (safeBy) {
+        pageTitle = `⚔️ Wordle Challenge from ${safeBy} | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you to Wordle Plus!`;
+        ogDesc = `Can you guess the 5-letter word faster than ${safeBy}? Step up to the challenge!`;
       } else {
         pageTitle = "Wordle Plus – Daily 5-Letter Word Puzzle | Toolbox Galaxy";
         ogTitle = "🟩 Wordle Plus – Daily Word Challenge";
         ogDesc = "Test your vocabulary with daily 5-letter puzzles. Free, clean UI, audio cues, and zero ads.";
       }
-    } else if (pathname.startsWith("/games/connections")) {
-      if (query.by) {
-        pageTitle = `⚔️ Connections Challenge from ${query.by} | Toolbox Galaxy`;
-        ogTitle = `⚔️ ${query.by} challenged you to Connections!`;
-        ogDesc = `Can you group all 4 word categories with fewer mistakes than ${query.by}? Accept the challenge!`;
+    } else if (isConnections) {
+      if (safeBy) {
+        pageTitle = `⚔️ Connections Challenge from ${safeBy} | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you to Connections!`;
+        ogDesc = `Can you group all 4 word categories with fewer mistakes than ${safeBy}? Accept the challenge!`;
       } else {
         pageTitle = "Connections – Daily 4×4 Word Association Puzzle | Toolbox Galaxy";
         ogTitle = "🔠 Connections – Daily Word Association Puzzle";
         ogDesc = "Find four groups of 4 related words across 4 hidden categories. 100% free with daily new editions.";
       }
-    } else if (pathname.startsWith("/games/mini-crossword")) {
-      if (query.by) {
-        pageTitle = `⚔️ Crossword Challenge from ${query.by} | Toolbox Galaxy`;
-        ogTitle = `⚔️ ${query.by} challenged you to Mini Crossword!`;
-        ogDesc = `Can you solve today's 5×5 crossword faster than ${query.by}? Play now!`;
+    } else if (isCrossword) {
+      if (safeBy) {
+        pageTitle = `⚔️ Crossword Challenge from ${safeBy} | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you to Mini Crossword!`;
+        ogDesc = `Can you solve today's 5×5 crossword faster than ${safeBy}? Play now!`;
       } else {
         pageTitle = "Mini Crossword – Daily 5×5 Speed Puzzle | Toolbox Galaxy";
         ogTitle = "📰 Mini Crossword – Daily 5×5 Speed Puzzle";
         ogDesc = "Solve the daily 5×5 mini crossword puzzle across and down. Fast, clean, and 100% free.";
       }
+    } else if (isStrands) {
+      if (safeBy) {
+        pageTitle = `⚔️ Strands Challenge from ${safeBy} | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you to Strands!`;
+        ogDesc = `Can you uncover the theme words and spangram faster than ${safeBy}? Play now!`;
+      } else {
+        pageTitle = "Strands – Daily Word Connection & Spangram Puzzle | Toolbox Galaxy";
+        ogTitle = "🧶 Strands – Daily Theme Words Puzzle";
+        ogDesc = "Find all theme words and the golden spangram across the 8×6 grid. 100% free with zero ads.";
+      }
     } else if (pathname.startsWith("/games")) {
-      if (query.by) {
+      if (safeBy) {
         const rawSlug = pathname.replace(/^\/games\/?/, "").split("/")[0] || "puzzle";
         const formatted = rawSlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-        pageTitle = `⚔️ ${formatted} Challenge from ${query.by} | Toolbox Galaxy`;
-        ogTitle = `⚔️ ${query.by} challenged you in ${formatted}!`;
-        ogDesc = `Can you beat ${query.by}'s time in today's daily logic puzzle? Play now with zero ads and zero install!`;
+        const safeFormatted = escapeHtml(formatted);
+        pageTitle = `⚔️ ${safeFormatted} Challenge from ${safeBy} | Toolbox Galaxy`;
+        ogTitle = `⚔️ ${safeBy} challenged you in ${safeFormatted}!`;
+        ogDesc = `Can you beat ${safeBy}'s time in today's daily logic puzzle? Play now with zero ads and zero install!`;
       } else {
         pageTitle = "Games Bay – Free Daily Brain & Logic Puzzles | Toolbox Galaxy";
         ogTitle = "🎮 Games Bay – Daily Brain & Word Puzzles";
@@ -264,14 +339,18 @@ async function startServer() {
       ogDesc = "Merge, split, rotate, convert, and edit PDFs locally in your browser. Zero cloud uploads, 100% confidential.";
     }
 
-    // Replace meta tags dynamically for social crawlers (WhatsApp, Twitter, Facebook, Slack, Googlebot)
+    const safeEscapedTitle = escapeHtml(pageTitle);
+    const safeEscapedOgTitle = escapeHtml(ogTitle);
+    const safeEscapedOgDesc = escapeHtml(ogDesc);
+
+    // Replace meta tags dynamically using callback functions to prevent regex replacement injection
     html = html
-      .replace(/<title>.*?<\/title>/, `<title>${pageTitle}</title>`)
-      .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${ogTitle}" />`)
-      .replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${ogDesc}" />`)
-      .replace(/<meta name="twitter:title" content=".*?" \/>/, `<meta name="twitter:title" content="${ogTitle}" />`)
-      .replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${ogDesc}" />`)
-      .replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${ogDesc}" />`);
+      .replace(/<title>.*?<\/title>/, () => `<title>${safeEscapedTitle}</title>`)
+      .replace(/<meta property="og:title" content=".*?" \/>/, () => `<meta property="og:title" content="${safeEscapedOgTitle}" />`)
+      .replace(/<meta property="og:description" content=".*?" \/>/, () => `<meta property="og:description" content="${safeEscapedOgDesc}" />`)
+      .replace(/<meta name="twitter:title" content=".*?" \/>/, () => `<meta name="twitter:title" content="${safeEscapedOgTitle}" />`)
+      .replace(/<meta name="twitter:description" content=".*?" \/>/, () => `<meta name="twitter:description" content="${safeEscapedOgDesc}" />`)
+      .replace(/<meta name="description" content=".*?" \/>/, () => `<meta name="description" content="${safeEscapedOgDesc}" />`);
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.send(html);
@@ -281,7 +360,7 @@ async function startServer() {
   const host = "0.0.0.0";
 
   server.listen(port, host, () => {
-    console.log(`Server running on http://${host}:${port}/ (serving ${staticPath})`);
+    console.log(`Server running on http://${host}:${port}/ (serving ${cachedDistPath || "fallback"})`);
   });
 }
 

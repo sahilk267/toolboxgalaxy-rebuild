@@ -456,6 +456,16 @@ export function PassportPhotoResizerTool() {
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
   const [outputSizeKb, setOutputSizeKb] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const outputUrlRef = useRef<string | null>(null);
+
+  // Revoke blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (outputUrlRef.current) {
+        URL.revokeObjectURL(outputUrlRef.current);
+      }
+    };
+  }, []);
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -487,18 +497,19 @@ export function PassportPhotoResizerTool() {
     }
   };
 
-  // Live Canvas Resize & Target KB Iteration
+  // Live Canvas Resize & Target KB Iteration with real binary search
   useEffect(() => {
     if (!imageSrc) return;
 
+    let isCurrent = true;
     const img = new Image();
     img.src = imageSrc;
-    img.onload = () => {
+    img.onload = async () => {
       const canvas = document.createElement("canvas");
       canvas.width = targetWidth;
       canvas.height = targetHeight;
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx || !isCurrent) return;
 
       // Fill white background for passport transparency safety
       ctx.fillStyle = "#ffffff";
@@ -522,21 +533,50 @@ export function PassportPhotoResizerTool() {
 
       ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
 
-      // Target size compression binary search loop
-      let q = quality;
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) return;
-          setOutputBlob(blob);
-          setOutputSizeKb(Math.round((blob.size / 1024) * 10) / 10);
-          const url = URL.createObjectURL(blob);
-          setOutputUrl(url);
-        },
-        "image/jpeg",
-        q
-      );
+      // Real binary search to compress as close to targetKb as possible
+      const targetBytes = targetKb * 1024;
+      const toBlob = (q: number) =>
+        new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", q));
+
+      let minQ = 0.05;
+      let maxQ = 0.98;
+      let bestBlob: Blob | null = null;
+
+      // 6 binary search iterations gives ~1.5% precision
+      for (let i = 0; i < 6; i++) {
+        const midQ = (minQ + maxQ) / 2;
+        const b = await toBlob(midQ);
+        if (!b) break;
+        if (b.size <= targetBytes) {
+          bestBlob = b;
+          minQ = midQ; // Try higher quality while staying within target
+        } else {
+          maxQ = midQ; // File too large, reduce quality
+        }
+      }
+
+      if (!bestBlob) {
+        bestBlob = (await toBlob(minQ)) || (await toBlob(quality));
+      }
+
+      if (!isCurrent || !bestBlob) return;
+
+      if (outputUrlRef.current) {
+        URL.revokeObjectURL(outputUrlRef.current);
+      }
+
+      const newUrl = URL.createObjectURL(bestBlob);
+      outputUrlRef.current = newUrl;
+
+      setOutputBlob(bestBlob);
+      setOutputSizeKb(Math.round((bestBlob.size / 1024) * 10) / 10);
+      setOutputUrl(newUrl);
     };
-  }, [imageSrc, targetWidth, targetHeight, quality]);
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [imageSrc, targetWidth, targetHeight, targetKb, quality]);
 
   const downloadFile = () => {
     if (!outputUrl) return;

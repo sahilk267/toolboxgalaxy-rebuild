@@ -3,7 +3,13 @@ export type SoundEvent = "start" | "fragment" | "gate" | "collision" | "toggle" 
 
 const SOUND_STORAGE_KEY = "toolboxgalaxy:game-sound";
 const MUSIC_STORAGE_KEY = "toolboxgalaxy:logic-music";
-const readPreference = (key: string) => typeof window !== "undefined" && window.localStorage.getItem(key) === "on";
+const readPreference = (key: string) => {
+  try {
+    return typeof window !== "undefined" && window.localStorage.getItem(key) === "on";
+  } catch {
+    return false;
+  }
+};
 
 export class OrbitAudio {
   private context: AudioContext | null = null;
@@ -30,7 +36,9 @@ export class OrbitAudio {
 
   async setEnabled(next: boolean) {
     this.enabled = next;
-    window.localStorage.setItem(SOUND_STORAGE_KEY, next ? "on" : "off");
+    try {
+      window.localStorage.setItem(SOUND_STORAGE_KEY, next ? "on" : "off");
+    } catch {}
     if (!next) { 
       this.pauseMusic(); 
       await this.context?.suspend(); 
@@ -44,7 +52,9 @@ export class OrbitAudio {
 
   async setMusicEnabled(next: boolean) {
     this.musicEnabled = next;
-    window.localStorage.setItem(MUSIC_STORAGE_KEY, next ? "on" : "off");
+    try {
+      window.localStorage.setItem(MUSIC_STORAGE_KEY, next ? "on" : "off");
+    } catch {}
     if (!next) { 
       this.pauseMusic(); 
       return false; 

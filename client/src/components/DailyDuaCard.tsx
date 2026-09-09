@@ -7,9 +7,13 @@ export default function DailyDuaCard() {
   const [copied, setCopied] = useState(false);
   const [lang, setLang] = useState<"english" | "urdu" | "hindi">(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("tg_daily_dua_lang");
-      if (saved === "urdu" || saved === "hindi" || saved === "english") {
-        return saved;
+      try {
+        const saved = localStorage.getItem("tg_daily_dua_lang");
+        if (saved === "urdu" || saved === "hindi" || saved === "english") {
+          return saved;
+        }
+      } catch {
+        // Storage access restricted
       }
     }
     return "english";
@@ -18,7 +22,11 @@ export default function DailyDuaCard() {
   const handleSelectLang = (selected: "english" | "urdu" | "hindi") => {
     setLang(selected);
     if (typeof window !== "undefined") {
-      localStorage.setItem("tg_daily_dua_lang", selected);
+      try {
+        localStorage.setItem("tg_daily_dua_lang", selected);
+      } catch {
+        // Storage write restricted
+      }
     }
   };
 

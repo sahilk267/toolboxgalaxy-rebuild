@@ -1,5 +1,6 @@
 import { useState } from "react";
 import mammoth from "mammoth";
+import DOMPurify from "dompurify";
 import {
   FileText,
   Download,
@@ -308,7 +309,7 @@ No document packets are ever transferred over network sockets. The document is c
                   <span className="text-xs font-mono text-white/70">DOCUMENT PREVIEW</span>
                   <div
                     className="prose prose-invert max-h-[310px] overflow-y-auto rounded-xl border border-white/10 bg-[#161a29] p-4 text-xs text-white/90"
-                    dangerouslySetInnerHTML={{ __html: htmlContent }}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }}
                   />
                 </div>
               </div>

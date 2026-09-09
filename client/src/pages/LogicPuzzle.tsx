@@ -1266,9 +1266,9 @@ export default function LogicPuzzle() {
   const slug = legacy?.slug ?? direct?.slug;
 
   if (slug === "connections") return <ConnectionsPuzzle />;
-  if (slug === "wordle") return <WordlePuzzle />;
-  if (slug === "mini-crossword") return <MiniCrosswordPuzzle />;
-  if (slug === "hive" || slug === "spelling-bee") return <HivePuzzle />;
+  if (slug === "wordle" || slug === "orbit-lexicon") return <WordlePuzzle />;
+  if (slug === "mini-crossword" || slug === "crossword") return <MiniCrosswordPuzzle />;
+  if (slug === "hive" || slug === "the-hive" || slug === "spelling-bee") return <HivePuzzle />;
   if (slug === "strands" || slug === "theme-threads") return <StrandsPuzzle />;
   if (slug === "mini-sudoku") return <MiniSudokuPuzzle />;
   if (slug === "tango") return <TangoEditionPuzzle />;
